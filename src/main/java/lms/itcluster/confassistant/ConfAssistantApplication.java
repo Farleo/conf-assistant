@@ -10,4 +10,6 @@ public class ConfAssistantApplication {
         SpringApplication.run(ConfAssistantApplication.class, args);
     }
 
+
+
 }
