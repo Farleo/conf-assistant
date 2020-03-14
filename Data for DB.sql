@@ -1,4 +1,4 @@
-insert into mydb.user(first_name, last_name, password, email, phone_number, user_user_id) values
+insert into confassist.user(first_name, last_name, password, email, phone_number, user_user_id) values
 ('Ivan', 'Kvych', '123qweasd', 'ikvuch@gmail.com', '+380952144815', 1),
 ('Sasha', 'Zoriy', 'dsaewq321', 'zoriy@gmail.com', '+380958644404', 1),
 ('Slavik', 'Fedoriv', '1qasw23ed', 'slavik@gmail.com', '+380955347470', 1);
@@ -25,14 +25,14 @@ insert into topic(name, date, begin_time, finish_time, info, is_active, stream_s
 ('Future of solar panel', '2020-02-12', '17:00:00', '19:00:00', 'What will be soon in solar industries', 1, 3, 3),
 ('Mono crystal', '2020-02-13', '17:00:00', '19:00:00', 'Advantages of mono crystal solar panel', 1, 3, 3);
 
-insert into guest(email) values
+insert into User(email) values
 ('1email@gmail.com'), ('2email@gmail.com'), ('3email@gmail.com'), ('4email@gmail.com'), ('5email@gmail.com'), ('6email@gmail.com'),
 ('7email@gmail.com'), ('8email@gmail.com'), ('9email@gmail.com'), ('10email@gmail.com'), ('11email@gmail.com'), ('12email@gmail.com'),
 ('13email@gmail.com'), ('14email@gmail.com'), ('15email@gmail.com'), ('16email@gmail.com'), ('17email@gmail.com'), ('18email@gmail.com'),
 ('19email@gmail.com'), ('20email@gmail.com'), ('21email@gmail.com'), ('22email@gmail.com'), ('23email@gmail.com'), ('24email@gmail.com'),
 ('25email@gmail.com'), ('26email@gmail.com'), ('27email@gmail.com'), ('28email@gmail.com'), ('29email@gmail.com'), ('30email@gmail.com');
 
-insert into question(question, topic_topic_id, guest_guest_id) VALUES
+insert into question(question, topic_topic_id, User_User_id) VALUES
 ('You will build an application that stores', 1, 1), (' POJOs (Plain Old Java Objects) in a memory-based', 1, 1),
 ('Like most Spring Getting Started guides', 1, 2), (' Create an Application Class', 2, 2),
 ('When you finish, you can check', 1, 3), (' import org.springframewo', 1, 3),

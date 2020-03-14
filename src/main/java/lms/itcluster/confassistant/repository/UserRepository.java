@@ -1,6 +1,5 @@
 package lms.itcluster.confassistant.repository;
 
-import lms.itcluster.confassistant.entity.Guest;
 import lms.itcluster.confassistant.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

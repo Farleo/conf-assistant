@@ -1,4 +1,5 @@
 $( document ).ready(function() {
+    var $form = $('#' + 'customerForm');
 
     // SUBMIT FORM
     $("#customerForm").submit(function(event) {
@@ -18,9 +19,9 @@ $( document ).ready(function() {
 
         // DO POST
         $.ajax({
-            type : "POST",
+            type : "post",
             contentType : "application/json",
-            url : "http://localhost:8080/save",
+            url: $form.attr('action'),
             data : JSON.stringify(formData),
             dataType : 'json'
 

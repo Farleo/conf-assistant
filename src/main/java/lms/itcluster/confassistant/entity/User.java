@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,88 +29,95 @@ public class User {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "user")
-    private List<Conference> conferenceList;
+    private List<Participants> participantsList;
 
-    @OneToMany(mappedBy = "user")
-    private List<User> userList;
+@ManyToMany(cascade = {
+        CascadeType.PERSIST,
+        CascadeType.MERGE
+})
+@JoinTable(name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+)
+private List<Roles> roles = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_user_id", nullable = false)
-    private User user;
+@ManyToMany(mappedBy = "userLikes")
+private List<Question> questionLikes = new ArrayList<>();
 
-    public User() {
+public User() {
         super();
     }
 
-    public int getUserId() {
-        return userId;
-    }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+public int getUserId() {
+    return userId;
+}
 
-    public String getFirstName() {
-        return firstName;
-    }
+public void setUserId(int userId) {
+    this.userId = userId;
+}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+public String getFirstName() {
+    return firstName;
+}
 
-    public String getLastName() {
-        return lastName;
-    }
+public void setFirstName(String firstName) {
+    this.firstName = firstName;
+}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+public String getLastName() {
+    return lastName;
+}
 
-    public String getPassword() {
-        return password;
-    }
+public void setLastName(String lastName) {
+    this.lastName = lastName;
+}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+public String getPassword() {
+    return password;
+}
 
-    public String getEmail() {
-        return email;
-    }
+public void setPassword(String password) {
+    this.password = password;
+}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+public String getEmail() {
+    return email;
+}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+public void setEmail(String email) {
+    this.email = email;
+}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+public String getPhoneNumber() {
+    return phoneNumber;
+}
 
-    public List<Conference> getConferenceList() {
-        return conferenceList;
-    }
+public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+}
 
-    public void setConferenceList(List<Conference> conferenceList) {
-        this.conferenceList = conferenceList;
-    }
+public List<Participants> getParticipantsList() {
+    return participantsList;
+}
 
-    public List<User> getUserList() {
-        return userList;
-    }
+public void setParticipantsList(List<Participants> participantsList) {
+    this.participantsList = participantsList;
+}
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
+public List<Roles> getRoles() {
+    return roles;
+}
 
-    public User getUser() {
-        return user;
-    }
+public void setRoles(List<Roles> roles) {
+    this.roles = roles;
+}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+public List<Question> getQuestionLikes() {
+    return questionLikes;
+}
+
+public void setQuestionLikes(List<Question> questionLikes) {
+    this.questionLikes = questionLikes;
+}
 }
