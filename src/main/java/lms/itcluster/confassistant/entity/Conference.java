@@ -22,7 +22,7 @@ public class Conference {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "conference")
+    @OneToMany(mappedBy = "conferenceUserId.conference", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Participants> participants;
 
     @OneToMany(mappedBy = "conference")

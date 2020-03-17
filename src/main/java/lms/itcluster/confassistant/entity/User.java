@@ -28,7 +28,7 @@ public class User {
     @Column(name = "phone_number", length = 13, unique = true)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "conferenceUserId.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Participants> participantsList;
 
 @ManyToMany(cascade = {

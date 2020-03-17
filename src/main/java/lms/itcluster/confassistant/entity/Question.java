@@ -43,6 +43,43 @@ private List<User> userLikes = new ArrayList<>();
         super();
     }
 
-    
-    
+public int getQuestionId() {
+    return questionId;
+}
+
+public void setQuestionId(int questionId) {
+    this.questionId = questionId;
+}
+
+public String getQuestion() {
+    return question;
+}
+
+public void setQuestion(String question) {
+    this.question = question;
+}
+
+public Presentations getPresentations() {
+    return presentations;
+}
+
+public void setPresentations(Presentations presentations) {
+    this.presentations = presentations;
+}
+
+public User getOwner() {
+    return owner;
+}
+
+public void setOwner(User owner) {
+    this.owner = owner;
+}
+
+public List<User> getUserLikes() {
+    return userLikes;
+}
+
+public void setUserLikes(List<User> userLikes) {
+    this.userLikes = userLikes;
+}
 }

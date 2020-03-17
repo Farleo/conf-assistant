@@ -30,4 +30,43 @@ public class Stream {
         super();
     }
 
+public int getStreamId() {
+    return streamId;
+}
+
+public void setStreamId(int streamId) {
+    this.streamId = streamId;
+}
+
+public String getName() {
+    return name;
+}
+
+public void setName(String name) {
+    this.name = name;
+}
+
+public String getLocation() {
+    return location;
+}
+
+public void setLocation(String location) {
+    this.location = location;
+}
+
+public Conference getConference() {
+    return conference;
+}
+
+public void setConference(Conference conference) {
+    this.conference = conference;
+}
+
+public List<Presentations> getPresentationsList() {
+    return presentationsList;
+}
+
+public void setPresentationsList(List<Presentations> presentationsList) {
+    this.presentationsList = presentationsList;
+}
 }

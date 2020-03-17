@@ -7,21 +7,21 @@ import javax.persistence.*;
 public class Participants {
 
 @EmbeddedId
-private ConferenceUserId id;
+private ConferenceUserId conferenceUserId = new ConferenceUserId();
 
+@Transient
+public Conference getConference() {
+	return conferenceUserId.getConference();
+}
 
-@ManyToOne(fetch = FetchType.LAZY)
-@MapsId("conference_id")
-private Conference conference;
+@Transient
+public ParticipantType getParticipantType() {
+	return conferenceUserId.getParticipantType();
+}
 
-@ManyToOne(fetch = FetchType.LAZY)
-@MapsId("user_id")
-private User user;
-
-@ManyToOne(fetch = FetchType.LAZY)
-@MapsId("type_id")
-private ParticipantType participantType;
-
-
+@Transient
+public User getUser() {
+	return conferenceUserId.getUser();
+}
 
 }

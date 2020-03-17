@@ -15,6 +15,6 @@ private long type_Id;
 @Column(name = "name", nullable = false, unique = true)
 private String name;
 
-@OneToMany(mappedBy = "participantType")
+@OneToMany(mappedBy = "conferenceUserId.participantType", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 private List<Participants> participants;
 }
