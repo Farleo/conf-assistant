@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.entity;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
-
+//+
 @Entity
 @Table(name = "stream")
 public class Stream {
@@ -13,49 +13,60 @@ public class Stream {
     @Column(name = "stream_id", unique = true, nullable = false)
     private int streamId;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "location")
+    private String location;
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "conference_conference_id", nullable = false)
+    @JoinColumn(name = "conference_id", nullable = false)
     private Conference conference;
 
     @OneToMany(mappedBy = "stream")
-    private List<Topic> topicList;
+    private List<Presentations> presentationsList;
 
     public Stream() {
         super();
     }
 
-    public int getStreamId() {
-        return streamId;
-    }
+public int getStreamId() {
+    return streamId;
+}
 
-    public void setStreamId(int streamId) {
-        this.streamId = streamId;
-    }
+public void setStreamId(int streamId) {
+    this.streamId = streamId;
+}
 
-    public String getName() {
-        return name;
-    }
+public String getName() {
+    return name;
+}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+public void setName(String name) {
+    this.name = name;
+}
 
-    public Conference getConference() {
-        return conference;
-    }
+public String getLocation() {
+    return location;
+}
 
-    public void setConference(Conference conference) {
-        this.conference = conference;
-    }
+public void setLocation(String location) {
+    this.location = location;
+}
 
-    public List<Topic> getTopicList() {
-        return topicList;
-    }
+public Conference getConference() {
+    return conference;
+}
 
-    public void setTopicList(List<Topic> topicList) {
-        this.topicList = topicList;
-    }
+public void setConference(Conference conference) {
+    this.conference = conference;
+}
+
+public List<Presentations> getPresentationsList() {
+    return presentationsList;
+}
+
+public void setPresentationsList(List<Presentations> presentationsList) {
+    this.presentationsList = presentationsList;
+}
 }

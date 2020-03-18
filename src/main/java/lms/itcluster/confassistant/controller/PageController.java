@@ -1,8 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Guest;
-import lms.itcluster.confassistant.entity.Question;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,15 +39,15 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/login-guest")
-    public String getLoginGuest (Model model) {
-        return "login-guest";
+    @GetMapping("/login-User")
+    public String getLoginUser (Model model) {
+        return "login-User";
     }
 
-    @GetMapping("/registration-guest")
-    public String getRegistrationGuest (Model model) {
-        model.addAttribute("guest", new Guest());
-        return "registration-guest";
+    @GetMapping("/registration-User")
+    public String getRegistrationUser (Model model) {
+        model.addAttribute("User", new User());
+        return "registration-User";
     }
 
 
@@ -59,7 +58,7 @@ public class PageController {
 
     @GetMapping("/login-failed")
     public String getLoginFailed (Model model) {
-        return "login-guest";
+        return "login-User";
     }
 
     @GetMapping("/ask-question")

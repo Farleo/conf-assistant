@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/ask-question").hasAuthority(Constant.GUEST)
+                .antMatchers("/ask-question").hasAuthority(Constant.User)
                 .antMatchers("/create-moderator").hasAuthority(Constant.ADMIN)
                 .anyRequest().permitAll();
         http.formLogin()

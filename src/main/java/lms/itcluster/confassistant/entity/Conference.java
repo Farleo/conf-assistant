@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.entity;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
-
+//+
 @Entity
 @Table(name = "conference")
 public class Conference {
@@ -11,7 +11,7 @@ public class Conference {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "conference_id", unique = true, nullable = false)
-    private int conferenceId;
+    private long conferenceId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -19,18 +19,11 @@ public class Conference {
     @Column(name = "alias", nullable = false, unique = true)
     private String alias;
 
-    @Column(name = "begin_date", nullable = false)
-    private Date beginDate;
+    @Column(name = "description", nullable = false)
+    private String description;
 
-    @Column(name = "finish_date", nullable = false)
-    private Date finishDate;
-
-    @Column(name = "info", nullable = false)
-    private String info;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_user_id", nullable = false)
-    private User user;
+    @OneToMany(mappedBy = "conferenceUserId.conference", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Participants> participants;
 
     @OneToMany(mappedBy = "conference")
     private List<Stream> streamList;
@@ -39,67 +32,51 @@ public class Conference {
         super();
     }
 
-    public int getConferenceId() {
-        return conferenceId;
-    }
+public long getConferenceId() {
+    return conferenceId;
+}
 
-    public void setConferenceId(int conferenceId) {
-        this.conferenceId = conferenceId;
-    }
+public void setConferenceId(long conferenceId) {
+    this.conferenceId = conferenceId;
+}
 
-    public String getName() {
-        return name;
-    }
+public String getName() {
+    return name;
+}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+public void setName(String name) {
+    this.name = name;
+}
 
-    public String getAlias() {
-        return alias;
-    }
+public String getAlias() {
+    return alias;
+}
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
+public void setAlias(String alias) {
+    this.alias = alias;
+}
 
-    public Date getBeginDate() {
-        return beginDate;
-    }
+public String getDescription() {
+    return description;
+}
 
-    public void setBeginDate(Date beginDate) {
-        this.beginDate = beginDate;
-    }
+public void setDescription(String description) {
+    this.description = description;
+}
 
-    public Date getFinishDate() {
-        return finishDate;
-    }
+public List<Participants> getParticipants() {
+    return participants;
+}
 
-    public void setFinishDate(Date finishDate) {
-        this.finishDate = finishDate;
-    }
+public void setParticipants(List<Participants> participants) {
+    this.participants = participants;
+}
 
-    public String getInfo() {
-        return info;
-    }
+public List<Stream> getStreamList() {
+    return streamList;
+}
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Stream> getStreamList() {
-        return streamList;
-    }
-
-    public void setStreamList(List<Stream> streamList) {
-        this.streamList = streamList;
-    }
+public void setStreamList(List<Stream> streamList) {
+    this.streamList = streamList;
+}
 }
