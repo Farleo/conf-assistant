@@ -33,7 +33,7 @@ public class LoginController {
     @PostMapping("/login")
     public String saveLoginHands (@ModelAttribute UserForm userForm, Model model) {
         User user = userService.findByEmail(userForm.getEmail());
-        if (user.getRoles().contains(rolesRepository.findByRole(Constant.GUEST))) {
+                if (user!=null && user.getRoles().contains(rolesRepository.findByRole(Constant.GUEST))) {
             SecurityUtil.authenticate(user);
             return "redirect:/" + userForm.getReferer().substring(22);
         }
