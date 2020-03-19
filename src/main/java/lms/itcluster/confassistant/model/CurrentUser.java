@@ -20,6 +20,7 @@ public class CurrentUser extends User {
 
     private static Collection<GrantedAuthority> getAllRoles(lms.itcluster.confassistant.entity.User user) {
         Collection<GrantedAuthority> collection = new ArrayList<>();
+        
         for (Roles roles : user.getRoles()) {
             collection.add(new SimpleGrantedAuthority(roles.getRole()));
         }

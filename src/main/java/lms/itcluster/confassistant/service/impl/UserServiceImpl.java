@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
 import java.util.*;
 
 @Service
@@ -42,7 +41,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User createNewUser(UserForm userForm) {
         User user = new User();
         user.setEmail(userForm.getEmail());
-        return null;
+        user.setPassword(userForm.getPassword());
+        Roles guestRole = rolesRepository.findByRole("Guest");
+        user.setRoles(Collections.singleton(guestRole));
+        userRepository.save(user);
+        return user;
     }
 
     @Override

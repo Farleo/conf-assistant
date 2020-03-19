@@ -40,6 +40,7 @@ public class Question {
     private int rating;
 
     public int getRating() {
+        
         rating = likesSet.size();
         return rating;
     }
