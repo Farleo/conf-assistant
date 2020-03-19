@@ -9,7 +9,4 @@ public class ConfAssistantApplication {
     public static void main(String[] args) {
         SpringApplication.run(ConfAssistantApplication.class, args);
     }
-
-
-
 }

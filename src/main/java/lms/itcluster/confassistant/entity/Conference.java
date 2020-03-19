@@ -2,7 +2,9 @@ package lms.itcluster.confassistant.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "conference")
@@ -11,7 +13,7 @@ public class Conference {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "conference_id", unique = true, nullable = false)
-    private int conferenceId;
+    private long conferenceId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -25,12 +27,17 @@ public class Conference {
     @Column(name = "finish_date", nullable = false)
     private Date finishDate;
 
-    @Column(name = "info", nullable = false)
+    @Column(name = "info", nullable = false, length = 1000)
     private String info;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_user_id", nullable = false)
-    private User user;
+    @Column(name = "venue", nullable = false)
+    private String venue;
+
+    @Column(name = "cover_photo")
+    private String coverPhoto;
+
+    @OneToMany(mappedBy = "participantsKey.conference", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Participants> participants;
 
     @OneToMany(mappedBy = "conference")
     private List<Stream> streamList;
@@ -39,11 +46,11 @@ public class Conference {
         super();
     }
 
-    public int getConferenceId() {
+    public long getConferenceId() {
         return conferenceId;
     }
 
-    public void setConferenceId(int conferenceId) {
+    public void setConferenceId(long conferenceId) {
         this.conferenceId = conferenceId;
     }
 
@@ -87,12 +94,12 @@ public class Conference {
         this.info = info;
     }
 
-    public User getUser() {
-        return user;
+    public List<Participants> getParticipants() {
+        return participants;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setParticipants(List<Participants> participants) {
+        this.participants = participants;
     }
 
     public List<Stream> getStreamList() {
@@ -101,5 +108,48 @@ public class Conference {
 
     public void setStreamList(List<Stream> streamList) {
         this.streamList = streamList;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public String getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(String coverPhoto) {
+        this.coverPhoto = coverPhoto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conference that = (Conference) o;
+        return conferenceId == that.conferenceId &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(alias, that.alias) &&
+                Objects.equals(info, that.info) &&
+                Objects.equals(venue, that.venue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conferenceId, name, alias, info, venue);
+    }
+
+    @Override
+    public String toString() {
+        return "Conference{" +
+                "conferenceId=" + conferenceId +
+                ", name='" + name + '\'' +
+                ", alias='" + alias + '\'' +
+                ", venue='" + venue + '\'' +
+                '}';
     }
 }

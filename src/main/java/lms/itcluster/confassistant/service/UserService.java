@@ -1,17 +1,20 @@
 package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Guest;
+import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.form.UserForm;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
-    User findById(int id);
+    User findById(long id);
 
-    Guest findByEmail(String email);
+    User findByEmail(String email);
 
-    List<Conference> getAllConferences();
+    User createNewUser(UserForm userForm);
+
+
 }

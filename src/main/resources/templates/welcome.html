@@ -6,62 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="bootstrap-4.4.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
-    <title>Hello, world!</title>
+    <title>Conference Assistant</title>
+    <style>
+
+        .tab {
+            /* элемент тени */
+            -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            -moz-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            box-shadow: 0 0 5px rgba(0,0,0,.2);
+            -o-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            /* элемент тени конец */
+        }
+
+        .tab:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            -moz-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            box-shadow: 0 0 25px rgba(0,0,0,.2);
+            -o-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            /* элемент тени если наведен курсор конец */
+        }
+        a:hover {
+            text-decoration:none;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container" >
-    <div class="row justify-content-center">
-        <div class="card col-12 ">
-            <div class="card-header">
-                Conferences
+<div class="container-fluid " >
+    <div class="row justify-content-center border-bottom">
+        <nav class="navbar navbar-light col-7 " >
+            <a href="/" class="navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg"  alt="logo"></a>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)" type="submit">Search</button>
+            </form>
+        </nav>
+    </div>
+    <div class="row justify-content-center ">
+        <div class="card col-7 border-0">
+            <div class="card text-center border-0 " style="margin-top: 20px">
+                <h2 style="font-family: Calibri,serif; color: #4089c4">Select the conference you are interested in from the table</h2>
             </div>
-            <div class="card-body">
-                <div th:each="conference, index : ${conferences}">
-                    <div class="accordion"   th:attr="id=${'accordionExample1' + conference.getAlias()}" >
-                        <div class="card">
-                            <div class="card-header" th:attr="id=${'headingOne1' + conference.getAlias()}">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link" type="button" th:text="${conference.getName()}" th:attr="data-target=${'#collapseOne1' + conference.getAlias()}, aria-controls=${'collapseOne1' + conference.getAlias()}" data-toggle="collapse" aria-expanded="true" >
-                                        Collapsible Group Item #1
-                                    </button>
-                                </h2>
-                            </div>
-
-                            <div class="collapse " th:attr="data-parent=${'#accordionExample1' + conference.getAlias()}, aria-labelledby=${'headingOne1' + conference.getAlias()}, id=${'collapseOne1' + conference.getAlias()}" >
-                                <div class="card-header" th:text="${conference.getInfo()}">
-                                </div>
-                                <div class="card-body" th:each="stream : ${conference.getStreamList()}">
-                                    <span th:text="${stream.getName()}"></span>
-                                    <div class="card-body" th:each="topic : ${stream.getTopicList()}">
-                                        <a th:href="@{/topic}">
-                                        <span th:text="${topic.getDate()}"></span>
-                                        <span th:text="${topic.getBeginTime()}"></span>
-                                        <span th:text="${topic.getFinishTime()}"></span>
-                                        <span th:text="${topic.getSpeaker().getFirstName() + ' ' + topic.getSpeaker().getLastName()}"></span>
-                                        <span th:text="${topic.getName()}"></span>
-                                        <span th:text="${topic.getInfo()}"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row " style="padding-top: 0em">
+                <div  class="card col-6 border-0 p-3" th:each="conference, index : ${conferences.getConferenceList()}" style="margin-top: 20px">
+                    <a th:href="${'/conf/' + conference.getConferenceId()}" class="tab">
+                        <img th:src="@{${conference.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                        <div class="card-body border-0">
+                            <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
+                            <p class="card-text text-dark" th:text="${conference.info}"></p>
                         </div>
-                    </div>
-
+                    </a>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="bootstrap-4.4.1-dist/js/jquery.slim.min.js"></script>
-<script src="bootstrap-4.4.1-dist/js/popper.min.js"></script>
-<script src="bootstrap-4.4.1-dist/js/bootstrap.min.js"></script>
+<script src="/bootstrap/js/jquery.slim.min.js"></script>
+<script src="/bootstrap/js/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
 </html>

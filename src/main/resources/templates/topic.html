@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/scroll.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+    <title>Conference Assistant</title>
+
+</head>
+<body>
+
+<div class="container-fluid" th:object="${currentTopic}">
+    <div class="row justify-content-center border-bottom ">
+        <nav class="navbar navbar-light col-7 " >
+            <a href="/" class="navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg"  alt="logo"></a>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)" type="submit">Search</button>
+            </form>
+        </nav>
+    </div>
+    <div class="row justify-content-center border-0" style="margin-top: 25px">
+        <div class="card col-7 border-0">
+            <div class="row no-gutters">
+                <div class="col-6">
+                    <img th:src="*{coverPhoto}" class="card-img border" alt="...">
+                </div>
+                <div class="col-6">
+                    <div class="card-body">
+                        <h1 style="font-family: Calibri,serif;" th:text="${currentTopic.getName()}"></h1>
+                        <h6 id="name" class="form-text text-muted" th:text="${currentTopic.getStream().getName() + ', since ' + currentTopic.getBeginTime() + ' to ' + currentTopic.getFinishTime()}"></h6>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="card border-0 col-7" >
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h3 class="text-muted">About Topic</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <span th:text="${currentTopic.getInfo()}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center border-0" style="margin-top: 25px">
+        <div class="card col-7 border-0">
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h3 class="text-muted">Speaker</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters" style="margin-top: 20px">
+                <div class="col-2">
+                    <img th:src="@{${speaker.getPhoto()}}" style="max-width: 150px" alt="...">
+                </div>
+                <div class="col-10">
+                    <div class="card-body">
+                        <h4 style="font-family: Calibri,serif;" aria-describedby="Speaker"  th:text="${speaker.firstName + ' ' + speaker.lastName}"></h4>
+                        <p id="Speaker" class="form-text text-muted" th:text="${speaker.info}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div  class="row justify-content-center border-0" style="margin-top: 25px">
+        <div class="card border-0 col-7">
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h3 class="text-muted">Question list</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 col-12" style="margin-top: 25px">
+                <div th:switch="${isPresentUser}">
+                    <div th:case="false">
+                        <div id="QuestionBlock" class="card border-0">
+                            <p>In order to be able to ask your speaker a question or vote, please register
+                                <a th:href="${'/login'}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Sign-in</a>
+                            </p>
+                        </div>
+                        </div>
+                        <div th:case="true">
+                            <form id="QuestionForm" class="form-inline col-12" style="margin-top: 20px">
+                                <input style="margin-right: 10px"  id="question" class="form-control col-8" placeholder="ask question">
+                                <button style="margin-right: 75px" class="btn btn-primary my-2 my-sm-0 col-1" type="submit">Ask</button>
+                                <button id="refresh" type="button" class="btn btn-danger col-2 text-white">Refresh list</button>
+                            </form>
+                            <input hidden="hidden" id="topicId" th:attr="value=${currentTopic.getTopicId()}">
+                            <input hidden="hidden" id="currentGuest" th:attr="value=${user.getUsername()}">
+                            <div id="getResultDiv" style="padding:20px 10px 20px 50px">
+                                <ul class="list-group scrollbar scrollbar-danger ">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/bootstrap/js/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/request/question.js"></script>
+
+</body>
+</html>
+
+
+

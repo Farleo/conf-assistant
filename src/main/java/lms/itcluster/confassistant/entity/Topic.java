@@ -1,9 +1,12 @@
 package lms.itcluster.confassistant.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "topic")
@@ -12,7 +15,7 @@ public class Topic {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "topic_id", unique = true, nullable = false)
-    private int topicId;
+    private long topicId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -26,33 +29,44 @@ public class Topic {
     @Column(name = "finish_time", nullable = false)
     private Time finishTime;
 
-    @Column(name = "info", nullable = false)
+    @Column(name = "info", nullable = false, length = 2000)
     private String info;
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @Column(name = "cover_photo")
+    private String coverPhoto;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stream_stream_id", nullable = false)
+    @JoinColumn(name = "stream_id", nullable = false)
     private Stream stream;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "speaker_speaker_id", nullable = false)
-    private Speaker speaker;
+    @JoinColumn(name = "speaker_id", nullable = false)
+    @JsonIgnore
+    private User speaker;
 
     @OneToMany(mappedBy = "topic")
-    @OrderBy("rating DESC")
     private List<Question> questionList;
 
     public Topic() {
         super();
     }
 
-    public int getTopicId() {
+    public String getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(String coverPhoto) {
+        this.coverPhoto = coverPhoto;
+    }
+
+    public long getTopicId() {
         return topicId;
     }
 
-    public void setTopicId(int topicId) {
+    public void setTopicId(long topicId) {
         this.topicId = topicId;
     }
 
@@ -112,19 +126,44 @@ public class Topic {
         this.stream = stream;
     }
 
-    public Speaker getSpeaker() {
-        return speaker;
-    }
-
-    public void setSpeaker(Speaker speaker) {
-        this.speaker = speaker;
-    }
-
     public List<Question> getQuestionList() {
         return questionList;
     }
 
     public void setQuestionList(List<Question> questionList) {
         this.questionList = questionList;
+    }
+
+    public User getSpeaker() {
+        return speaker;
+    }
+
+    public void setSpeaker(User speaker) {
+        this.speaker = speaker;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Topic topic = (Topic) o;
+        return topicId == topic.topicId &&
+                isActive == topic.isActive &&
+                Objects.equals(name, topic.name) &&
+                Objects.equals(info, topic.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(topicId, name, info, isActive);
+    }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "topicId=" + topicId +
+                ", name='" + name + '\'' +
+                ", isActive=" + isActive +
+                '}';
     }
 }

@@ -1,16 +1,21 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Guest;
-import lms.itcluster.confassistant.entity.Question;
+import lms.itcluster.confassistant.dto.SpeakerDTO;
+import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.form.ConferenceForm;
+import lms.itcluster.confassistant.model.CurrentUser;
+import lms.itcluster.confassistant.service.ConferenceService;
+import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PageController {
@@ -18,58 +23,36 @@ public class PageController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TopicService topicService;
+
+    @Autowired
+    private ConferenceService conferenceService;
+
     @RequestMapping(value = "/")
     public String getList(Model model) {
-        List<Conference> conferenceList = userService.getAllConferences();
-        model.addAttribute("conferences", conferenceList);
+        model.addAttribute("conferences", new ConferenceForm(conferenceService.getAllConferences()));
         return "welcome";
     }
 
-    @GetMapping("/home")
-    public String getHome (Model model) {
-        return "home";
+    @GetMapping("/conf/{id}")
+    public String getConference(@PathVariable("id") long id, Model model) {
+        model.addAttribute("conference", conferenceService.findById(id));
+        return "conference";
     }
 
-    @GetMapping("/hello")
-    public String getHello (Model model) {
-        return "hello";
+    @GetMapping("/topic/{id}")
+    public String getTopic(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        Topic currentTopic = topicService.findById(id);
+        model.addAttribute("currentTopic", currentTopic);
+        model.addAttribute("speaker", new SpeakerDTO(currentTopic.getSpeaker()));
+        if (currentUser == null) {
+            model.addAttribute("isPresentUser", false);
+        }
+        else {
+            model.addAttribute("isPresentUser", true);
+            model.addAttribute("user", currentUser);
+        }
+        return "topic";
     }
-
-    @GetMapping("/login")
-    public String getLogin (Model model) {
-        return "login";
-    }
-
-    @GetMapping("/login-guest")
-    public String getLoginGuest (Model model) {
-        return "login-guest";
-    }
-
-    @GetMapping("/registration-guest")
-    public String getRegistrationGuest (Model model) {
-        model.addAttribute("guest", new Guest());
-        return "registration-guest";
-    }
-
-
-    @GetMapping("/login-admin")
-    public String getLoginAdmin (Model model) {
-        return "login-admin";
-    }
-
-    @GetMapping("/login-failed")
-    public String getLoginFailed (Model model) {
-        return "login-guest";
-    }
-
-    @GetMapping("/ask-question")
-    public String getQuestion (Model model) {
-        return "ask-question";
-    }
-
-    @GetMapping("/create-moderator")
-    public String getModerator (Model model) {
-        return "create-moderator";
-    }
-
 }

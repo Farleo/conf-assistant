@@ -1,8 +1,11 @@
 package lms.itcluster.confassistant.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.*;
 
 @Entity
 @Table(name = "question")
@@ -11,31 +14,65 @@ public class Question {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "question_id", unique = true, nullable = false)
-    private int questionId;
+    private long questionId;
 
     @Column(name = "question", nullable = false, unique = true)
     private String question;
 
-    @Column(name = "rating", nullable = false)
-    private int rating;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "topic_topic_id", nullable = false)
+    @JoinColumn(name = "topic_id", nullable = false)
+    @JsonIgnore
     private Topic topic;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "guest_guest_id", nullable = false)
-    private Guest guest;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likesSet = new HashSet<>();
+
+    @Transient
+    private int rating;
+
+    public int getRating() {
+        rating = likesSet.size();
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Set<User> getLikesSet() {
+        return likesSet;
+    }
+
+    public void setLikesSet(Set<User> likesSet) {
+        this.likesSet = likesSet;
+    }
 
     public Question() {
         super();
     }
 
-    public int getQuestionId() {
+    public long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(long questionId) {
         this.questionId = questionId;
     }
 
@@ -47,14 +84,6 @@ public class Question {
         this.question = question;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public Topic getTopic() {
         return topic;
     }
@@ -63,11 +92,4 @@ public class Question {
         this.topic = topic;
     }
 
-    public Guest getGuest() {
-        return guest;
-    }
-
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-    }
 }
