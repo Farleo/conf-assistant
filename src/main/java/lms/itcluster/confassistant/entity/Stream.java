@@ -3,7 +3,8 @@ package lms.itcluster.confassistant.entity;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
-//+
+import java.util.Objects;
+
 @Entity
 @Table(name = "stream")
 public class Stream {
@@ -11,62 +12,72 @@ public class Stream {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "stream_id", unique = true, nullable = false)
-    private int streamId;
+    private long streamId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "location")
-    private String location;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conference_id", nullable = false)
     private Conference conference;
 
     @OneToMany(mappedBy = "stream")
-    private List<Presentations> presentationsList;
+    private List<Topic> topicList;
 
     public Stream() {
         super();
     }
 
-public int getStreamId() {
-    return streamId;
-}
+    public long getStreamId() {
+        return streamId;
+    }
 
-public void setStreamId(int streamId) {
-    this.streamId = streamId;
-}
+    public void setStreamId(long streamId) {
+        this.streamId = streamId;
+    }
 
-public String getName() {
-    return name;
-}
+    public String getName() {
+        return name;
+    }
 
-public void setName(String name) {
-    this.name = name;
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-public String getLocation() {
-    return location;
-}
+    public Conference getConference() {
+        return conference;
+    }
 
-public void setLocation(String location) {
-    this.location = location;
-}
+    public void setConference(Conference conference) {
+        this.conference = conference;
+    }
 
-public Conference getConference() {
-    return conference;
-}
+    public List<Topic> getTopicList() {
+        return topicList;
+    }
 
-public void setConference(Conference conference) {
-    this.conference = conference;
-}
+    public void setTopicList(List<Topic> topicList) {
+        this.topicList = topicList;
+    }
 
-public List<Presentations> getPresentationsList() {
-    return presentationsList;
-}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stream stream = (Stream) o;
+        return streamId == stream.streamId &&
+                Objects.equals(name, stream.name);
+    }
 
-public void setPresentationsList(List<Presentations> presentationsList) {
-    this.presentationsList = presentationsList;
-}
+    @Override
+    public int hashCode() {
+        return Objects.hash(streamId, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

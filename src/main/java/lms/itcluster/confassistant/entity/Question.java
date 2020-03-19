@@ -1,10 +1,11 @@
 package lms.itcluster.confassistant.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "question")
@@ -13,73 +14,82 @@ public class Question {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "question_id", unique = true, nullable = false)
-    private int questionId;
+    private long questionId;
 
     @Column(name = "question", nullable = false, unique = true)
     private String question;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id", nullable = false)
+    @JsonIgnore
+    private Topic topic;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "presentation_id", nullable = false)
-    private Presentations presentations;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @ManyToMany
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likesSet = new HashSet<>();
 
+    @Transient
+    private int rating;
 
-@ManyToMany(cascade = {
-        CascadeType.PERSIST,
-        CascadeType.MERGE
-})
-@JoinTable(name = "likes",
-        joinColumns = @JoinColumn(name = "question_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
-)
-private List<User> userLikes = new ArrayList<>();
-    
+    public int getRating() {
+        rating = likesSet.size();
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Set<User> getLikesSet() {
+        return likesSet;
+    }
+
+    public void setLikesSet(Set<User> likesSet) {
+        this.likesSet = likesSet;
+    }
 
     public Question() {
         super();
     }
 
-public int getQuestionId() {
-    return questionId;
-}
+    public long getQuestionId() {
+        return questionId;
+    }
 
-public void setQuestionId(int questionId) {
-    this.questionId = questionId;
-}
+    public void setQuestionId(long questionId) {
+        this.questionId = questionId;
+    }
 
-public String getQuestion() {
-    return question;
-}
+    public String getQuestion() {
+        return question;
+    }
 
-public void setQuestion(String question) {
-    this.question = question;
-}
+    public void setQuestion(String question) {
+        this.question = question;
+    }
 
-public Presentations getPresentations() {
-    return presentations;
-}
+    public Topic getTopic() {
+        return topic;
+    }
 
-public void setPresentations(Presentations presentations) {
-    this.presentations = presentations;
-}
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
 
-public User getOwner() {
-    return owner;
-}
-
-public void setOwner(User owner) {
-    this.owner = owner;
-}
-
-public List<User> getUserLikes() {
-    return userLikes;
-}
-
-public void setUserLikes(List<User> userLikes) {
-    this.userLikes = userLikes;
-}
 }

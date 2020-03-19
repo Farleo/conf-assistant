@@ -68,24 +68,38 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/bootstrap &ndash;&gt;
+
+        <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
         <dependency>
             <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>4.4.1</version>
+            <artifactId>font-awesome</artifactId>
+            <version>5.12.0</version>
         </dependency>
-        &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/jquery &ndash;&gt;
+
         <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>jquery</artifactId>
-            <version>3.4.1</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.28</version>
         </dependency>
-        &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/popper.js &ndash;&gt;
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>popper.js</artifactId>
-            <version>1.16.0</version>
-        </dependency>-->
+
+        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/bootstrap &ndash;&gt;
+                <dependency>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>bootstrap</artifactId>
+                    <version>4.4.1</version>
+                </dependency>
+                &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/jquery &ndash;&gt;
+                <dependency>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>jquery</artifactId>
+                    <version>3.4.1</version>
+                </dependency>
+                &lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/popper.js &ndash;&gt;
+                <dependency>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>popper.js</artifactId>
+                    <version>1.16.0</version>
+                </dependency>-->
 
 
     </dependencies>

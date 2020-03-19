@@ -1,56 +1,92 @@
 package lms.itcluster.confassistant.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
 public class Roles {
-@Id
-@GeneratedValue(strategy= GenerationType.IDENTITY)
-@Column(name = "role_id", unique = true, nullable = false)
-private long roleId;
 
-@Column(name = "name", nullable = false, unique = true)
-private String name;
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "roles_id", unique = true, nullable = false)
+    private long rolesId;
 
-@Column(name = "description", nullable = false)
-private String description;
+    @Column(name = "role", nullable = false, length = 15, unique = true)
+    private String role;
 
-@ManyToMany(mappedBy = "roles")
-private List<User> users = new ArrayList<>();
+    @Column(name = "description")
+    private String description;
 
-public long getRoleId() {
-	return roleId;
-}
+    @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
+    private Set<User> userSet;
 
-public void setRoleId(long roleId) {
-	this.roleId = roleId;
-}
+    public Roles(String role, String description, Set<User> userSet) {
+        this.role = role;
+        this.description = description;
+        this.userSet = userSet;
+    }
 
-public String getName() {
-	return name;
-}
+    public Roles() {
+    }
 
-public void setName(String name) {
-	this.name = name;
-}
+    public long getRolesId() {
+        return rolesId;
+    }
 
-public String getDescription() {
-	return description;
-}
+    public void setRolesId(long rolesId) {
+        this.rolesId = rolesId;
+    }
 
-public void setDescription(String description) {
-	this.description = description;
-}
+    public String getRole() {
+        return role;
+    }
 
-public List<User> getUsers() {
-	return users;
-}
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-public void setUsers(List<User> users) {
-	this.users = users;
-}
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<User> getUserSet() {
+        return userSet;
+    }
+
+    public void setUserSet(Set<User> userSet) {
+        this.userSet = userSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Roles roles = (Roles) o;
+        return rolesId == roles.rolesId &&
+                Objects.equals(role, roles.role) &&
+                Objects.equals(description, roles.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rolesId, role, description);
+    }
+
+    @Override
+    public String toString() {
+        return "Roles{" +
+                "rolesId=" + rolesId +
+                ", role='" + role + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

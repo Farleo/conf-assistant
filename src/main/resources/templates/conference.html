@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+    <title>Conference Assistant</title>
+
+    <style>
+
+        .tab {
+            /* элемент тени */
+            -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            -moz-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            box-shadow: 0 0 5px rgba(0,0,0,.2);
+            -o-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            /* элемент тени конец */
+        }
+
+        .tab:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            -moz-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            box-shadow: 0 0 25px rgba(0,0,0,.2);
+            -o-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            /* элемент тени если наведен курсор конец */
+        }
+        .logo:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 5px rgba(0,0,0,.1);
+            -moz-box-shadow: 0 0 5px rgba(0,0,0,.1);
+            box-shadow: 0 0 5px rgba(0,0,0,.1);
+            -o-box-shadow: 0 0 5px rgba(0,0,0,.1);
+            /* элемент тени если наведен курсор конец */
+        }
+        a:hover {
+            text-decoration:none;
+        }
+        .anyClass {
+            height:150px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid" th:object="${conference}">
+    <div class="row justify-content-center border-bottom ">
+        <nav class="navbar navbar-light col-7 " >
+            <a href="/" class="logo navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg"  alt="logo"></a>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)" type="submit">Search</button>
+            </form>
+        </nav>
+    </div>
+    <div class="row justify-content-center border-0" style="margin-top: 25px">
+        <img th:src="*{coverPhoto}" alt="coverPhoto" class="col-7 border">
+    </div>
+    <div class="row justify-content-center">
+        <div class="card border-0 col-7" >
+            <div class="card border-0 text-center">
+                <h1 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.getName()}"></h1>
+                <h6 id="name" class="form-text text-muted" th:text="${conference.getVenue() + ', since ' + conference.getBeginDate() + ' to ' + conference.getFinishDate()}"></h6>
+            </div>
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h1 style="font-family: Calibri,serif" class="text-muted">About Conference</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <span th:text="${conference.getInfo()}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="card border-0 col-7">
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h1 style="font-family: Calibri,serif" class="text-muted">Topic's list</h1>
+                    </div>
+                </div>
+            </div>
+            <div th:each="stream : ${conference.getStreamList()}">
+                <div class="card border-0" style="margin-top: 20px">
+                    <h6 aria-describedby="name" th:text="${stream.getName()}"></h6>
+                </div>
+                <div class="row " style="padding-top: 0em">
+                    <div  class="card col-4 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}" style="margin-top: 20px">
+                        <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
+                            <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                            <div class="card-body border-0">
+                                <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="card border-0 col-7" >
+            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                <div class="card border-0">
+                    <div class="card border-0">
+                        <h1 style="font-family: Calibri,serif" class="text-muted">Venue</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <span th:text="${conference.getVenue()}"></span>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+<script src="/bootstrap/js/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
