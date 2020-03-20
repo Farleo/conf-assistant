@@ -35,7 +35,7 @@ public class LoginController {
         User user = userService.findByEmail(userForm.getEmail());
                 if (user!=null && user.getRoles().contains(rolesRepository.findByRole(Constant.GUEST))) {
             SecurityUtil.authenticate(user);
-            return "redirect:/" + userForm.getReferer().substring(22);
+            return "redirect:/";
         }
         model.addAttribute("loginForm", userForm);
         return "login/password";
