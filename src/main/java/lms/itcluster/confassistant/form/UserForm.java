@@ -1,11 +1,13 @@
 package lms.itcluster.confassistant.form;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public class UserForm implements Serializable {
     private String email;
     private String password;
     private String referer;
+    private Set<String> roles;
 
     public UserForm(String email, String password) {
         this.email = email;
@@ -14,6 +16,13 @@ public class UserForm implements Serializable {
 
     public UserForm() {
     }
+public Set<String> getRoles() {
+    return roles;
+}
+
+public void setRoles(Set<String> roles) {
+    this.roles = roles;
+}
 
     public String getReferer() {
         return referer;

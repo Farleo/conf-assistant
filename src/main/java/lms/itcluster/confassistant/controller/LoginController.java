@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.form.UserForm;
+import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.service.UserService;
@@ -45,5 +46,10 @@ public class LoginController {
         User user = userService.createNewUser(userForm);
         SecurityUtil.authenticate(user);
         return "redirect:/";
+    }
+
+    @GetMapping("/login-failed")
+    public String getLoginFailed () {
+        return "failed/failed";
     }
 }
