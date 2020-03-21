@@ -47,13 +47,13 @@ function show() {
             $.each(result, function(i, question){
                 var k = i + 1;
                 var variable =
-                    "<li>"+ k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' class='btn-secondary float-right rounded' style='margin-right: 25px'>" + "<i class=\"fa fa-thumbs-up\" style='margin-right: 5px' aria-hidden=\"true\"></i>" + question.rating + "</button>" + "</li>" + "<br>";
+                    "<li>"+ k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' type='button' class='btn btn-link float-right' style='margin-right: 25px'>" + "<i class=\"fa fa-heart text-secondary\" style='margin-right: 5px' aria-hidden=\"true\">" + ' ' + question.rating + "</i></button>" + "</li>" + "<br>";
 
                 $.each(question.likesSet, function(j, user){
 
                         if (user.email === $("#currentGuest").val()) {
                             variable =
-                                "<li>" + k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' class='btn-danger float-right rounded' style='margin-right: 25px'>" + "<i class=\"fa fa-thumbs-up\" style='margin-right: 5px' aria-hidden=\"true\"></i>" + question.rating + "</button>" + "</li>" + "<br>";
+                                "<li>" + k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' class='btn btn-link float-right' style='margin-right: 25px'>" + "<i class=\"fa fa-heart text-danger\" style='margin-right: 5px' aria-hidden=\"true\">" + ' ' + question.rating + "</i></button>" + "</li>" + "<br>";
                         }
                     });
 

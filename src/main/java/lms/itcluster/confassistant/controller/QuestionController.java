@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-public class UserController {
+public class QuestionController {
 
     @Autowired
     private TopicService topicService;

@@ -16,7 +16,7 @@ public class Question {
     @Column(name = "question_id", unique = true, nullable = false)
     private long questionId;
 
-    @Column(name = "question", nullable = false, unique = true)
+    @Column(name = "question", nullable = false)
     private String question;
 
     @ManyToOne(fetch = FetchType.LAZY)
