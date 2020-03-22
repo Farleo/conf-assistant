@@ -14,12 +14,12 @@
 <body>
 <div style="text-align: center;">
 <div class="col-md-8 order-md-1">
-    <h4 class="mb-3">Edit User </h4>
-    <form th:action="@{/admin/users/edit/}" th:object="${user}" method="post" class="needs-validation" novalidate="" >
+    <h4 class="mb-3">Add User</h4>
+    <form th:action="@{/admin/users/new}" method="post" class="needs-validation" novalidate="" >
          <div class="mb-3">
-            <input id="userId" name="userId" th:field="*{userId}" class="form-control" type="hidden"/>
+            <input id="userId" name="userId" class="form-control" type="hidden"/>
             <label for="email">Email * <span class="text-muted">(Required and must be unique)</span></label>
-            <input type="email" name="email" th:field="*{email}" class="form-control" id="email">
+            <input type="email" name="email" class="form-control" id="email">
             <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
             </div>
@@ -27,7 +27,7 @@
 
         <div class="mb-3">
             <label for="password">Password</label>
-            <input type="password" name="password" th:value="*{password}" class="form-control" id="password">
+            <input type="password" name="password" class="form-control" id="password">
             <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
             </div>
@@ -36,14 +36,14 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="firstName">First name </label>
-                <input type="text" name="firstName" th:field="*{firstName}" class="form-control" id="firstName" placeholder="" value="" required="">
+                <input type="text" name="firstName" class="form-control" id="firstName" placeholder="" value="" required="">
                 <div class="invalid-feedback">
                     Valid first name is required.
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="lastName">Last name</label>
-                <input type="text" name="lastName" th:field="*{lastName}" class="form-control" id="lastName" placeholder="" value="" required="">
+                <input type="text" name="lastName" class="form-control" id="lastName" placeholder="" value="" required="">
                 <div class="invalid-feedback">
                     Valid last name is required.
                 </div>
@@ -51,13 +51,13 @@
         </div>
         <div style="text-align: left">
         <div class="mb-3">Roles<span class="text-muted"></span></div>
-        <div style="font-style: italic" th:each="currentRole : ${availableRoles}">
-            <input type="checkbox" id="roles" name="roles" th:field="*{roles}" th:value="${currentRole.rolesId}" />
-            <i><label th:text="${currentRole.role}"/></i>
-        </div>
+          <div th:each="currentRole : ${availableRoles}">
+            <input type="checkbox" id="roles" name="roles" th:value="${currentRole.rolesId}" />
+           <i><label th:text="${currentRole.role}"/></i>
+         </div>
         </div>
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Edit</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Add</button>
 
     </form>
 </div>

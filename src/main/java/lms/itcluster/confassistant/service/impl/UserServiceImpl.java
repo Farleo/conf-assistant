@@ -63,12 +63,21 @@ public List<User> getAllUsers() {
 @Override
 public void update(User user) {
     Optional<User> dbUser = userRepository.findById(user.getUserId());
-    if (dbUser.isPresent() && user.getRoles()!=null){
+    if (dbUser.isPresent()){
         User realUser = dbUser.get();
         BeanUtils.copyProperties(user, realUser, "userId");
         userRepository.save(realUser);
     }
-    
+
+}
+
+@Override
+public User addNewUserByAdmin(User user) throws Exception{
+    User existingUserFromDb = userRepository.findByEmail(user.getEmail());
+    if(existingUserFromDb!=null){
+        throw new Exception("User with this email is already registered: " + user.getEmail());
+    }
+    return userRepository.save(user);
 }
 
 @Override

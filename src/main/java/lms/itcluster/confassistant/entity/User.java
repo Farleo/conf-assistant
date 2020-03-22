@@ -58,6 +58,15 @@ private Set<Roles> roles;
 public User() {
 }
 
+public User(String email, String password, String firstName, String lastName, Set<Roles> roles) {
+    this.email=email;
+    this.password=password;
+    this.firstName=firstName;
+    this.lastName=lastName;
+    this.roles=roles;
+}
+
+
 public long getUserId() {
     return userId;
 }

@@ -18,4 +18,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     void update(User user);
+
+    User addNewUserByAdmin(User user) throws Exception;
 }

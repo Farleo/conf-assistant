@@ -12,32 +12,34 @@
     <title>Admin page - Manage Users</title>
 </head>
 <body>
+<div style="text-align: center;">
 <div class="col-md-8 order-md-1">
     <h4 class="mb-3">Admin page - List Users</h4>
-    <table class="table table-responsive">
-        <th>
+    <form th:action="@{/admin/users/new}" method="get">
+        <input type="submit" value="Add new User" class="btn btn-success"/>
+    </form>
+    <br/>
+    <table class="table table-striped">
 
-        <td>Email</td>
-        <td>Delete</td>
-        <td>Edit</td>
-        </th>
+        <td><b>Id</b></td>
+        <td><b>Email</b></td>
+        <td><b>Delete</b></td>
+        <td><b>Edit</b></td>
+
 
         <tr th:each="user : ${users.getUserList()}">
-            <td th:text="${user.getUserId()}"/>
+            <td th:text="${user.getUserId()}"></td>
             <td th:text="${user.getEmail()}"/>
                   <td >
                       <form th:action="@{'/admin/users/delete/{id}'(id=${user.getUserId()})}" th:method="delete">
                           <input type="submit" value="Delete" class="btn btn-danger"/>
                       </form>
-
                   </td>
             <td >
                 <form th:action="@{'/admin/users/edit/{id}'(id=${user.getUserId()})}" th:method="patch">
                     <input type="submit" value="Edit" class="btn btn-primary"/>
                 </form>
-
             </td>
-
         </tr>
     </table>
 
@@ -50,6 +52,6 @@
 <script src="/bootstrap/js/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
-
+    </div>
 </body>
 </html>
