@@ -1,5 +1,7 @@
 $(document).ready(function() {
-    $('#next').click(function () {
+    $("#LoginForm").submit(function(event) {
+        // Prevent the form from submitting via the browser.
+        event.preventDefault();
         sendCredential();
     });
 });
@@ -37,10 +39,6 @@ function sendCredential(){
                 var badCredential = "<div class=\"alert alert-danger\" role=\"alert\">Bad credential!</div>";
                 $('#badCredential').append(badCredential);
             }
-            $('#next').click(function (event) {
-                event.preventDefault();
-                sendCredential();
-            });
         }
     });
 }

@@ -6,7 +6,9 @@ import java.util.Set;
 public class UserForm implements Serializable {
     private String email;
     private String password;
-    private String referer;
+    private String firstName;
+    private String lastName;
+    private String info;
     private Set<String> roles;
 
     public UserForm(String email, String password) {
@@ -16,20 +18,13 @@ public class UserForm implements Serializable {
 
     public UserForm() {
     }
-public Set<String> getRoles() {
-    return roles;
-}
 
-public void setRoles(Set<String> roles) {
-    this.roles = roles;
-}
-
-    public String getReferer() {
-        return referer;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setReferer(String referer) {
-        this.referer = referer;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public String getEmail() {
@@ -41,10 +36,37 @@ public void setRoles(Set<String> roles) {
     }
 
     public String getPassword() {
+        if (password == null) {
+            return "";
+        }
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    $("#QuestionForm").submit(function(event) {
+
+    $("#QuestionForm").submit(function (event) {
         // Prevent the form from submitting via the browser.
         event.preventDefault();
         askQuestion();
@@ -9,8 +10,10 @@ $(document).ready(function() {
         show();
     });
 
-    show();
-/*        setInterval('show()',1000);*/
+    var isPresent = $("#isPresentUser").val();
+    if (isPresent === 'true') {
+        show();
+    }
 });
 
 function askQuestion(){

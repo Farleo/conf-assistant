@@ -14,62 +14,60 @@ import java.util.Set;
 @Controller
 public class AdminController {
 
-@Autowired
-private RoleService roleService;
+	@Autowired
+	private RoleService roleService;
 
-@Autowired
-private UserService userService;
+	@Autowired
+	private UserService userService;
 
 
 
-@RequestMapping(value = "admin/users")
-public String adminGetAdd (Model model) {
-	model.addAttribute("users", new ManageUsersForm(userService.getAllUsers()));
-	return "admin/manage-users";
-}
-
-@GetMapping(value = "/admin/users/new")
-private String addNewUserByAdmin (Model model){
-	model.addAttribute("availableRoles", roleService.getAll());
-	
-	return "admin/add-user";
-}
-
-@PostMapping(value = "/admin/users/new")
-private String addNewUserByAdminPost (@RequestParam String email,
-                                      @RequestParam String password,
-                                      @RequestParam String firstName,
-                                      @RequestParam String lastName,
-                                      @RequestParam(value = "roles", required = false) Set<Roles> roles, Model model){
-	User user = new User(email,password,firstName,lastName,roles);
-	try {
-		userService.addNewUserByAdmin(user);
-	} catch (Exception e) {
-		System.out.println(e.getMessage());
-		e.printStackTrace();
+	@RequestMapping(value = "admin/users")
+	public String adminGetAdd (Model model) {
+		model.addAttribute("users", new ManageUsersForm(userService.getAllUsers()));
+		return "admin/manage-users";
 	}
-	return "redirect:/admin/users";
-}
 
-@RequestMapping(value = "admin/users/delete/{id}")
-private String deleteUser(@PathVariable long id){
-	userService.deleteUser(id);
-	return "redirect:/admin/users";
-}
+	@GetMapping(value = "/admin/users/new")
+	private String addNewUserByAdmin (Model model){
+		model.addAttribute("availableRoles", roleService.getAll());
+		return "admin/add-user";
+	}
+
+	@PostMapping(value = "/admin/users/new")
+	private String addNewUserByAdminPost (@RequestParam String email,
+										  @RequestParam String password,
+										  @RequestParam String firstName,
+										  @RequestParam String lastName,
+										  @RequestParam(value = "roles", required = false) Set<Roles> roles, Model model) {
+		User user = new User(email, password, firstName, lastName, roles);
+		try {
+			userService.addNewUserByAdmin(user);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "redirect:/admin/users";
+	}
+
+	@RequestMapping(value = "admin/users/delete/{id}")
+	private String deleteUser(@PathVariable long id) {
+		userService.deleteUser(id);
+		return "redirect:/admin/users";
+	}
 
 
-@RequestMapping("admin/users/edit/{id}")
-public String adminEditUser (@PathVariable("id") long id, Model model) {
-	model.addAttribute("user", userService.findById(id));
-	model.addAttribute("availableRoles", roleService.getAll());
-	return "admin/edit-user";
-}
+	@RequestMapping("admin/users/edit/{id}")
+	public String adminEditUser (@PathVariable("id") long id, Model model) {
+		model.addAttribute("user", userService.findById(id));
+		model.addAttribute("availableRoles", roleService.getAll());
+		return "admin/edit-user";
+	}
 
-@PostMapping(value="admin/users/edit")
-public String editSave(User user){
-	userService.update(user);
-	return "redirect:/admin/users";
+	@PostMapping(value="admin/users/edit")
+	public String editSave(User user) {
+		userService.update(user);
+		return "redirect:/admin/users";
 	
-}
-
+	}
 }

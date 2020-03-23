@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+    <title>Hello, world!</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <form id="CompleteSignUp" style="margin-top: 15px" th:object="${userForm}" method="post" action="/complete-sign-up-guest">
+                <input type="hidden" name="email" class="form-control" th:attr="value=*{email}" >
+                <div class="form-group text-center">
+                    <h4>Complete sign up</h4>
+                </div>
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label for="inputFirstName">First Name</label>
+                            <input type="text" name="firstName" class="form-control" id="inputFirstName">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="inputLastName">Last Name</label>
+                            <input type="text" name="lastName" class="form-control" id="inputLastName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputInfo">Info</label>
+                        <textarea aria-describedby="infoInput" type="text" name="info" class="form-control" id="inputInfo" placeholder="Write about yourself"></textarea>
+                        <small id="infoInput" class="form-text text-muted text-center">Tell us about yourself, where you work, what your position is, what you are interested in, why you decided to attend this conference ...</small>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <a th:href="${'/'}" id="complete" style="margin-top: 15px; " type="submit" class="btn btn-secondary text-white col">Skip</a>
+                        </div>
+                        <div class="form-group col-6">
+                            <button id="skip" style="margin-top: 15px; background-color: rgba(255,103,55,0.94)" type="submit" class="btn text-white float-right col">Complete</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/bootstrap/js/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

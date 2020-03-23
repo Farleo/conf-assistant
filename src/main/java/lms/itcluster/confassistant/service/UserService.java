@@ -11,7 +11,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User createNewUser(UserForm userForm);
+    User createNewUserAsGuest(UserForm userForm);
     
     User deleteUser(long id);
 
@@ -20,4 +20,6 @@ public interface UserService {
     void update(User user);
 
     User addNewUserByAdmin(User user) throws Exception;
+
+    void completeGuestRegistration (UserForm userForm);
 }

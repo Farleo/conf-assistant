@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.form.UserForm;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -14,6 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
@@ -33,23 +37,38 @@ public class LoginController {
     }
 
     @GetMapping("/sign-up-guest")
-    public String getLoginGuest (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+    public String getLoginGuest (@AuthenticationPrincipal CurrentUser currentUser, HttpSession session) {
         if (currentUser != null) {
             return "redirect:/";
         }
-        model.addAttribute("userForm", new UserForm());
         return "login/sign-up-guest";
     }
 
     @PostMapping("/sign-up-guest")
-    public String saveGuest (@ModelAttribute UserForm userForm) {
-        User user = userService.createNewUser(userForm);
+    public String saveGuest (UserForm userForm, HttpSession session, Model model) {
+        User user;
+        try {
+            user = userService.createNewUserAsGuest(userForm);
+        } catch (UserAlreadyExistException e) {
+            session.setAttribute("userAlreadyExist", true);
+            return "redirect:/sign-up-failed";
+        }
         SecurityUtil.authenticate(user);
+        model.addAttribute("userForm", userForm);
+        return "login/complete-sign-up-guest";
+    }
+
+    @PostMapping("/complete-sign-up-guest")
+    public String saveCompleteSignUp (UserForm userForm) {
+        userService.completeGuestRegistration(userForm);
         return "redirect:/";
     }
 
-    @GetMapping("/login-failed")
-    public String getLoginFailed () {
-        return "failed/failed";
+    @GetMapping("/sign-up-failed")
+    public String getLoginFailed (HttpSession session) {
+        if (session.getAttribute("userAlreadyExist") == null) {
+            return "redirect:/sign-up-guest";
+        }
+        return "login/sign-up-guest";
     }
 }
