@@ -1,8 +1,8 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
-import lms.itcluster.confassistant.form.UserForm;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.service.UserService;
@@ -12,7 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,9 +23,6 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private RolesRepository rolesRepository;
 
     @GetMapping("/login")
     public String getLoginHands (@AuthenticationPrincipal CurrentUser currentUser) {
@@ -42,22 +41,30 @@ public class LoginController {
     }
 
     @PostMapping("/sign-up-guest")
-    public String saveGuest (UserForm userForm, HttpSession session, Model model) {
-        User user;
+    public String saveGuest (UserDTO userDto, HttpSession session) {
         try {
-            user = userService.createNewUserAsGuest(userForm);
+            User user = userService.createNewUserAsGuest(userDto);
+            SecurityUtil.authenticate(user);
+            return "redirect:/complete-sign-up-guest";
         } catch (UserAlreadyExistException e) {
-            session.setAttribute("userAlreadyExist", true);
+            session.setAttribute("isUserPresent", true);
             return "redirect:/sign-up-failed";
         }
-        SecurityUtil.authenticate(user);
-        model.addAttribute("userForm", userForm);
+    }
+
+    @GetMapping("/complete-sign-up-guest")
+    public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        UserDTO userDto = userService.getUserDTOById(currentUser.getId());
+        if (userDto != null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", userDto);
         return "login/complete-sign-up-guest";
     }
 
     @PostMapping("/complete-sign-up-guest")
-    public String saveCompleteSignUp (UserForm userForm) {
-        userService.completeGuestRegistration(userForm);
+    public String saveCompleteSignUp (UserDTO userDto) {
+        userService.completeGuestRegistration(userDto);
         return "redirect:/";
     }
 

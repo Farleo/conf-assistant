@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.service;
 
+import lms.itcluster.confassistant.dto.QuestionDTO;
+import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 
@@ -9,7 +11,7 @@ public interface TopicService {
 
     Topic findByName (String id);
 
-    Topic findById (long id);
+    Topic findById (Long id);
 
-    List<Question> getSortedQuestionList(Topic topic);
+    TopicDTO getTopicDTOBuId(Long id);
 }

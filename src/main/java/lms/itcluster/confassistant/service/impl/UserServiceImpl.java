@@ -1,15 +1,18 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.entity.Roles;
+import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
-import lms.itcluster.confassistant.form.UserForm;
+import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +29,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private RolesRepository rolesRepository;
 
+    @Autowired
+    @Qualifier("userLoginMapper")
+    private Mapper<User, UserDTO> mapper;
+
     @Override
     public User findById(long id) {
         return userRepository.findById(id).get();
@@ -37,17 +44,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createNewUserAsGuest(UserForm userForm) {
+    public User createNewUserAsGuest(UserDTO userForm) {
         if (userRepository.findByEmail(userForm.getEmail()) != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userForm.getEmail());
         }
-        User user = new User();
-        user.setEmail(userForm.getEmail());
-        user.setPassword(userForm.getPassword());
-        Roles guestRole = rolesRepository.findByRole("User");
-        user.setRoles(Collections.singleton(guestRole));
-        userRepository.save(user);
-        return user;
+        User user = mapper.toEntity(userForm);
+        user.setRoles(Collections.singleton(rolesRepository.findByRole("User")));
+        return userRepository.save(user);
     }
 
     @Override
@@ -84,12 +87,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 }
 
     @Override
-    public void completeGuestRegistration(UserForm userForm) {
-        User user = userRepository.findByEmail(userForm.getEmail());
-        user.setFirstName(userForm.getFirstName());
-        user.setLastName(userForm.getLastName());
-        user.setInfo(userForm.getInfo());
-        userRepository.save(user);
+    public void completeGuestRegistration(UserDTO userForm) {
+        User dbUser = userRepository.findById(userForm.getUserId()).get();
+        User user = mapper.toEntity(userForm);
+        BeanUtils.copyProperties(user, dbUser, "userId", "password", "email", "roles");
+        userRepository.save(dbUser);
     }
 
     @Override
@@ -100,5 +102,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             throw new UsernameNotFoundException("Profile not found by email " + username);
         }
+    }
+
+    @Override
+    public UserDTO getUserDTOById(long id) {
+        return mapper.toDto(userRepository.findById(id).orElse(null));
     }
 }

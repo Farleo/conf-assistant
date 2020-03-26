@@ -9,12 +9,7 @@ public class SpeakerDTO {
     private String info;
     private String email;
 
-    public SpeakerDTO(User user) {
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.photo = user.getPhoto();
-        this.info = user.getInfo();
-        this.email = user.getEmail();
+    public SpeakerDTO() {
     }
 
     public String getFirstName() {

@@ -1,7 +1,7 @@
 package lms.itcluster.confassistant.service;
 
+import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.form.UserForm;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User createNewUserAsGuest(UserForm userForm);
+    User createNewUserAsGuest(UserDTO userForm);
     
     User deleteUser(long id);
 
@@ -21,5 +21,7 @@ public interface UserService {
 
     User addNewUserByAdmin(User user);
 
-    void completeGuestRegistration (UserForm userForm);
+    void completeGuestRegistration (UserDTO userForm);
+
+    UserDTO getUserDTOById(long id);
 }

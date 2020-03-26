@@ -16,8 +16,8 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-8">
-            <form id="CompleteSignUp" style="margin-top: 15px" th:object="${userForm}" method="post" action="/complete-sign-up-guest">
-                <input type="hidden" name="email" class="form-control" th:attr="value=*{email}" >
+            <form id="CompleteSignUp" style="margin-top: 15px" th:object="${user}" method="post" action="/complete-sign-up-guest">
+                <input hidden="hidden" name="userId" th:attr="value=*{userId}">
                 <div class="form-group text-center">
                     <h4>Complete sign up</h4>
                 </div>

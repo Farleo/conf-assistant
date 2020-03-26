@@ -7,21 +7,21 @@ import java.io.Serializable;
 import java.util.List;
 
 public class ManageUsersForm implements Serializable {
-private List<User> userList;
+    private List<User> userList;
 
-public ManageUsersForm (List<User> userList) {
-	super();
-	this.userList = userList;
-}
+    public ManageUsersForm(List<User> userList) {
+        super();
+        this.userList = userList;
+    }
 
-public ManageUsersForm () {
-}
+    public ManageUsersForm() {
+    }
 
-public List<User> getUserList() {
-	return userList;
-}
+    public List<User> getUserList() {
+        return userList;
+    }
 
-public void setUserList(List<User> userList) {
-	this.userList = userList;
-}
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
 }
