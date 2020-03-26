@@ -1,10 +1,14 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.SpeakerDTO;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.form.ConferenceForm;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
+import lms.itcluster.confassistant.service.ParticipantsService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class PageController {
@@ -28,6 +32,9 @@ public class PageController {
 
     @Autowired
     private ConferenceService conferenceService;
+    
+    @Autowired
+    private ParticipantsService participantsService;
 
     @RequestMapping(value = "/")
     public String getList(Model model) {
@@ -50,9 +57,25 @@ public class PageController {
             model.addAttribute("isPresentUser", false);
         }
         else {
-            model.addAttribute("isPresentUser", true);
+            Conference currentConference = currentTopic.getStream().getConference();
+            List<Participants> confUserList = currentConference.getParticipants();
+            if(confUserList.stream().anyMatch(u-> u.getParticipantsKey()
+                                                          .getUser().getUserId()==currentUser.getId())){
+                model.addAttribute("isPresentUser", true);
+                
+            }
+            
             model.addAttribute("user", currentUser);
         }
         return "topic";
+    }
+
+    @GetMapping("/topic/join/{id}")
+    public String joinConference(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+       Topic topic = topicService.findById(id);
+       Conference conference = topic.getStream().getConference();
+       User user = userService.findById(currentUser.getId());
+       participantsService.addParticipant(user,conference);
+       return "redirect:/topic/{id}";
     }
 }

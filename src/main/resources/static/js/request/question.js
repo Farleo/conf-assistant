@@ -10,10 +10,9 @@ $(document).ready(function() {
         show();
     });
 
-    var isPresent = $("#isPresentUser").val();
-    if (isPresent === 'true') {
-        show();
-    }
+    setInterval('show()', 10000);
+    show();
+
 });
 
 function askQuestion(){
@@ -41,7 +40,7 @@ function askQuestion(){
 }
 
 function show() {
-    $.ajax({
+     $.ajax({
         type : "GET",
         url : "http://localhost:8080/get-all-questions/" + $("#topicId").val(),
         cache: false,

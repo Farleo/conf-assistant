@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = new User();
         user.setEmail(userForm.getEmail());
         user.setPassword(userForm.getPassword());
-        Roles guestRole = rolesRepository.findByRole("Guest");
+        Roles guestRole = rolesRepository.findByRole("User");
         user.setRoles(Collections.singleton(guestRole));
         userRepository.save(user);
         return user;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void update(User user) {
+    public void updateUser(User user) {
         Optional<User> dbUser = userRepository.findById(user.getUserId());
         if (dbUser.isPresent()){
             User realUser = dbUser.get();
@@ -72,13 +72,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User addNewUserByAdmin(User user) throws Exception{
-        User existingUserFromDb = userRepository.findByEmail(user.getEmail());
-        if(existingUserFromDb!=null){
-            throw new Exception("User with this email is already registered: " + user.getEmail());
-        }
-        return userRepository.save(user);
+    public User addNewUserByAdmin(User user){
+    User existingUserFromDb = userRepository.findByEmail(user.getEmail());
+    if(existingUserFromDb!=null){
+        throw new UserAlreadyExistException("User with this email is already exist: " + user.getEmail());
     }
+    else if(user.getEmail()==""){
+        throw new UserAlreadyExistException("User email is empty");
+    }
+    return userRepository.save(user);
+}
 
     @Override
     public void completeGuestRegistration(UserForm userForm) {

@@ -89,35 +89,44 @@
                 </div>
             </div>
 
-            <div class="card border-0 col-12" style="margin-top: 25px">
-                <div th:switch="${isPresentUser}">
-                    <input id="isPresentUser" type="hidden" th:attr="value=${isPresentUser}"/>
-                    <div th:case="false">
-                        <div id="QuestionBlock" class="card border-0">
-                            <p>In order to be able to ask your speaker a question or vote, please register
-                                <a th:href="${'/login'}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Sign-in</a>
-                            </p>
-                        </div>
+
+            <div th:if="${isPresentUser}">
+                <div th:text=" 'Welcome, ' + ${user.getUsername()}"></div>
+                <div class="card border-0 col-12" style="margin-top: 25px">
+                    <form id="QuestionForm" class="form-inline col-12" style="margin-top: 20px">
+                        <input style="margin-right: 10px"  id="question" class="form-control col-8" placeholder="ask question">
+                        <button style="margin-right: 75px" class="btn btn-primary my-2 my-sm-0 col-1" type="submit">Ask</button>
+                        <button id="refresh" type="button" class="btn btn-danger col-2 text-white">Refresh list</button>
+                    </form>
+                    <input hidden="hidden" id="topicId" th:attr="value=${currentTopic.getTopicId()}">
+                    <input hidden="hidden" id="currentGuest" th:attr="value=${user.getUsername()}">
+                    <div id="getResultDiv" style="padding:20px 10px 20px 50px">
+                        <ul class="list-group scrollbar scrollbar-danger ">
+                        </ul>
                     </div>
-                    <div th:case="true">
-                        <form id="QuestionForm" class="form-inline col-12" style="margin-top: 20px">
-                            <input style="margin-right: 10px"  id="question" class="form-control col-8" placeholder="ask question">
-                            <button style="margin-right: 75px" class="btn btn-primary my-2 my-sm-0 col-1" type="submit">Ask</button>
-                            <button id="refresh" type="button" class="btn btn-danger col-2 text-white">Refresh list</button>
-                        </form>
-                        <input hidden="hidden" id="topicId" th:attr="value=${currentTopic.getTopicId()}">
-                        <input hidden="hidden" id="currentGuest" th:attr="value=${user.getUsername()}">
-                        <div id="getResultDiv" style="padding:20px 10px 20px 50px">
-                            <ul class="list-group scrollbar scrollbar-danger ">
-                            </ul>
-                        </div>
+                </div>
+            </div>
+            <!-- ELSE -->
+            <div th:unless="${isPresentUser}">
+                <div th:if="${user==null}">
+                    <div>Hi, Guest</div>
+                    <div id="QuestionBlock2" class="card border-0">
+                        <p>In order to be able to ask your speaker a question or vote, please register
+                            <a th:href="${'/login'}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Sign-in</a>
+                        </p>
                     </div>
-                </input>
+                </div>
+                <div th:if="${user!=null}">
+                    <div th:text=" 'Welcome, ' + ${user.getUsername()} "></div>
+                    <div id="QuestionBlock" class="card border-0">
+                        <p>In order to be able to ask your speaker a question or vote, please join to conference
+                            <a th:href="${'/topic/join/' + currentTopic.getTopicId()}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Join</a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
 </div>
 
 <!-- Optional JavaScript -->

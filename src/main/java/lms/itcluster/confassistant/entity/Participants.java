@@ -23,7 +23,15 @@ public class Participants {
 
     public Participants() {
     }
-
+    
+    public Participants(User user, Conference conference, ParticipantType participantType){
+        ParticipantsKey pk= new ParticipantsKey();
+        pk.setUser(user);
+        pk.setConference(conference);
+        pk.setParticipantType(participantType);
+        this.setParticipantsKey(pk);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.controller;
 import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.form.*;
 import lms.itcluster.confassistant.service.RoleService;
 import lms.itcluster.confassistant.service.UserService;
@@ -36,16 +37,15 @@ public class AdminController {
 
 	@PostMapping(value = "/admin/users/new")
 	private String addNewUserByAdminPost (@RequestParam String email,
-										  @RequestParam String password,
-										  @RequestParam String firstName,
-										  @RequestParam String lastName,
-										  @RequestParam(value = "roles", required = false) Set<Roles> roles, Model model) {
+	                                      @RequestParam String password,
+	                                      @RequestParam String firstName,
+	                                      @RequestParam String lastName,
+	                                      @RequestParam(value = "roles", required = false) Set<Roles> roles, Model model) {
 		User user = new User(email, password, firstName, lastName, roles);
 		try {
 			userService.addNewUserByAdmin(user);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+		} catch (UserAlreadyExistException e) {
+			return "redirect:/admin/users/new";
 		}
 		return "redirect:/admin/users";
 	}
@@ -66,7 +66,7 @@ public class AdminController {
 
 	@PostMapping(value="admin/users/edit")
 	public String editSave(User user) {
-		userService.update(user);
+		userService.updateUser(user);
 		return "redirect:/admin/users";
 	
 	}

@@ -17,9 +17,9 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    void update(User user);
+    void updateUser(User user);
 
-    User addNewUserByAdmin(User user) throws Exception;
+    User addNewUserByAdmin(User user);
 
     void completeGuestRegistration (UserForm userForm);
 }
