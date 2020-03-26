@@ -1,27 +1,29 @@
 package lms.itcluster.confassistant.service;
 
+import lms.itcluster.confassistant.dto.RoleDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
-    User findById(long id);
+    UserDTO findById(long id);
 
     User findByEmail(String email);
 
     User createNewUserAsGuest(UserDTO userForm);
     
-    User deleteUser(long id);
+    void deleteUser(long id);
 
-    List<User> getAllUsers();
+    List<UserDTO> getAllUsers();
 
-    void updateUser(User user);
-
-    User addNewUserByAdmin(User user);
+    void updateUser(UserDTO userDTO);
 
     void completeGuestRegistration (UserDTO userForm);
 
     UserDTO getUserDTOById(long id);
+
+    void addNewUserByAdmin(String email, String password, String firstName, String lastName, Set<String> roles);
 }

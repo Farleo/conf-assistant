@@ -46,8 +46,8 @@
         <div style="text-align: left">
         <div class="mb-3">Roles<span class="text-muted"></span></div>
           <div th:each="currentRole : ${availableRoles}">
-            <input type="checkbox" id="roles" name="roles" th:value="${currentRole.rolesId}" />
-           <i><label th:text="${currentRole.role}"/></i>
+            <input type="checkbox" id="roles" name="roles" th:value="${currentRole}" />
+           <i><label th:text="${currentRole}"/></i>
          </div>
         </div>
         <hr class="mb-4">

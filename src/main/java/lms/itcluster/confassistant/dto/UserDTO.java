@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.dto;
 
+import lms.itcluster.confassistant.entity.User;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +19,17 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public Long getUserId() {
+public UserDTO(Long userId, String firstName, String lastName, String password, String email, String info, Set<String> roles) {
+    this.userId = userId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
+    this.email = email;
+    this.info = info;
+    this.roles = roles;
+}
+
+public Long getUserId() {
         return userId;
     }
 

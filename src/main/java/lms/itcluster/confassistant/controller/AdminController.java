@@ -1,8 +1,7 @@
 package lms.itcluster.confassistant.controller;
-import lms.itcluster.confassistant.entity.Roles;
-import lms.itcluster.confassistant.entity.User;
+
+import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
-import lms.itcluster.confassistant.form.*;
 import lms.itcluster.confassistant.service.RoleService;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 
 @Controller
 public class AdminController {
@@ -25,13 +28,14 @@ public class AdminController {
 
 	@RequestMapping(value = "admin/users")
 	public String adminGetAdd (Model model) {
-		model.addAttribute("users", new ManageUsersForm(userService.getAllUsers()));
+		model.addAttribute("users", userService.getAllUsers());
 		return "admin/manage-users";
 	}
 
 	@GetMapping(value = "/admin/users/new")
 	private String addNewUserByAdmin (Model model){
-		model.addAttribute("availableRoles", roleService.getAll());
+		model.addAttribute("availableRoles", roleService.getAll().stream()
+				                                     .map(r->r.getRole()).collect(toSet()));
 		return "admin/add-user";
 	}
 
@@ -40,10 +44,10 @@ public class AdminController {
 	                                      @RequestParam String password,
 	                                      @RequestParam String firstName,
 	                                      @RequestParam String lastName,
-	                                      @RequestParam(value = "roles", required = false) Set<Roles> roles, Model model) {
-		User user = new User(email, password, firstName, lastName, roles);
+	                                      @RequestParam(value = "roles", required = false) Set<String> roles, Model model) {
+		
 		try {
-			userService.addNewUserByAdmin(user);
+			userService.addNewUserByAdmin(email,password,firstName,lastName,roles);
 		} catch (UserAlreadyExistException e) {
 			return "redirect:/admin/users/new";
 		}
@@ -60,13 +64,13 @@ public class AdminController {
 	@RequestMapping("admin/users/edit/{id}")
 	public String adminEditUser (@PathVariable("id") long id, Model model) {
 		model.addAttribute("user", userService.findById(id));
-		model.addAttribute("availableRoles", roleService.getAll());
+		model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toList()));
 		return "admin/edit-user";
 	}
 
 	@PostMapping(value="admin/users/edit")
-	public String editSave(User user) {
-		userService.updateUser(user);
+	public String editSave(UserDTO userDTO) {
+		userService.updateUser(userDTO);
 		return "redirect:/admin/users";
 	
 	}

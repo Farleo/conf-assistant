@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers( "/like/**", "/save-question/**").hasAnyAuthority("Admin", "ConfOwner", "User")
-                .antMatchers("/admin**").hasAuthority("Admin")
+                .antMatchers("/admin/**").hasAuthority("Admin")
                 .anyRequest().permitAll();
         http.formLogin()
                 .loginPage("/login")

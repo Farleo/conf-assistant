@@ -1,24 +1,28 @@
 package lms.itcluster.confassistant.service.impl;
 
+import lms.itcluster.confassistant.dto.RoleDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
-import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.UserService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -34,8 +38,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private Mapper<User, UserDTO> mapper;
 
     @Override
-    public User findById(long id) {
-        return userRepository.findById(id).get();
+    public UserDTO findById(long id) {
+        UserDTO userDTO = mapper.toDto(userRepository.findById(id).get());
+        return userDTO;
     }
 
     @Override
@@ -54,37 +59,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User deleteUser(long id) {
-        userRepository.delete(findById(id));
-        return null;
+    public void deleteUser(long id) {
+        Optional<User> user = userRepository.findById(id);
+        userRepository.delete(user.get());
+        }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        Type listType = new TypeToken<List<UserDTO>>() {}.getType();
+        ModelMapper modelMapper = new ModelMapper();
+        List<UserDTO> userDTOS = modelMapper.map(users,listType);
+        return userDTOS;
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public void updateUser(User user) {
-        Optional<User> dbUser = userRepository.findById(user.getUserId());
+    public void updateUser(UserDTO userDTO) {
+        Optional<User> dbUser = userRepository.findById(userDTO.getUserId());
         if (dbUser.isPresent()){
             User realUser = dbUser.get();
+            User user = mapper.toEntity(userDTO);
             BeanUtils.copyProperties(user, realUser, "userId");
             userRepository.save(realUser);
         }
     }
 
-    @Override
-    public User addNewUserByAdmin(User user){
-    User existingUserFromDb = userRepository.findByEmail(user.getEmail());
-    if(existingUserFromDb!=null){
-        throw new UserAlreadyExistException("User with this email is already exist: " + user.getEmail());
-    }
-    else if(user.getEmail()==""){
-        throw new UserAlreadyExistException("User email is empty");
-    }
-    return userRepository.save(user);
-}
+
 
     @Override
     public void completeGuestRegistration(UserDTO userForm) {
@@ -107,5 +107,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDTO getUserDTOById(long id) {
         return mapper.toDto(userRepository.findById(id).orElse(null));
+    }
+
+    @Override
+    public void addNewUserByAdmin(String email, String password, String firstName, String lastName, Set<String> roles) {
+    User existingUserFromDb = userRepository.findByEmail(email);
+    if(existingUserFromDb!=null){
+        throw new UserAlreadyExistException("User with this email is already exist: " + email);
+    }
+    else if(email==""){
+        throw new UserAlreadyExistException("User email is empty");
+    }
+    ModelMapper modelMapper = new ModelMapper();
+    Set<Roles> rolesDB = new HashSet<>();
+    modelMapper.map(roles, rolesDB);
+    UserDTO userDTO = new UserDTO();
+    userDTO.setEmail(email);
+    userDTO.setPassword(password);
+    userDTO.setFirstName(firstName);
+    userDTO.setLastName(lastName);
+    userDTO.setRoles(roles);
+    User user = mapper.toEntity(userDTO);
+    userRepository.save(user);
     }
 }

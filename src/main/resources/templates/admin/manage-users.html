@@ -27,7 +27,7 @@
         <td><b>Edit</b></td>
 
 
-        <tr th:each="user : ${users.getUserList()}">
+        <tr th:each="user : ${users}">
             <td th:text="${user.getUserId()}"></td>
             <td th:text="${user.getEmail()}"/>
                   <td >

@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.controller;
 
 
 import lms.itcluster.confassistant.dto.TopicDTO;
+import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
@@ -71,7 +72,7 @@ public class PageController {
     public String joinConference(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
        Topic topic = topicService.findById(id);
        Conference conference = topic.getStream().getConference();
-       User user = userService.findById(currentUser.getId());
+       UserDTO user = userService.findById(currentUser.getId());
        participantsService.addParticipant(user,conference);
        return "redirect:/topic/{id}";
     }

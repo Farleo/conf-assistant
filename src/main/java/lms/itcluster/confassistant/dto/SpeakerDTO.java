@@ -1,7 +1,5 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.entity.User;
-
 public class SpeakerDTO {
     private String firstName;
     private String lastName;
