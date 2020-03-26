@@ -5,6 +5,8 @@ import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 
+import java.util.List;
+
 public interface QuestionService {
     Question save(QuestionDTO questionDTO, User user, Topic currentTopic);
 
@@ -12,5 +14,5 @@ public interface QuestionService {
 
     Question findById(long id);
 
-
+    List<QuestionDTO> getSortedQuestionDTOList(Topic topic);
 }

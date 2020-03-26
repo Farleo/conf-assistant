@@ -3,6 +3,7 @@ package lms.itcluster.confassistant.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -14,7 +15,7 @@ public class  User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true, nullable = false)
-    private long userId;
+    private Long userId;
 
     @Column(name = "first_name", length = 45)
     private String firstName;
@@ -53,7 +54,7 @@ public class  User {
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Roles> roles;
+    private Set<Roles> roles = new HashSet<>();
 
     public User() {
     }
@@ -67,11 +68,11 @@ public class  User {
     }
 
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -168,7 +169,7 @@ public class  User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId &&
+        return  Objects.equals(userId, user.userId) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(password, user.password) &&

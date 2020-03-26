@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<div class="container-fluid" th:object="${currentTopic}">
+<div class="container-fluid" th:object="${topic}">
     <div class="row justify-content-center border-bottom ">
         <nav class="navbar navbar-light col-7 " >
             <a href="/" class="navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg"  alt="logo"></a>
@@ -33,8 +33,8 @@
                 </div>
                 <div class="col-6">
                     <div class="card-body">
-                        <h1 style="font-family: Calibri,serif;" th:text="${currentTopic.getName()}"></h1>
-                        <h6 id="name" class="form-text text-muted" th:text="${currentTopic.getStream().getName() + ', since ' + currentTopic.getBeginTime() + ' to ' + currentTopic.getFinishTime()}"></h6>
+                        <h1 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h1>
+                        <h6 id="name" class="form-text text-muted" th:text="${topic.getStream() + ', since ' + topic.getBeginTime() + ' to ' + topic.getFinishTime()}"></h6>
                         <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <span th:text="${currentTopic.getInfo()}"></span>
+                <span th:text="${topic.getInfo()}"></span>
             </div>
         </div>
     </div>
@@ -105,8 +105,8 @@
                             <button style="margin-right: 75px" class="btn btn-primary my-2 my-sm-0 col-1" type="submit">Ask</button>
                             <button id="refresh" type="button" class="btn btn-danger col-2 text-white">Refresh list</button>
                         </form>
-                        <input hidden="hidden" id="topicId" th:attr="value=${currentTopic.getTopicId()}">
-                        <input hidden="hidden" id="currentGuest" th:attr="value=${user.getUsername()}">
+                        <input hidden="hidden" id="topicId" th:attr="value=${topic.getTopicId()}">
+                        <input hidden="hidden" id="currentGuest" th:attr="value=${user.getId()}">
                         <div id="getResultDiv" style="padding:20px 10px 20px 50px">
                             <ul class="list-group scrollbar scrollbar-danger ">
                             </ul>

@@ -28,21 +28,21 @@ public class QuestionController {
     private LikeService likeService;
 
     @PostMapping(value = "/save-question/{topicId}")
-    public boolean postCustomer(@PathVariable("topicId") long topicId, @RequestBody QuestionDTO questionDTO, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+    public boolean postCustomer(@PathVariable("topicId") Long topicId, @RequestBody QuestionDTO questionDTO, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
         User user = userService.findById(currentUser.getId());
-        Topic currentTopic = topicService.findById(topicId);
-        Question question = questionService.save(questionDTO, user, currentTopic);
+        Topic topic = topicService.findById(topicId);
+        Question question = questionService.save(questionDTO, user, topic);
         return likeService.like(user, question);
     }
 
     @GetMapping("/get-all-questions/{topicId}")
-    public List<Question> getQuestions(@PathVariable("topicId") long topicId) {
-        Topic currentTopic = topicService.findById(topicId);
-        return topicService.getSortedQuestionList(currentTopic);
+    public List<QuestionDTO> getQuestions(@PathVariable("topicId") Long topicId) {
+        Topic topic = topicService.findById(topicId);
+        return questionService.getSortedQuestionDTOList(topic);
     }
 
     @GetMapping("/like/{questionId}")
-    public boolean getLike(@PathVariable("questionId") long questionId, @AuthenticationPrincipal CurrentUser currentGuest) {
+    public boolean getLike(@PathVariable("questionId") Long questionId, @AuthenticationPrincipal CurrentUser currentGuest) {
         Question question = questionService.findById(questionId);
         User user = userService.findById(currentGuest.getId());
         return likeService.like(user, question);
