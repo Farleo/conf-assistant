@@ -11,7 +11,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User createNewUserAsGuest(UserDTO userForm);
+    UserDTO createNewUserAsGuest(UserDTO userForm);
     
     User deleteUser(long id);
 

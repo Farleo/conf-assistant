@@ -9,6 +9,7 @@ import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,13 +45,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createNewUserAsGuest(UserDTO userForm) {
+    public UserDTO createNewUserAsGuest(UserDTO userForm) {
         if (userRepository.findByEmail(userForm.getEmail()) != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userForm.getEmail());
         }
         User user = mapper.toEntity(userForm);
         user.setRoles(Collections.singleton(rolesRepository.findByRole("User")));
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        SecurityUtil.authenticate(user);
+        return mapper.toDto(user);
     }
 
     @Override
