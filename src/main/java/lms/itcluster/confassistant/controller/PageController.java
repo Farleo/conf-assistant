@@ -1,10 +1,10 @@
 package lms.itcluster.confassistant.controller;
 
-
+import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
-import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.model.CurrentUser;
+import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
 import lms.itcluster.confassistant.service.ParticipantsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Participants;
-import lms.itcluster.confassistant.entity.Topic;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -37,6 +32,9 @@ public class PageController {
     @Autowired
     private ParticipantsService participantsService;
 
+    @Autowired
+    private StreamRepository streamRepository;
+
     @RequestMapping(value = "/")
     public String getList(Model model) {
         model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
@@ -50,15 +48,16 @@ public class PageController {
     }
 
     @GetMapping("/topic/{id}")
-    public String getTopic(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        Topic topicDTO = topicService.findById(id);
+    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        TopicDTO topicDTO = topicService.getTopicDTOBuId(id);
         model.addAttribute("topic", topicDTO);
-        model.addAttribute("speaker", topicDTO.getSpeaker());
+        model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         if (currentUser == null) {
             model.addAttribute("isPresentUser", false);
         }
         else {
-            Conference currentConference = topicDTO.getStream().getConference();
+            Stream stream = streamRepository.findByName(topicDTO.getStream());
+            Conference currentConference = conferenceService.findById(stream.getConference().getConferenceId());
             List<Participants> confUserList = currentConference.getParticipants();
             if(confUserList.stream().anyMatch(u-> u.getParticipantsKey().getUser().getUserId()==currentUser.getId())){
                 model.addAttribute("isPresentUser", true);
@@ -72,7 +71,7 @@ public class PageController {
     public String joinConference(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
        Topic topic = topicService.findById(id);
        Conference conference = topic.getStream().getConference();
-       UserDTO user = userService.findById(currentUser.getId());
+       User user = userService.findById(currentUser.getId());
        participantsService.addParticipant(user,conference);
        return "redirect:/topic/{id}";
     }

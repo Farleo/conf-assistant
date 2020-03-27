@@ -76,8 +76,10 @@ public class QuestionMapper extends AbstractMapper<Question, QuestionDTO> {
 
     private Set<User> setLikeSet(QuestionDTO question) {
         Set<User> userSet = new HashSet<>();
-        for (Long Long : question.getLikesSet()) {
-            userSet.add(userRepository.findById(Long).get());
+        if (question.getLikesSet() != null) {
+            for (Long Long : question.getLikesSet()) {
+                userSet.add(userRepository.findById(Long).get());
+            }
         }
         return userSet;
     }

@@ -1,12 +1,14 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.QuestionDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.QuestionRepository;
+import lms.itcluster.confassistant.repository.TopicRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,20 +24,16 @@ public class QuestionServiceImpl implements QuestionService {
     private QuestionRepository questionRepository;
 
     @Autowired
+    private TopicRepository topicRepository;
+
+    @Autowired
     @Qualifier("questionMapper")
     private Mapper<Question, QuestionDTO> mapper;
 
-    @Autowired
-    @Qualifier("userLoginMapper")
-    private Mapper<User, UserDTO> userMapper;
-
     @Override
-    public Question save(QuestionDTO questionDTO, UserDTO userDTO, Topic currentTopic) {
-        Question question = new Question();
-        question.setQuestion(questionDTO.getQuestion());
-        question.setTopic(currentTopic);
-        question.setUser(userMapper.toEntity(userDTO));
-        return questionRepository.save(question);
+    public QuestionDTO save(QuestionDTO questionDTO) {
+        Question newQuestion = mapper.toEntity(questionDTO);
+        return mapper.toDto(questionRepository.save(newQuestion));
     }
 
     @Override
@@ -49,7 +47,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDTO> getSortedQuestionDTOList(Topic topic) {
+    public List<QuestionDTO> getSortedQuestionDTOList(Long id) {
+        Topic topic = topicRepository.findById(id).get();
         List<QuestionDTO> dtoList = new ArrayList<>();
         topic.getQuestionList().forEach(question -> dtoList.add(mapper.toDto(question)));
         dtoList.sort((o1, o2) -> o2.getRating() - o1.getRating());

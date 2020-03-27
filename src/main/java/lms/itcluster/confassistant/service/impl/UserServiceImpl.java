@@ -6,14 +6,17 @@ import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.util.SecurityUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,13 +52,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createNewUserAsGuest(UserDTO userForm) {
+    public UserDTO createNewUserAsGuest(UserDTO userForm) {
         if (userRepository.findByEmail(userForm.getEmail()) != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userForm.getEmail());
         }
         User user = mapper.toEntity(userForm);
         user.setRoles(Collections.singleton(rolesRepository.findByRole("User")));
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        SecurityUtil.authenticate(user);
+        return mapper.toDto(user);
     }
 
     @Override
@@ -78,7 +83,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> dbUser = userRepository.findById(userDTO.getUserId());
         if (dbUser.isPresent()){
             User realUser = dbUser.get();
-            User user = mapper.toEntity(userDTO);
             BeanUtils.copyProperties(user, realUser, "userId");
             userRepository.save(realUser);
         }

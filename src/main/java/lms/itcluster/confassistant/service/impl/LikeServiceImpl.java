@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -20,13 +20,10 @@ public class LikeServiceImpl implements LikeService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Autowired
-    @Qualifier("userLoginMapper")
-    private Mapper<User, UserDTO> userMapper;
-
     @Override
-    public boolean like(UserDTO userDTO, Question question) {
-        User user = userMapper.toEntity(userDTO);
+    public boolean like(Long questionId, Long userId) {
+        Question question = questionRepository.findById(questionId).get();
+        User user = userRepository.findById(userId).get();
         if (question.getLikesSet().contains(user)) {
             return unLike(user, question);
         }
