@@ -34,20 +34,15 @@ public class AdminController {
 
 	@GetMapping(value = "/admin/users/new")
 	private String addNewUserByAdmin (Model model){
-		model.addAttribute("availableRoles", roleService.getAll().stream()
-				                                     .map(r->r.getRole()).collect(toSet()));
+		model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
 		return "admin/add-user";
 	}
 
 	@PostMapping(value = "/admin/users/new")
-	private String addNewUserByAdminPost (@RequestParam String email,
-	                                      @RequestParam String password,
-	                                      @RequestParam String firstName,
-	                                      @RequestParam String lastName,
-	                                      @RequestParam(value = "roles", required = false) Set<String> roles, Model model) {
+	private String addNewUserByAdminPost (UserDTO userDTO, Model model) {
 		
 		try {
-			userService.addNewUserByAdmin(email,password,firstName,lastName,roles);
+			userService.addNewUserByAdmin(userDTO);
 		} catch (UserAlreadyExistException e) {
 			return "redirect:/admin/users/new";
 		}

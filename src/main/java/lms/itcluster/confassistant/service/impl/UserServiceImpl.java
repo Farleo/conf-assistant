@@ -1,11 +1,8 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.dto.RoleDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
-import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
-import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
@@ -16,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,9 +36,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Qualifier("userLoginMapper")
     private Mapper<User, UserDTO> mapper;
 
+
     @Override
     public UserDTO findById(long id) {
-        UserDTO userDTO = mapper.toDto(userRepository.findById(id).get());
+        User user = userRepository.findById(id).get();
+        UserDTO userDTO = mapper.toDto(user);
         return userDTO;
     }
 
@@ -80,10 +78,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(UserDTO userDTO) {
-        Optional<User> dbUser = userRepository.findById(userDTO.getUserId());
+        Optional<User> dbUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
         if (dbUser.isPresent()){
-            User realUser = dbUser.get();
-            BeanUtils.copyProperties(user, realUser, "userId");
+            User realUser = mapper.toEntity(userDTO);
+            BeanUtils.copyProperties(realUser, dbUser, "userId");
             userRepository.save(realUser);
         }
     }
@@ -114,23 +112,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addNewUserByAdmin(String email, String password, String firstName, String lastName, Set<String> roles) {
-    User existingUserFromDb = userRepository.findByEmail(email);
+    public void addNewUserByAdmin(UserDTO userDTO) {
+    User existingUserFromDb = userRepository.findByEmail(userDTO.getEmail());
     if(existingUserFromDb!=null){
-        throw new UserAlreadyExistException("User with this email is already exist: " + email);
+        throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
     }
-    else if(email==""){
-        throw new UserAlreadyExistException("User email is empty");
-    }
-    ModelMapper modelMapper = new ModelMapper();
-    Set<Roles> rolesDB = new HashSet<>();
-    modelMapper.map(roles, rolesDB);
-    UserDTO userDTO = new UserDTO();
-    userDTO.setEmail(email);
-    userDTO.setPassword(password);
-    userDTO.setFirstName(firstName);
-    userDTO.setLastName(lastName);
-    userDTO.setRoles(roles);
     User user = mapper.toEntity(userDTO);
     userRepository.save(user);
     }

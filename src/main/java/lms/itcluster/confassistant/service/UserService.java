@@ -25,5 +25,5 @@ public interface UserService {
 
     UserDTO getUserDTOById(long id);
 
-    void addNewUserByAdmin(String email, String password, String firstName, String lastName, Set<String> roles);
+    void addNewUserByAdmin(UserDTO userDTO);
 }
