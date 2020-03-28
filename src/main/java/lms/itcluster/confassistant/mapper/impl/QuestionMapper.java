@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.sql.Time;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -37,11 +39,14 @@ public class QuestionMapper extends AbstractMapper<Question, QuestionDTO> {
         modelMapper.createTypeMap(Question.class, QuestionDTO.class)
                 .addMappings(mapping -> mapping.skip(QuestionDTO::setLikesSet))
                 .addMappings(mapping -> mapping.skip(QuestionDTO::setTopic))
-                .addMappings(mapping -> mapping.skip(QuestionDTO::setUser)).setPostConverter(toDtoConverter());
+                .addMappings(mapping -> mapping.skip(QuestionDTO::setUser))
+                .setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(QuestionDTO.class, Question.class)
                 .addMappings(mapping -> mapping.skip(Question::setLikesSet))
                 .addMappings(mapping -> mapping.skip(Question::setTopic))
-                .addMappings(mapping -> mapping.skip(Question::setUser)).setPostConverter(toEntityConverter());
+                .addMappings(mapping -> mapping.skip(Question::setUser))
+                .addMappings(mapping -> mapping.skip(Question::setCreated))
+                .setPostConverter(toEntityConverter());
     }
 
     @Override
@@ -72,6 +77,14 @@ public class QuestionMapper extends AbstractMapper<Question, QuestionDTO> {
         destination.setTopic(topicRepository.findById(source.getTopic()).orElse(null));
         destination.setUser(userRepository.findById(source.getUser()).orElse(null));
         destination.setLikesSet(setLikeSet(source));
+        destination.setCreated(setTime(source));
+    }
+
+    private Time setTime(QuestionDTO questionDTO) {
+        if (questionDTO.getCreated() == null) {
+            return new Time(System.currentTimeMillis());
+        }
+        return questionDTO.getCreated();
     }
 
     private Set<User> setLikeSet(QuestionDTO question) {

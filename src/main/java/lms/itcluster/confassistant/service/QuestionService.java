@@ -12,5 +12,7 @@ public interface QuestionService {
 
     Question findById(long id);
 
-    List<QuestionDTO> getSortedQuestionDTOList(Long id);
+    List<QuestionDTO> getSortedQuestionDTOListByRating(Long id);
+
+    List<QuestionDTO> getSortedQuestionDTOListByDate(Long id);
 }

@@ -19,6 +19,9 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String question;
 
+    @Column(name = "created", nullable = false)
+    private Time created;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     @JsonIgnore
@@ -46,6 +49,14 @@ public class Question {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public Time getCreated() {
+        return created;
+    }
+
+    public void setCreated(Time created) {
+        this.created = created;
     }
 
     public User getUser() {

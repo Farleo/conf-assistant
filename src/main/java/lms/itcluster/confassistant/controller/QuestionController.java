@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.QuestionDTO;
+import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,14 @@ public class QuestionController {
         return likeService.like(questionDTO.getQuestionId(), questionDTO.getUser());
     }
 
-    @GetMapping("/get-all-questions/{topicId}")
-    public List<QuestionDTO> getAllQuestions(@PathVariable("topicId") Long topicId) {
-        return questionService.getSortedQuestionDTOList(topicId);
+    @GetMapping("/get-all-questions/{topicId}/{orderBy}")
+    public List<QuestionDTO> getAllQuestions(@PathVariable("topicId") Long topicId, @PathVariable("orderBy") String orderBy) {
+        if (orderBy.equals(Constant.ORDER_BY_RATING)) {
+            return questionService.getSortedQuestionDTOListByRating(topicId);
+        }
+        else {
+            return questionService.getSortedQuestionDTOListByDate(topicId);
+        }
     }
 
     @GetMapping("/like/{questionId}")
