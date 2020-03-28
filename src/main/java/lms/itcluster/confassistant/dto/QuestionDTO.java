@@ -1,11 +1,14 @@
 package lms.itcluster.confassistant.dto;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.Set;
 
 public class QuestionDTO {
 
     private Long questionId;
     private String question;
+    private Time created;
     private Long topic;
     private Long user;
     private Set<Long> likesSet;
@@ -36,6 +39,14 @@ public class QuestionDTO {
 
     public void setTopic(Long topic) {
         this.topic = topic;
+    }
+
+    public Time getCreated() {
+        return created;
+    }
+
+    public void setCreated(Time created) {
+        this.created = created;
     }
 
     public Long getUser() {

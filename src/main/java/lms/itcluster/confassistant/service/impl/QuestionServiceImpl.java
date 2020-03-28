@@ -47,11 +47,23 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDTO> getSortedQuestionDTOList(Long id) {
+    public List<QuestionDTO> getSortedQuestionDTOListByRating(Long id) {
+        List<QuestionDTO> dtoList = getQuestionDTOList(id);
+        dtoList.sort((o1, o2) -> o2.getRating() - o1.getRating());
+        return dtoList;
+    }
+
+    @Override
+    public List<QuestionDTO> getSortedQuestionDTOListByDate(Long id) {
+        List<QuestionDTO> dtoList = getQuestionDTOList(id);
+        dtoList.sort((o1, o2) -> o2.getCreated().compareTo(o1.getCreated()));
+        return dtoList;
+    }
+
+    private List<QuestionDTO> getQuestionDTOList(Long id) {
         Topic topic = topicRepository.findById(id).get();
         List<QuestionDTO> dtoList = new ArrayList<>();
         topic.getQuestionList().forEach(question -> dtoList.add(mapper.toDto(question)));
-        dtoList.sort((o1, o2) -> o2.getRating() - o1.getRating());
         return dtoList;
     }
 }

@@ -10,19 +10,50 @@ $(document).ready(function () {
         show();
     });
 
+
+    $("#OrderBy").click(function () {
+        $('#Text').empty();
+        var button;
+        if (orderBy === "Created") {
+            button = "Order by rating";
+            orderBy = "Rating";
+        } else {
+            button = "Order by time";
+            orderBy = "Created";
+        }
+        $('#Text').append(button);
+        show();
+    });
+
     var isPresent = $("#isPresentUser").val();
     if (isPresent === 'true') {
         show();
     }
 
-});
+})
+;
+
+var orderBy = "Rating";
+var intervalID;
+function fun1() {
+    var chbox;
+    chbox=document.getElementById('AutoRefresh');
+    console.log(chbox);
+
+    if (chbox.checked) {
+        intervalID = setInterval(show, 1500);
+    }
+    else {
+        clearInterval(intervalID);
+    }
+}
 
 function askQuestion() {
     // PREPARE FORM DATA
     var formData = {
         question: $("#question").val(),
-        topic : $("#topicId").val(),
-        user : $("#currentGuest").val()
+        topic: $("#topicId").val(),
+        user: $("#currentGuest").val()
     };
 
     // DO POST
@@ -47,19 +78,41 @@ function askQuestion() {
 function show() {
     $.ajax({
         type: "GET",
-        url: "http://localhost:8080/get-all-questions/" + $("#topicId").val(),
+        url: "http://localhost:8080/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
         cache: false,
         success: function (result) {
-            $('#getResultDiv ul').empty();
+            $('#getResultDiv div').empty();
             $.each(result, function (i, question) {
                 var k = i + 1;
                 var variable =
-                    "<li>" + k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' type='button' class='btn btn-link float-right' style='margin-right: 25px'>" + "<i class=\"fa fa-heart text-secondary\" style='margin-right: 5px' aria-hidden=\"true\">" + ' ' + question.rating + "</i></button>" + "</li>" + "<br>";
+                    "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                    "<div class='row'>" +
+                    "<button id='" + i + "' type='button' class='btn btn-link'>" +
+                    "<i class='fa fa-heart' style='color: #9c9c9c;'>" + ' ' + question.rating + "</i>" +
+                    "</button>" +
+                    "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                    "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                    "</div>" +
+                    "</div>" +
+
+                    "</div>" +
+                    "</div>";
 
                 $.each(question.likesSet, function (j, userId) {
                     if (userId == $("#currentGuest").val()) {
                         variable =
-                            "<li>" + k + "<span>" + '. ' + "</span>" + question.question + "<button id='" + i + "' class='btn btn-link float-right' style='margin-right: 25px'>" + "<i class=\"fa fa-heart text-danger\" style='margin-right: 5px' aria-hidden=\"true\">" + ' ' + question.rating + "</i></button>" + "</li>" + "<br>";
+                            "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                            "<div class='row'>" +
+                            "<button id='" + i + "' type='button' class='btn btn-link'>" +
+                            "<i class='fa fa-heart' style='color: #d80700;'>" + ' ' + question.rating + "</i>" +
+                            "</button>" +
+                            "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                            "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                            "</div>" +
+                            "</div>" +
+
+                            "</div>" +
+                            "</div>";
                     }
                 });
 
