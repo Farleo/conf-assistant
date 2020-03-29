@@ -35,6 +35,7 @@ $(document).ready(function () {
 
 var orderBy = "Rating";
 var intervalID;
+
 function fun1() {
     var chbox;
     chbox=document.getElementById('AutoRefresh');

@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -65,27 +66,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUser(long id) {
         Optional<User> user = userRepository.findById(id);
         userRepository.delete(user.get());
-        }
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        Type listType = new TypeToken<List<UserDTO>>() {}.getType();
+        Type listType = new TypeToken<List<UserDTO>>() {
+        }.getType();
         ModelMapper modelMapper = new ModelMapper();
-        List<UserDTO> userDTOS = modelMapper.map(users,listType);
+        List<UserDTO> userDTOS = modelMapper.map(users, listType);
         return userDTOS;
     }
 
     @Override
     public void updateUser(UserDTO userDTO) {
         Optional<User> dbUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
-        if (dbUser.isPresent()){
+        if (dbUser.isPresent()) {
             User realUser = mapper.toEntity(userDTO);
             BeanUtils.copyProperties(realUser, dbUser, "userId");
             userRepository.save(realUser);
         }
     }
-
 
 
     @Override
@@ -113,11 +114,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void addNewUserByAdmin(UserDTO userDTO) {
-    User existingUserFromDb = userRepository.findByEmail(userDTO.getEmail());
-    if(existingUserFromDb!=null){
-        throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
-    }
-    User user = mapper.toEntity(userDTO);
-    userRepository.save(user);
+        User existingUserFromDb = userRepository.findByEmail(userDTO.getEmail());
+        if (existingUserFromDb != null) {
+            throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
+        }
+        User user = mapper.toEntity(userDTO);
+        userRepository.save(user);
     }
 }

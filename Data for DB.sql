@@ -80,9 +80,9 @@ insert into question(question, topic_id, user_id, created) VALUES
 ('ow you can wire up this example and see what it l?', 5, 30, '00:18:05'), (' ic setup steps that ar?', 5, 30, '00:59:11');
 
 insert into roles (role) values
-('Admin'),
-('ConfOwner'),
-('User');
+('ROLE_ADMIN'),
+('ROLE_CONFOWNER'),
+('ROLE_USER');
 
 insert into user_roles(roles_id, user_id) values
 (1, 1),

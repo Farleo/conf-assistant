@@ -36,6 +36,9 @@ public class PageController {
     @Autowired
     private StreamRepository streamRepository;
 
+    @Autowired
+    private RoleService roleService;
+
     @RequestMapping(value = "/")
     public String getList(Model model) {
         model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
@@ -69,7 +72,7 @@ public class PageController {
     }
 
     @GetMapping("/topic/join/{id}")
-    public String joinConference(@PathVariable("id") long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) {
        Topic topic = topicService.findById(id);
        Conference conference = topic.getStream().getConference();
        UserDTO user = userService.findById(currentUser.getId());

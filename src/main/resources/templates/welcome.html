@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,63 +14,58 @@
 
         .tab {
             /* элемент тени */
-            -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
-            -moz-box-shadow: 0 0 5px rgba(0,0,0,.2);
-            box-shadow: 0 0 5px rgba(0,0,0,.2);
-            -o-box-shadow: 0 0 5px rgba(0,0,0,.2);
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
             /* элемент тени конец */
         }
 
         .tab:hover {
             /* элемент тени если наведен курсор */
-            -webkit-box-shadow: 0 0 25px rgba(0,0,0,.2);
-            -moz-box-shadow: 0 0 25px rgba(0,0,0,.2);
-            box-shadow: 0 0 25px rgba(0,0,0,.2);
-            -o-box-shadow: 0 0 25px rgba(0,0,0,.2);
+            -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
             /* элемент тени если наведен курсор конец */
         }
+
         a:hover {
-            text-decoration:none;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-
-<div class="container-fluid " >
-    <div class="row justify-content-center border-bottom">
-        <nav class="navbar navbar-light col-7 " >
-            <a href="/" class="navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg"  alt="logo"></a>
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)" type="submit">Search</button>
-            </form>
-        </nav>
-    </div>
-    <div class="row justify-content-center ">
-        <div class="card col-7 border-0">
-            <div class="card text-center border-0 " style="margin-top: 20px">
-                <h2 style="font-family: Calibri,serif; color: #4089c4">Select the conference you are interested in from the table</h2>
-            </div>
-            <div class="row " style="padding-top: 0em">
-                <div  class="card col-6 border-0 p-3" th:each="conference, index : ${conferences.getConferenceList()}" style="margin-top: 20px">
-                    <a th:href="${'/conf/' + conference.getConferenceId()}" class="tab">
-                        <img th:src="@{${conference.coverPhoto}}" class="card-img-top bottom-0" alt="...">
-                        <div class="card-body border-0">
-                            <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
-                            <p class="card-text text-dark" th:text="${conference.info}"></p>
-                        </div>
-                    </a>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<section>
+    <div class="container-fluid ">
+        <div class="row justify-content-center ">
+            <div class="card col-7 border-0">
+                <div class="card text-center border-0 " style="margin-top: 20px">
+                    <h2 style="font-family: Calibri,serif; color: #4089c4">Select the conference you are interested in from the table</h2>
+                </div>
+                <div class="row " style="padding-top: 0em">
+                    <div class="card col-6 border-0 p-3"
+                         th:each="conference, index : ${conferences.getConferenceList()}"
+                         style="margin-top: 20px">
+                        <a th:href="${'/conf/' + conference.getConferenceId()}" class="tab">
+                            <img th:src="@{${conference.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                            <div class="card-body border-0">
+                                <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
+                                <p class="card-text text-dark" th:text="${conference.info}"></p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="/bootstrap/js/jquery.slim.min.js"></script>
-<script src="/bootstrap/js/popper.min.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
-
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/bootstrap/js/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+</section>
 </body>
 </html>

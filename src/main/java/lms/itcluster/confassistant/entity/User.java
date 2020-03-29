@@ -46,7 +46,7 @@ public class  User {
     @OneToMany(mappedBy = "speaker")
     private List<Topic> topicList;
 
-    @OneToMany(mappedBy = "participantsKey.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "participantsKey.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<Participants> participants;
 
     @ManyToMany(fetch = FetchType.EAGER)
