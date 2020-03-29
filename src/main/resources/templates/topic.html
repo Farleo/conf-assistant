@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-<header th:replace="${#strings.equals(userRole, 'none')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header(role = ${userRole})}"></header>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid" th:object="${topic}">
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">

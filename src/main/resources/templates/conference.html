@@ -48,7 +48,7 @@
     </style>
 </head>
 <body>
-<header th:replace="${#strings.equals(userRole, 'none')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header(role = ${userRole})}"></header>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid" th:object="${conference}">
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <img th:src="*{coverPhoto}" alt="coverPhoto" class="col-7 border">
