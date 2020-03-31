@@ -1,13 +1,12 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
-import lms.itcluster.confassistant.service.ParticipantsService;
+import lms.itcluster.confassistant.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,13 +30,10 @@ public class PageController {
     private ConferenceService conferenceService;
 
     @Autowired
-    private ParticipantsService participantsService;
+    private ParticipantService participantService;
 
     @Autowired
     private StreamRepository streamRepository;
-
-    @Autowired
-    private RoleService roleService;
 
     @RequestMapping(value = "/")
     public String getList(Model model) {
@@ -76,7 +72,7 @@ public class PageController {
        Topic topic = topicService.findById(id);
        Conference conference = topic.getStream().getConference();
        UserDTO user = userService.findById(currentUser.getId());
-       participantsService.addParticipant(user,conference);
+       participantService.addParticipant(user,conference);
        return "redirect:/topic/{id}";
     }
 }

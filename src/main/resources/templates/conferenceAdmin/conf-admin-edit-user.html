@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title th:text="${confName}+ ' conference page - edit participants role'"/>
+</head>
+<body>
+<div style="text-align: center;">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3"  th:text="'Edit ' + ${user.email} + ' conference role'"></h4>
+        <form th:action="@{/conf/owner/saveChangeRole/}" th:object="${user}" method="post" class="needs-validation" novalidate="" >
+
+                <input id="id" name="id" th:field="*{participantId}" class="form-control" type="hidden"/>
+                <input id="confId" name="confId" th:field="*{conferenceId}" class="form-control" type="hidden"/>
+                <input id="e" name="e" th:field="*{email}" class="form-control" type="hidden"/>
+                <input id="l" name="l" th:field="*{lastName}" class="form-control" type="hidden"/>
+                <input id="f" name="f" th:field="*{firstName}" class="form-control" type="hidden"/>
+
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <label type="email" name="email"  th:text="*{email}" class="form-control" id="email"/>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="firstName">First name </label>
+                    <label type="text" th:text="*{firstName}" th:field="*{firstName}" name="firstName" class="form-control" id="firstName" placeholder="" value="" required=""/>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lastName">Last name</label>
+                    <label type="text" name="lastName" th:text="*{lastName}"  class="form-control" id="lastName" placeholder="" value="" required=""/>
+                </div>
+            </div>
+
+            <div style="text-align: left">
+                <div class="mb-3">Roles<span class="text-muted"></span></div>
+                <div style="font-style: italic" th:each="currentRole : ${availableRoles}">
+                    <input type="checkbox" id="roles" name="roles" th:field="*{conferenceRoles}" th:value="${currentRole}" th:text="${currentRole}"/>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-edit fa-fw" aria-hidden="true"></i>&nbsp; Edit</button>
+        </form>
+
+        <a th:href="'/conf/owner/' + ${user.getConferenceId()}">
+            <button type="submit" value="Back" class="btn btn-success btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</button>
+        </a>
+
+    </div>
+</div>
+</body>
+</html>

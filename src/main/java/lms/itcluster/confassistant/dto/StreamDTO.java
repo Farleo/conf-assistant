@@ -8,7 +8,7 @@ import java.util.List;
 
 public class StreamDTO {
 
-    private long streamId;
+    private Long streamId;
     private String name;
     private Long conference;
     private List<TopicDTO> topicList;

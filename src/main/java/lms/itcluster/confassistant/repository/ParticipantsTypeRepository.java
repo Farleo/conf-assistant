@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ParticipantsTypeRepository extends CrudRepository<ParticipantType, Long> {
+	
 	ParticipantType findByName (String name);
 }

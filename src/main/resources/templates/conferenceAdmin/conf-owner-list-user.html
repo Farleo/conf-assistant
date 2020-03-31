@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title th:text="${confName}+ ' conference page - Manage Participants'"/>
+</head>
+<body>
+<div style="text-align: center;">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3"><span th:text="'List of participants in the ' + ${confName} + ' conference'"/></h4>
+        <a th:href="'/conf/' + ${confId}" th:method="POST">
+            <button type="submit" class="btn btn-success"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to conference</button>
+        </a>
+        <br/>
+        <br/>
+        <table class="table table-striped">
+
+            <td><b>Id</b></td>
+            <td><b>Email</b></td>
+            <td><b>First Name</b></td>
+            <td><b>Last Name</b></td>
+            <td><b>Roles</b></td>
+            <td><b>Edit</b></td>
+            <td><b>Block</b></td>
+
+            <tr th:each="currentUser : ${usersOfCurrentConf}" >
+                <td th:text="${currentUser.participantId}"/>
+                <td th:text="${currentUser.email}"/>
+                <td th:text="${currentUser.firstName}"/>
+                <td th:text="${currentUser.lastName}"/>
+                <td th:text="${currentUser.conferenceRoles}"/>
+
+                <td>
+                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/edit/' + ${currentUser.participantId}}" th:method="patch">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-edit fa-fw" aria-hidden="true"></i>&nbsp; Edit</button>
+                    </form>
+                </td>
+
+                <td>
+                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/kick/' + ${currentUser.participantId}}" th:method="post">
+                        <button type="submit" class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp; Kick</button>
+                    </form>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/bootstrap/js/popper.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+</div>
+</body>
+</html>

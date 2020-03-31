@@ -7,6 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
 
     <title>Admin page - Edit user</title>
@@ -14,8 +15,11 @@
 <body>
 <div style="text-align: center;">
 <div class="col-md-8 order-md-1">
+
     <h4 class="mb-3">Add User</h4>
+
     <form th:action="@{/admin/users/new}" method="post" class="needs-validation" novalidate="" >
+
          <div class="mb-3">
             <input id="userId" name="userId" class="form-control" type="hidden"/>
             <label for="email">Email * <span class="text-muted">(Required and must be unique)</span></label>
@@ -35,6 +39,7 @@
                     Valid first name is required.
                 </div>
             </div>
+
             <div class="col-md-6 mb-3">
                 <label for="lastName">Last name</label>
                 <input type="text" name="lastName" class="form-control" id="lastName" placeholder="" value="" required="">
@@ -42,20 +47,26 @@
                     Valid last name is required.
                 </div>
             </div>
+
         </div>
+
         <div style="text-align: left">
         <div class="mb-3">Roles<span class="text-muted"></span></div>
           <div th:each="currentRole : ${availableRoles}">
             <input type="checkbox" id="roles" name="roles" th:value="${currentRole}" />
-           <i><label th:text="${currentRole}"/></i>
+           <i><label th:text="${currentRole.substring(5)}"/></i>
          </div>
         </div>
+
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Add</button>
-
+        <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add</button>
     </form>
-</div>
 
+    <a th:href="@{/admin/users/}">
+        <button type="submit" value="Back" class="btn btn-success btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</button>
+    </a>
+
+</div>
 </div>
 </body>
 </html>

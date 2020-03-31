@@ -34,11 +34,11 @@ public class Roles {
     public Roles() {
     }
 
-    public long getRolesId() {
+    public Long getRolesId() {
         return rolesId;
     }
 
-    public void setRolesId(long rolesId) {
+    public void setRolesId(Long rolesId) {
         this.rolesId = rolesId;
     }
 

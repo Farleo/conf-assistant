@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class CurrentUser extends User {
-    private long id;
+    private Long id;
 
     public CurrentUser(lms.itcluster.confassistant.entity.User user) {
         super(user.getEmail(), user.getPassword(), getAllRoles(user));
@@ -29,11 +29,11 @@ public class CurrentUser extends User {
         return collection;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

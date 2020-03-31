@@ -11,7 +11,7 @@ public class ParticipantType {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "type_id", unique = true, nullable = false)
-    private long typeId;
+    private Long typeId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -22,11 +22,11 @@ public class ParticipantType {
     public ParticipantType() {
     }
 
-    public long getTypeId() {
+    public Long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(long typeId) {
+    public void setTypeId(Long typeId) {
         this.typeId = typeId;
     }
 
