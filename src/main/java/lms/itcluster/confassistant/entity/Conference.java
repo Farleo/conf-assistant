@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -42,7 +44,14 @@ public class Conference {
     @OneToMany(mappedBy = "conference")
     private List<Stream> streamList;
 
-    public Conference() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    @JsonIgnore
+    private User owner;
+
+
+
+public Conference() {
         super();
     }
 
@@ -124,6 +133,14 @@ public class Conference {
 
     public void setCoverPhoto(String coverPhoto) {
         this.coverPhoto = coverPhoto;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+    
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override

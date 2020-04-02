@@ -49,6 +49,10 @@ public class  User {
     @OneToMany(mappedBy = "participantsKey.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<Participants> participants;
 
+    @OneToMany(mappedBy = "owner")
+    @JsonIgnore
+    private List<Conference> conferences;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

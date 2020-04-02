@@ -13,11 +13,12 @@
     <title th:text="${confName}+ ' conference page - Manage Participants'"/>
 </head>
 <body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3"><span th:text="'List of participants in the ' + ${confName} + ' conference'"/></h4>
-        <a th:href="'/conf/' + ${confId}" th:method="POST">
-            <button type="submit" class="btn btn-success"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to conference</button>
+        <a th:href="${'/dashboard/conferences'}" th:method="POST">
+            <button type="submit" class="btn btn-success"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
         </a>
         <br/>
         <br/>
@@ -29,7 +30,7 @@
             <td><b>Last Name</b></td>
             <td><b>Roles</b></td>
             <td><b>Edit</b></td>
-            <td><b>Block</b></td>
+            <td><b>Kick</b></td>
 
             <tr th:each="currentUser : ${usersOfCurrentConf}" >
                 <td th:text="${currentUser.participantId}"/>

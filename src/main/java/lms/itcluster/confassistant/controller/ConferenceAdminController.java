@@ -1,8 +1,13 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.ParticipantDTO;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
+import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,40 +31,64 @@ public class ConferenceAdminController {
 	private ParticipantTypeService participantTypeService;
 
 	@RequestMapping(value = "conf/owner/{confId}")
-	public String confOwnerManageUser (@PathVariable Long confId,Model model) {
-		model.addAttribute("confName", conferenceService.findById(confId).getName());
-		model.addAttribute("usersOfCurrentConf", participantService.findAllParticipant(confId));
-		Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r->r.getName()).collect(Collectors.toSet());
-		model.addAttribute("availableRoles", availableRoles);
-		return "conferenceAdmin/conf-owner-list-user";
+	public String confOwnerManageUser (@AuthenticationPrincipal CurrentUser currentUser,
+	                                   @PathVariable Long confId, Model model) {
+		Conference conference = conferenceService.findById(confId);
+		if(SecurityUtil.userHasAdminRole(currentUser)
+				   || SecurityUtil.userHasAccessToConf(conference,currentUser)) {
+			model.addAttribute("confName", conference.getName());
+			model.addAttribute("usersOfCurrentConf", participantService.findAllParticipant(confId));
+			Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r -> r.getName()).collect(Collectors.toSet());
+			model.addAttribute("availableRoles", availableRoles);
+			return "conferenceAdmin/conf-owner-list-user";
+		}
+		return "redirect:/";
 	}
 
 	@PostMapping(value="/conf/owner/{confId}/edit/{userId}")
-	public String editByConf(@PathVariable Long confId,
-	                       @PathVariable Long userId,
-	                       Model model) {
-		model.addAttribute("confName", conferenceService.findById(confId).getName());
-		model.addAttribute("user", participantService.findParticipantById(userId, confId));
-		Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r->r.getName()).collect(Collectors.toSet());
-		model.addAttribute("availableRoles", availableRoles);
-		return "conferenceAdmin/conf-admin-edit-user";
+	public String editByConf(@AuthenticationPrincipal CurrentUser currentUser,
+	                         @PathVariable Long confId,
+	                         @PathVariable Long userId,
+	                         Model model) {
+		Conference conference = conferenceService.findById(confId);
+		if(SecurityUtil.userHasAdminRole(currentUser)
+				   || SecurityUtil.userHasAccessToConf(conference,currentUser)) {
+			model.addAttribute("confName", conferenceService.findById(confId).getName());
+			model.addAttribute("user", participantService.findParticipantById(userId, confId));
+			Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r -> r.getName()).collect(Collectors.toSet());
+			model.addAttribute("availableRoles", availableRoles);
+			return "conferenceAdmin/conf-admin-edit-user";
+		}
+		return "redirect:/";
 	}
 	
 
 	@PostMapping(value="/conf/owner/saveChangeRole/")
-	public String saveChangeRole(ParticipantDTO participantDTO) {
-		participantService.updateParticipantByConfOwner(participantDTO);
-		Long confId = participantDTO.getConferenceId();
-		return String.format("redirect:/conf/owner/%s", confId);
+	public String saveChangeRole(@AuthenticationPrincipal CurrentUser currentUser,
+	                             ParticipantDTO participantDTO) {
+		Conference conference = conferenceService.findById(participantDTO.getConferenceId());
+		if(SecurityUtil.userHasAdminRole(currentUser)
+				   || SecurityUtil.userHasAccessToConf(conference,currentUser)) {
+			participantService.updateParticipantByConfOwner(participantDTO);
+			Long confId = participantDTO.getConferenceId();
+			return String.format("redirect:/conf/owner/%s", confId);
+		}
+		return "redirect:/";
 		
 	}
 	
 	
 	
 	@PostMapping(value = "/conf/owner/{confId}/kick/{userId}")
-	public String confOwnerKickUser (@PathVariable Long confId,
+	public String confOwnerKickUser (@AuthenticationPrincipal CurrentUser currentUser,
+	                                 @PathVariable Long confId,
 	                                 @PathVariable Long userId) {
-		participantService.blockParticipant(userId,confId);
-		return "redirect:/conf/owner/{confId}";
+		Conference conference = conferenceService.findById(confId);
+		if(SecurityUtil.userHasAdminRole(currentUser)
+				   || SecurityUtil.userHasAccessToConf(conference,currentUser)) {
+			participantService.blockParticipant(userId, confId);
+			return "redirect:/conf/owner/{confId}";
+		}
+		return "redirect:/";
 	}
 }

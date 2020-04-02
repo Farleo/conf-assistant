@@ -14,9 +14,12 @@ public class ConferenceDTO {
     private String coverPhoto;
     private List<Long> participants;
     private List<StreamDTO> streamList;
+    private String owner;
+
+
 
     public ConferenceDTO() {
-    }
+        }
 
     public Long getConferenceId() {
         return conferenceId;
@@ -96,5 +99,13 @@ public class ConferenceDTO {
 
     public void setStreamList(List<StreamDTO> streamList) {
         this.streamList = streamList;
+    }
+    
+    public String getOwner() {
+        return owner;
+    }
+    
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

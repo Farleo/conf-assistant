@@ -10,36 +10,42 @@
     <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
 
-    <title>Admin page - Manage Users</title>
+    <title>Conference dashboard</title>
 </head>
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
-        <h4 class="mb-3">Admin page - List Users</h4>
-        <form th:action="@{/admin/users/new}" method="get">
-            <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new User</button>
+        <h4 class="mb-3">Conference dashboard</h4>
+        <form th:action="@{/conf/owner/new}" method="get">
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new Conference</button>
         </form>
         <br/>
         <table class="table table-striped">
 
-            <td><b>Id</b></td>
-            <td><b>Email</b></td>
-            <td><b>Delete</b></td>
+            <td><b>Conference name</b></td>
+            <td><b>Conference owner</b></td>
+            <td><b>Manage participants</b></td>
             <td><b>Edit</b></td>
+            <td><b>Delete</b></td>
 
 
-            <tr th:each="user : ${users}">
-                <td th:text="${user.getUserId()}"></td>
-                <td th:text="${user.getEmail()}"/>
+            <tr th:each="conf : ${conferences.getConferenceList()}">
+                <td th:text="${conf.name}"></td>
+                <td th:text="${conf.owner}"/>
                 <td >
-                    <form th:action="@{'/admin/users/delete/{id}'(id=${user.getUserId()})}" th:method="delete">
-                        <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
+                    <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-users" aria-hidden="true"></i>&nbsp; Manage</button>
                     </form>
                 </td>
                 <td >
-                    <form th:action="@{'/admin/users/edit/{id}'(id=${user.getUserId()})}" th:method="patch">
+                    <form th:action="@{'/dashboard/conferences/edit/{id}'(id=${conf.conferenceId})}" th:method="patch">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp; Edit</button>
+                    </form>
+                </td>
+                <td >
+                    <form th:action="@{'/dashboard/conferences/delete/{id}'(id=${conf.conferenceId})}" th:method="delete">
+                        <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
                     </form>
                 </td>
             </tr>

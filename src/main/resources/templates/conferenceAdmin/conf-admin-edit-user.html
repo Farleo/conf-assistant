@@ -13,6 +13,7 @@
     <title th:text="${confName}+ ' conference page - edit participants role'"/>
 </head>
 <body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3"  th:text="'Edit ' + ${user.email} + ' conference role'"></h4>

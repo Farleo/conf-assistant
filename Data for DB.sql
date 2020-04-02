@@ -3,15 +3,15 @@ insert into user(first_name, last_name, password, email) values
 ('John', 'Simpson', 'dsaewq321', 'simpson@gmail.com'),
 ('Fray', 'Bullok', '1qasw23ed', 'fray@gmail.com');
 
-insert into conference(name, alias, begin_date, finish_date, info, cover_photo, venue) values
+insert into conference(name, alias, begin_date, finish_date, info, cover_photo, venue, owner_id) values
 ('5G in 2020', '5G20', '2020-02-09', '2020-02-13', 'The 2020 edition of The European 5G Conference will take place in Brussels, Belgium on 29 & 30 January. Now in its 4th year, the European 5G Conference has an established reputation as Brussels’ leading meeting place for discussion on 5G policy.
-5G is here. All around the world, commercial deployment has begun. As we move from planning and preparation to deployment and launch, this year’s conference will look at early experiences that are being seen, and the challenges and opportunities that are ahead. How can Member States and Industry work together with the new Commission to deliver on the 5G vision?', '/picture/img/conf/1.jpg', 'Hungary, Budapesh st. ST. George 15'),
+5G is here. All around the world, commercial deployment has begun. As we move from planning and preparation to deployment and launch, this year’s conference will look at early experiences that are being seen, and the challenges and opportunities that are ahead. How can Member States and Industry work together with the new Commission to deliver on the 5G vision?', '/picture/img/conf/1.jpg', 'Hungary, Budapesh st. ST. George 15', 1),
 
-('IT in 2020', 'IT20', '2020-02-04', '2020-02-20', 'This year the event will be fully devoted to the preparation of the new generation of cross-border cooperation programmes under the NDICI Instrument. Most important, it will represent the first forum for common exchange on the draft “Joint paper on NDICI Interreg Strategic Programming 2021 – 2027”.', '/picture/img/conf/2.jpg', 'Ukraine, Lviv st. Zelena 185'),
+('IT in 2020', 'IT20', '2020-02-04', '2020-02-20', 'This year the event will be fully devoted to the preparation of the new generation of cross-border cooperation programmes under the NDICI Instrument. Most important, it will represent the first forum for common exchange on the draft “Joint paper on NDICI Interreg Strategic Programming 2021 – 2027”.', '/picture/img/conf/2.jpg', 'Ukraine, Lviv st. Zelena 185', 1),
 
 ('Busines Psychology', 'BP', '2020-05-04', '2020-05-25', 'Society of Consulting Psychology members are contributing to the definition of consulting psychology and the methods used by consultants. Former CE Chair DeWayne Kurpius explained that consultation helps individuals and organizations “become more efficient and effective” (1978). Consultants develop a climate for interdependent problem-solving, or they share their expertise in solving a specific problem.
 Later, Edgar Schein (1989) elaborated the process and systemic approach: “As the relationship between the consultant and organization evolves, the concept of who is the client comes gradually to be broadened so that the consultant may be working with individuals, groups, and organizational units at different times.”',
- '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83');
+ '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83', 1);
 
 insert into stream(name, conference_id) VALUES
 ('Conference Hall №1', 1),
