@@ -80,21 +80,26 @@ public class ParticipantServiceImpl implements ParticipantService {
 		participantRepository.saveAll(participants);
 	}
 
-	private List<Participants> toEntity(ParticipantDTO participantDTO) {
-		List<Participants> participantsList = new ArrayList<>();
-		User user = userRepository.findById(participantDTO.getParticipantId()).get();
-		Conference conference = conferenceRepository.findById(participantDTO.getConferenceId()).get();
-		for (String role: participantDTO.getConferenceRoles()) {
-			Participants participants = new Participants();
-			ParticipantsKey participantsKey = new ParticipantsKey();
-			participantsKey.setUser(user);
-			participantsKey.setConference(conference);
-			participantsKey.setParticipantType(participantsTypeRepository.findByName(role));
-			participants.setParticipantsKey(participantsKey);
-			participantsList.add(participants);
-		}
-		return participantsList;
+	@Override
+	public List<Long> findByUserIdAndTypeName (Long userId, String typeName) {
+		return participantRepository.findByUserIdAndTypeName(userId,typeName);
 	}
+	
+	private List<Participants> toEntity(ParticipantDTO participantDTO) {
+			List<Participants> participantsList = new ArrayList<>();
+			User user = userRepository.findById(participantDTO.getParticipantId()).get();
+			Conference conference = conferenceRepository.findById(participantDTO.getConferenceId()).get();
+			for (String role: participantDTO.getConferenceRoles()) {
+				Participants participants = new Participants();
+				ParticipantsKey participantsKey = new ParticipantsKey();
+				participantsKey.setUser(user);
+				participantsKey.setConference(conference);
+				participantsKey.setParticipantType(participantsTypeRepository.findByName(role));
+				participants.setParticipantsKey(participantsKey);
+				participantsList.add(participants);
+			}
+			return participantsList;
+		}
 
 
 	private ParticipantDTO toDTO(Long userId, Long conferenceId) {

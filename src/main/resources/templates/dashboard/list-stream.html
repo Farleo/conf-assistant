@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title>List stream</title>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<div style="text-align: center;">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">Streams</h4>
+        <form th:action="@{/conf/owner/stream/new}" method="get">
+            <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add Stream</button>
+        </form>
+        <br/>
+        <table class="table table-striped">
+
+            <td><b>Stream name</b></td>
+            <tr th:each="stream : ${listStreams}">
+            <td>
+                <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/' + ${stream.getStreamId()} + '/topic'}" th:text="${stream.name}"/>
+            </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+</div>
+</body>
+</html>

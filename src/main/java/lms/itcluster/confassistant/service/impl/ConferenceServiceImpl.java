@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.ConferenceRepository;
@@ -44,12 +43,8 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
-    public ListConferenceDTO getAllConferencesDTO() {
-        List<ConferenceDTO> list = new ArrayList<>();
-        for (Conference conference : conferenceRepository.findAll()) {
-            list.add(simpleMapper.toDto(conference));
-        }
-        return new ListConferenceDTO(list);
+    public ListConferenceDTO getListConferencesDTO() {
+        return new ListConferenceDTO(getAllConferencesDTO());
     }
 
     @Override
@@ -63,4 +58,14 @@ public class ConferenceServiceImpl implements ConferenceService {
         List<ConferenceDTO> dtos = conferenceList.stream().map(c->simpleMapper.toDto(c)).collect(Collectors.toList());
         return new ListConferenceDTO(dtos);
     }
+
+    @Override
+    public List<ConferenceDTO> getAllConferencesDTO() {
+        List<ConferenceDTO> list = new ArrayList<>();
+        for (Conference conference : conferenceRepository.findAll()) {
+            list.add(simpleMapper.toDto(conference));
+        }
+        return list;
+    }
+    
 }

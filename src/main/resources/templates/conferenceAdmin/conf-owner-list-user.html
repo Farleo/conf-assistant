@@ -18,7 +18,7 @@
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3"><span th:text="'List of participants in the ' + ${confName} + ' conference'"/></h4>
         <a th:href="${'/dashboard/conferences'}" th:method="POST">
-            <button type="submit" class="btn btn-success"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
         </a>
         <br/>
         <br/>
@@ -28,7 +28,7 @@
             <td><b>Email</b></td>
             <td><b>First Name</b></td>
             <td><b>Last Name</b></td>
-            <td><b>Roles</b></td>
+            <td><b>Conference Roles</b></td>
             <td><b>Edit</b></td>
             <td><b>Kick</b></td>
 
@@ -40,13 +40,13 @@
                 <td th:text="${currentUser.conferenceRoles}"/>
 
                 <td>
-                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/edit/' + ${currentUser.participantId}}" th:method="patch">
+                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/edit/' + ${currentUser.participantId}}" th:method="POST">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-edit fa-fw" aria-hidden="true"></i>&nbsp; Edit</button>
                     </form>
                 </td>
 
                 <td>
-                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/kick/' + ${currentUser.participantId}}" th:method="post">
+                    <form th:action="@{'/conf/owner/' +${currentUser.getConferenceId()} + '/kick/' + ${currentUser.participantId}}" th:method="POST">
                         <button type="submit" class="btn btn-danger"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp; Kick</button>
                     </form>
                 </td>

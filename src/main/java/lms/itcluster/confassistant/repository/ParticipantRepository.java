@@ -1,9 +1,7 @@
 package lms.itcluster.confassistant.repository;
 
-import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.ParticipantsKey;
-import lms.itcluster.confassistant.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +22,8 @@ public interface ParticipantRepository extends JpaRepository<Participants, Parti
 	@Modifying
 	@Query("delete from Participants p where p.participantsKey.user.userId=:userId and p.participantsKey.conference.conferenceId=:confId")
 	void deleteAllByUserIdAndConfId(@Param("userId") Long userId, @Param("confId") Long confId);
+
+	@Transactional
+	@Query("select p.participantsKey.conference.conferenceId from Participants p where p.participantsKey.user.userId=:userId and p.participantsKey.participantType.name=:typeName")
+	List<Long> findByUserIdAndTypeName(@Param("userId") Long userId, @Param("typeName") String typeName);
 }

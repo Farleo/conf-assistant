@@ -18,4 +18,6 @@ public interface ParticipantService {
 	 ParticipantDTO findParticipantById(Long userId, Long confId);
 
 	 void updateParticipantByConfOwner(ParticipantDTO participantDTO);
+	 
+	 List<Long> findByUserIdAndTypeName (Long userId, String typeName);
 }

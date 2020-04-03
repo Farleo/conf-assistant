@@ -47,7 +47,7 @@
                        type="submit">Manage users
                     </a>
                 </div>
-                <div sec:authorize="hasRole ('ROLE_CONFOWNER') || hasRole ('ROLE_ADMIN')">
+                <div sec:authorize="hasRole ('ROLE_CONFOWNER') || hasRole ('ROLE_ADMIN') || hasAuthority('admin')">
                     <a th:href="${'/dashboard/conferences'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)"
                        type="submit">Manage conference
                     </a>

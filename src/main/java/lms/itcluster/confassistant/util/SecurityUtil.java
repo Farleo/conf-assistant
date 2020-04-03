@@ -3,6 +3,8 @@ package lms.itcluster.confassistant.util;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
+import lms.itcluster.confassistant.service.ConferenceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,8 +56,7 @@ public final class SecurityUtil {
     }
     
     public static boolean userHasAccessToConf(Conference conference, CurrentUser currentUser){
-        return SecurityUtil.userHasConfOwnerRole(currentUser)
-                       && conference!= null
-                       && conference.getOwner().getUserId()==currentUser.getId();
+        return (conference!= null
+                        && (SecurityUtil.userHasConfOwnerRole(currentUser)  && conference.getOwner().getUserId()==currentUser.getId()));
     }
 }

@@ -18,7 +18,7 @@
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Conference dashboard</h4>
         <form th:action="@{/conf/owner/new}" method="get">
-            <button type="submit" class="btn btn-secondary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new Conference</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new Conference</button>
         </form>
         <br/>
         <table class="table table-striped">
@@ -31,7 +31,9 @@
 
 
             <tr th:each="conf : ${conferences.getConferenceList()}">
-                <td th:text="${conf.name}"></td>
+                <td>
+                    <a th:href="@{'/dashboard/conferences/' + ${conf.conferenceId} + '/stream/'}" th:text="${conf.name}"/>
+                </td>
                 <td th:text="${conf.owner}"/>
                 <td >
                     <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">

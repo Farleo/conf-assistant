@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Conference;
 
 import java.util.List;
@@ -13,7 +12,9 @@ public interface ConferenceService {
 
     Conference findById(long id);
 
-    ListConferenceDTO getAllConferencesDTO();
+    List<ConferenceDTO> getAllConferencesDTO();
+
+    ListConferenceDTO getListConferencesDTO();
 
     ConferenceDTO getConferenceDTOById(Long id);
 

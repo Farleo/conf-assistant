@@ -37,7 +37,7 @@ public class PageController {
 
     @RequestMapping(value = "/")
     public String getList(Model model) {
-        model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
+        model.addAttribute("conferences", conferenceService.getListConferencesDTO());
         return "welcome";
     }
 

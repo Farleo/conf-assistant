@@ -30,7 +30,7 @@ public class AdminController {
 		return "admin/manage-users";
 	}
 
-	@GetMapping(value = "/admin/users/new")
+	@PostMapping(value = "/admin/users/create")
 	private String addNewUserByAdmin (Model model){
 		model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
 		return "admin/add-user";
