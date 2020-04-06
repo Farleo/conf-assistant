@@ -1,9 +1,8 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.entity.User;
-
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class UserDTO {
@@ -12,8 +11,11 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String password;
+    @NotEmpty(message = "Email must by not empty")
+    @Email(message = "Incorrectly formed email address")
     private String email;
     private String info;
+    @NotEmpty(message = "Must be not empty")
     private Set<String> roles = new HashSet<>();
 
     public UserDTO() {

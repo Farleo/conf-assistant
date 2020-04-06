@@ -17,14 +17,13 @@
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Edit User </h4>
-        <form th:action="@{/admin/users/edit/}" th:object="${user}" method="post" class="needs-validation" novalidate="" >
+        <form th:action="@{'/admin/users/edit/' + ${userDTO.getUserId()}}" th:object="${userDTO}" method="post" class="needs-validation" novalidate="" >
             <div class="mb-3">
-                <input id="userId" name="userId" th:field="*{userId}" class="form-control" type="hidden"/>
-                <label for="email">Email * <span class="text-muted">(Required and must be unique)</span></label>
-                <input type="email" name="email" th:field="*{email}" class="form-control" id="email">
-                <div class="invalid-feedback">
-                    Please enter a valid email address for shipping updates.
-                </div>
+                <input id="userId" th:for="userId" th:field="*{userId}" class="form-control" type="hidden"/>
+                <label th:for="email">Email *</label>
+                <div th:if="${badEmail}" class="text-danger">This email is already exist</div>
+                <div th:errors="*{email}" class="text-danger"></div>
+                <input type="email" th:field="*{email}" class="form-control"/>
             </div>
 
             <div class="mb-3">
@@ -36,20 +35,14 @@
                 <div class="col-md-6 mb-3">
                     <label for="firstName">First name </label>
                     <input type="text" name="firstName" th:field="*{firstName}" class="form-control" id="firstName" placeholder="" value="" required="">
-                    <div class="invalid-feedback">
-                        Valid first name is required.
-                    </div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="lastName">Last name</label>
                     <input type="text" name="lastName" th:field="*{lastName}" class="form-control" id="lastName" placeholder="" value="" required="">
-                    <div class="invalid-feedback">
-                        Valid last name is required.
-                    </div>
                 </div>
             </div>
             <div style="text-align: left">
-                <div class="mb-3">Roles<span class="text-muted"></span></div>
+                <div class="mb-3">Roles *<span th:errors="*{roles}" class="text-danger"></span></div>
                 <div style="font-style: italic" th:each="currentRole : ${availableRoles}">
                     <input type="checkbox" id="roles" name="roles" th:field="*{roles}" th:value="${currentRole}" th:text="${currentRole.substring(5)}"/>
                 </div>

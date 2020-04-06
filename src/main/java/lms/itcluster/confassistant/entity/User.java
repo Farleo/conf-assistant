@@ -3,6 +3,8 @@ package lms.itcluster.confassistant.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,8 @@ public class  User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NotNull
+    @Email
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
