@@ -22,6 +22,12 @@ public class Question {
     @Column(name = "created", nullable = false)
     private Time created;
 
+    @Column(name = "selected", nullable = false, columnDefinition = "tinyint(1) default 0")
+    private boolean selected;
+
+    @Column(name = "deleted", nullable = false, columnDefinition = "tinyint(1) default 0")
+    private boolean deleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     @JsonIgnore
@@ -103,4 +109,19 @@ public class Question {
         this.topic = topic;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

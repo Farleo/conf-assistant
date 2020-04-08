@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
@@ -27,13 +26,15 @@ public class StreamMapper extends AbstractMapper<Stream, StreamDTO> {
     private final ModelMapper modelMapper;
     private final ConferenceRepository conferenceRepository;
     private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public StreamMapper(ModelMapper modelMapper, ConferenceRepository conferenceRepository, TopicRepository topicRepository) {
+    public StreamMapper(ModelMapper modelMapper, ConferenceRepository conferenceRepository, TopicRepository topicRepository, UserRepository userRepository) {
         super(Stream.class, StreamDTO.class);
         this.modelMapper = modelMapper;
         this.conferenceRepository = conferenceRepository;
         this.topicRepository = topicRepository;
+        this.userRepository = userRepository;
     }
 
     @PostConstruct
@@ -41,10 +42,12 @@ public class StreamMapper extends AbstractMapper<Stream, StreamDTO> {
         modelMapper.createTypeMap(Stream.class, StreamDTO.class)
                 .addMappings(mapping -> mapping.skip(StreamDTO::setTopicList))
                 .addMappings(mapping -> mapping.skip(StreamDTO::setConference))
+                .addMappings(mapping -> mapping.skip(StreamDTO::setModerator))
                 .setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(StreamDTO.class, Stream.class)
                 .addMappings(mapping -> mapping.skip(Stream::setTopicList))
                 .addMappings(mapping -> mapping.skip(Stream::setConference))
+                .addMappings(mapping -> mapping.skip(Stream::setModerator))
                 .setPostConverter(toEntityConverter());
     }
 
@@ -52,6 +55,7 @@ public class StreamMapper extends AbstractMapper<Stream, StreamDTO> {
     protected void mapSpecificFieldsInEntity(Stream source, StreamDTO destination) {
         destination.setConference(source.getConference().getConferenceId());
         destination.setTopicList(setTopicDTO(source));
+        destination.setModerator(source.getModerator().getUserId());
     }
 
     private List<TopicDTO> setTopicDTO(Stream stream) {
@@ -66,6 +70,7 @@ public class StreamMapper extends AbstractMapper<Stream, StreamDTO> {
     protected void mapSpecificFieldsInDto(StreamDTO source, Stream destination) {
         destination.setConference(conferenceRepository.findById(source.getConference()).get());
         destination.setTopicList(setTopic(source));
+        destination.setModerator(userRepository.findById(source.getModerator()).get());
     }
 
     private List<Topic> setTopic(StreamDTO stream) {

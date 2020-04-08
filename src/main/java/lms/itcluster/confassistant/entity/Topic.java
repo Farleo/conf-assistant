@@ -1,10 +1,13 @@
 package lms.itcluster.confassistant.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lms.itcluster.confassistant.annotation.TopicDataFieldGroup;
+import lms.itcluster.confassistant.annotation.TopicDataInfo;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,18 +21,23 @@ public class Topic {
     private long topicId;
 
     @Column(name = "name", nullable = false, unique = true)
+    @TopicDataFieldGroup
     private String name;
 
     @Column(name = "date", nullable = false)
-    private Date date;
+    @TopicDataFieldGroup
+    private LocalDate date;
 
     @Column(name = "begin_time", nullable = false)
+    @TopicDataFieldGroup
     private Time beginTime;
 
     @Column(name = "finish_time", nullable = false)
+    @TopicDataFieldGroup
     private Time finishTime;
 
     @Column(name = "info", nullable = false, length = 2000)
+    @TopicDataInfo
     private String info;
 
     @Column(name = "is_active", nullable = false)
@@ -58,6 +66,14 @@ public class Topic {
         return coverPhoto;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public void setCoverPhoto(String coverPhoto) {
         this.coverPhoto = coverPhoto;
     }
@@ -76,14 +92,6 @@ public class Topic {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public Time getBeginTime() {

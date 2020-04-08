@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.dto;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class ConferenceDTO {

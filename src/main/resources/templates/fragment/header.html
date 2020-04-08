@@ -23,22 +23,22 @@
             <a href="/" class="navbar-brand"><img style="max-height: 40px" src="/picture/img/logo/logo.jpg" alt="logo"></a>
             <form class="form-inline">
                 <div sec:authorize="hasRole ('ROLE_USER') && hasAuthority('visitor')">
-                    <a th:href="${'/profile'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)"
+                    <a th:href="${'/complete-sign-up-guest'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
                        type="submit">My profile
                     </a>
                 </div>
                 <div sec:authorize="hasRole ('ROLE_USER') && hasAuthority('speaker')">
-                    <a th:href="${'/cabinet'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)"
+                    <a th:href="${'/cabinet'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
                        type="submit">My cabinet
                     </a>
                 </div>
                 <div sec:authorize="hasRole ('ROLE_ADMIN') && hasAuthority('admin')">
-                    <a th:href="${'/cabinet'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)"
+                    <a th:href="${'/cabinet'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
                        type="submit">My cabinet
                     </a>
                 </div>
-                <div sec:authorize="hasRole ('ROLE_CONFOWNER') && hasAuthority('moder')">
-                    <a th:href="${'/cabinet'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94)"
+                <div sec:authorize="hasRole ('ROLE_USER') && hasAuthority('moder')">
+                    <a th:href="${'/moderator'}" class="btn my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
                        type="submit">My cabinet
                     </a>
                 </div>

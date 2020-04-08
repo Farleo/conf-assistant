@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 
     Question findByQuestion(String question);
+
+    Question findBySelected(boolean selected);
 }

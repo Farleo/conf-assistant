@@ -1,0 +1,115 @@
+$(document).ready(function () {
+
+    $("#refresh").click(function () {
+        show();
+    });
+
+
+    $("#OrderBy").click(function () {
+        $('#Text').empty();
+        var button;
+        if (orderBy === "Created") {
+            button = "Order by rating";
+            orderBy = "Rating";
+        } else {
+            button = "Order by time";
+            orderBy = "Created";
+        }
+        $('#Text').append(button);
+        show();
+    });
+
+        show();
+
+});
+
+
+var orderBy = "Rating";
+var intervalID;
+
+function fun1() {
+    var chbox;
+    chbox=document.getElementById('AutoRefresh');
+    console.log(chbox);
+
+    if (chbox.checked) {
+        intervalID = setInterval(show, 1500);
+    }
+    else {
+        clearInterval(intervalID);
+    }
+}
+
+function show() {
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
+        cache: false,
+        success: function (result) {
+            $('#getResultDiv div').empty();
+            $.each(result, function (i, question) {
+                if (!question.deleted && !question.selected) {
+                    var variable =
+                        "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                        "<div class='row'>" +
+                        "<div class='btn'>" +
+                        "<i class='fa fa-heart' style='color: #d80700;'>" + ' ' + question.rating + "</i>" +
+                        "</div>" +
+                        "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                        "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                        "</div>" +
+                        "</div>" +
+                        "<div id='select" + i + "' class='btn btn-outline-light'>Select</div>" +
+                        "</div>" +
+                        "</div>";
+
+                    $('#getResultDiv .list-group').append(variable);
+                    $('#select' + i).click(function () {
+                        select(question);
+                    });
+                }
+                if (question.selected) {
+                    console.log(question);
+                    $('#selectedQuestion div').empty();
+                    var selectedQ =
+                        "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                        "<div class='row'>" +
+                        "<div class='btn'>" +
+                        "<i class='fa fa-heart' style='color: #d80700;'>" + ' ' + question.rating + "</i>" +
+                        "</div>" +
+                        "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                        "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+                    $('#selectedQuestion .text-muted').append(selectedQ);
+                }
+            });
+        },
+        error: function (e) {
+            $("#getResultDiv").html("<strong>Error</strong>");
+            console.log("ERROR: ", e);
+        }
+    });
+}
+
+function select(question) {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: "http://localhost:8080/select/" + question.questionId + "/" + $('#topicId').val(),
+        dataType: 'json',
+        success: function (result) {
+            if (result) {
+                show();
+                console.log(result)
+            }
+            else {
+                show();
+                console.log(result)
+            }
+        }
+    });
+}
+

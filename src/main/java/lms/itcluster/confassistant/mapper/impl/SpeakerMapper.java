@@ -43,6 +43,7 @@ public class SpeakerMapper extends AbstractMapper<User, SpeakerDTO> {
 
     @Override
     protected void mapSpecificFieldsInDto(SpeakerDTO source, User destination) {
+
     }
 
 }

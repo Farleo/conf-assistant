@@ -2,8 +2,12 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
+import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Participants;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ConferenceRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ConferenceService;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +24,10 @@ import java.util.stream.Collectors;
 public class ConferenceServiceImpl implements ConferenceService {
 
     @Autowired
-    private ConferenceRepository conferenceRepository;
-    
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ConferenceRepository conferenceRepository;
 
     @Autowired
     @Qualifier("simpleConferenceMapper")
@@ -48,6 +53,25 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    public ListConferenceDTO getAllConferenceDTOForCurrentModerator(CurrentUser currentUser) {
+        List<ConferenceDTO> list = new ArrayList<>();
+        User user = userRepository.findById(currentUser.getId()).get();
+        for (Participants participants : user.getParticipants()) {
+            if (participants.getParticipantsKey().getParticipantType().getName().equals("moder")) {
+                list.add(simpleMapper.toDto(participants.getParticipantsKey().getConference()));
+            }
+        }
+        deleteAllUnnecessaryStreamDTO(list, currentUser);
+        return new ListConferenceDTO(list);
+    }
+
+    private void deleteAllUnnecessaryStreamDTO(List<ConferenceDTO> list, CurrentUser currentUser) {
+        for (ConferenceDTO conferenceDTO : list) {
+            conferenceDTO.getStreamList().removeIf(nextDTO -> nextDTO.getModerator() != currentUser.getId());
+        }
+    }
+
+    @Override
     public ConferenceDTO getConferenceDTOById(Long id) {
         return mapper.toDto(conferenceRepository.findById(id).get());
     }
@@ -67,5 +91,5 @@ public class ConferenceServiceImpl implements ConferenceService {
         }
         return list;
     }
-    
+
 }

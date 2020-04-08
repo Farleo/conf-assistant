@@ -10,7 +10,6 @@ import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
-import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 @Component

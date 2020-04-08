@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -77,12 +77,17 @@
                 <div class="col-6">
                     <img th:src="*{coverPhoto}" class="card-img border" alt="...">
                 </div>
-                <div class="col-6">
-                    <div class="card-body">
-                        <h1 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h1>
+                <div class="col-6" style="padding-left: 10px; padding-top: 10px">
+                        <div class="d-flex justify-content-between">
+                            <h1 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h1>
+                            <a th:if="${canEdit}"
+                               th:href="${'/edit/topic/main/' + topic.getTopicId()}">
+                                <button class="btn btn-outline-light text-secondary" >Edit</button>
+                            </a>
+                        </div>
                         <h6 id="name" class="form-text text-muted" th:text="${topic.getStream() + ', since ' + topic.getBeginTime() + ' to ' + topic.getFinishTime()}"></h6>
                         <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -91,8 +96,12 @@
         <div class="card border-0 col-7" >
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
+                    <div class="d-flex justify-content-between">
                         <h3 class="text-muted">About Topic</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/edit/topic/info/' + topic.getTopicId()}">
+                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -106,8 +115,12 @@
         <div class="card col-7 border-0">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
+                    <div class="d-flex justify-content-between">
                         <h3 class="text-muted">Speaker</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/edit/topic/speaker/' + topic.getTopicId()}">
+                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -130,15 +143,20 @@
         <div class="card border-0 col-7">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
-                        <h3 class="text-muted">Question list</h3>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="text-muted">Question's list</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/moderator/questions/' + topic.getTopicId()}">
+                            <button class="btn btn-outline-light text-secondary" >Manage questions</button>
+                        </a>
                     </div>
                 </div>
             </div>
-
-            <div class="row no-gutters" style="margin-top: 20px">
-                <div class="col-12">
-
+            <div class="row-12 border" style="margin-top: 30px; margin-bottom: 30px">
+                <div class="card border-0">
+                    <div id="selectedQuestion" class="d-flex justify-content-between">
+                        <div class="text-muted"></div>
+                    </div>
                 </div>
             </div>
 

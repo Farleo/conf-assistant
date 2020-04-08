@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.service.impl;
 
+import lms.itcluster.confassistant.annotation.UserDataFieldGroup;
+import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
@@ -8,24 +10,36 @@ import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.util.DataUtil;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +50,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     @Qualifier("userLoginMapper")
     private Mapper<User, UserDTO> mapper;
+
+    @Autowired
+    @Qualifier("speakerMapper")
+    private Mapper<User, SpeakerDTO> speakerMapper;
 
 
     @Override
@@ -125,4 +143,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = mapper.toEntity(userDTO);
         userRepository.save(user);
     }
+
+    @Override
+    public SpeakerDTO getSpeakerById(Long id) {
+        return speakerMapper.toDto(userRepository.findById(id).get());
+    }
+
+    @Override
+    @Transactional
+    public void updateSpeaker(SpeakerDTO speakerDTO, MultipartFile photo) throws IOException {
+        User speakerDb = userRepository.findById(speakerDTO.getUserId()).get();
+        User updatedData = speakerMapper.toEntity(speakerDTO);
+
+        String oldProfilePhotoPath = speakerDb.getPhoto();
+
+        if (!photo.isEmpty()) {
+            String newProfilePhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+            speakerDb.setPhoto(newProfilePhotoPath);
+        }
+
+        DataUtil.copyFields(updatedData, speakerDb, UserDataFieldGroup.class);
+
+        userRepository.save(speakerDb);
+        removeCoverPhotoIfTransactionSuccess(oldProfilePhotoPath);
+    }
+
+    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                imageStorageService.removeOldImage(oldCoverPhoto);
+            }
+        });
+    }
+
+
 }

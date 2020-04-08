@@ -3,10 +3,12 @@ package lms.itcluster.confassistant.controller;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.*;
+import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
 import lms.itcluster.confassistant.service.ParticipantService;
+import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,6 +37,9 @@ public class PageController {
     @Autowired
     private StreamRepository streamRepository;
 
+    @Autowired
+    private RoleService roleService;
+
     @RequestMapping(value = "/")
     public String getList(Model model) {
         model.addAttribute("conferences", conferenceService.getListConferencesDTO());
@@ -48,8 +53,8 @@ public class PageController {
     }
 
     @GetMapping("/topic/{id}")
-    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        TopicDTO topicDTO = topicService.getTopicDTOBuId(id);
+    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException, TopicNotFoundException {
+        TopicDTO topicDTO = topicService.getTopicDTOById(id);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         if (currentUser == null) {
@@ -63,16 +68,17 @@ public class PageController {
                 model.addAttribute("isPresentUser", true);
             }
             model.addAttribute("user", currentUser);
+            model.addAttribute("canEdit", SecurityUtil.canCurrentUserEditTopic(currentUser, stream));
         }
         return "topic";
     }
 
     @GetMapping("/topic/join/{id}")
-    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) {
-       Topic topic = topicService.findById(id);
-       Conference conference = topic.getStream().getConference();
-       UserDTO user = userService.findById(currentUser.getId());
-       participantService.addParticipant(user,conference);
-       return "redirect:/topic/{id}";
+    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+        Topic topic = topicService.findById(id);
+        Conference conference = topic.getStream().getConference();
+        UserDTO user = userService.findById(currentUser.getId());
+        participantService.addParticipant(user,conference);
+        return "redirect:/topic/{id}";
     }
 }

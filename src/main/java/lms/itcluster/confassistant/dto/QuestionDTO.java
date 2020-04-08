@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.dto;
 
+import javax.persistence.Column;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Set;
@@ -13,8 +14,11 @@ public class QuestionDTO {
     private Long user;
     private Set<Long> likesSet;
     private int rating;
+    private boolean selected;
+    private boolean deleted;
 
     public QuestionDTO() {
+
     }
 
     public Long getQuestionId() {
@@ -71,5 +75,21 @@ public class QuestionDTO {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

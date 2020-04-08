@@ -1,20 +1,14 @@
 package lms.itcluster.confassistant.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lms.itcluster.confassistant.entity.Question;
-import lms.itcluster.confassistant.entity.Stream;
-import lms.itcluster.confassistant.entity.User;
-
-import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 public class TopicDTO {
 
     private long topicId;
     private String name;
-    private Date date;
+    private LocalDate date;
     private Time beginTime;
     private Time finishTime;
     private String info;
@@ -25,6 +19,14 @@ public class TopicDTO {
     private List<QuestionDTO> questionListDTO;
 
     public TopicDTO() {
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public long getTopicId() {
@@ -41,14 +43,6 @@ public class TopicDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public Time getBeginTime() {

@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lms.itcluster.confassistant.annotation.UserDataFieldGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,9 +21,11 @@ public class  User {
     private Long userId;
 
     @Column(name = "first_name", length = 45)
+    @UserDataFieldGroup
     private String firstName;
 
     @Column(name = "last_name", length = 45)
+    @UserDataFieldGroup
     private String lastName;
 
     @Column(name = "password", nullable = false)
@@ -37,6 +40,7 @@ public class  User {
     private String photo;
 
     @Column(name = "info", length = 1000)
+    @UserDataFieldGroup
     private String info;
 
     @ManyToMany(mappedBy = "likesSet")
@@ -49,6 +53,9 @@ public class  User {
 
     @OneToMany(mappedBy = "speaker")
     private List<Topic> topicList;
+
+    @OneToMany(mappedBy = "moderator")
+    private List<Stream> streams;
 
     @OneToMany(mappedBy = "participantsKey.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<Participants> participants;
@@ -170,6 +177,14 @@ public class  User {
 
     public void setRoles(Set<Roles> roles) {
         this.roles = roles;
+    }
+
+    public List<Stream> getStreams() {
+        return streams;
+    }
+
+    public void setStreams(List<Stream> streams) {
+        this.streams = streams;
     }
 
     @Override

@@ -15,4 +15,8 @@ public interface QuestionService {
     List<QuestionDTO> getSortedQuestionDTOListByRating(Long id);
 
     List<QuestionDTO> getSortedQuestionDTOListByDate(Long id);
+
+    boolean selectQuestion(Long questionId);
+
+    boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList);
 }

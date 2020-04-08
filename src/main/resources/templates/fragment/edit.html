@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+    <title>Conference Assistant</title>
+</head>
+<body>
+<div th:fragment="header (topicId)">
+<ul class="nav nav-tabs  nav-fill"  >
+    <li class="nav-item" >
+        <a th:href="${'/edit/topic/main/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('main') ? 'active':''}">Main</a>
+    </li>
+    <li class="nav-item">
+        <a  th:href="${'/edit/topic/speaker/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('speaker') ? 'active':''}">Speaker</a>
+    </li>
+    <li class="nav-item" >
+        <a  th:href="${'/edit/topic/info/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('info') ? 'active':''}">Info</a>
+    </li>
+</ul>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="/static/bootstrap/js/jquery.slim.min.js"></script>
+<script src="/static/bootstrap/js/popper.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

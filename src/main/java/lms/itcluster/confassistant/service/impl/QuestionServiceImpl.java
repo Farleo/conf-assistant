@@ -57,6 +57,27 @@ public class QuestionServiceImpl implements QuestionService {
         return dtoList;
     }
 
+    @Override
+    public boolean selectQuestion(Long questionId) {
+        Question question = questionRepository.findById(questionId).get();
+        question.setSelected(true);
+        questionRepository.save(question);
+        return true;
+    }
+
+    @Override
+    public boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList) {
+        for (QuestionDTO questionDTO : questionDTOList) {
+            if (questionDTO.isSelected()) {
+                Question question = questionRepository.findById(questionDTO.getQuestionId()).get();
+                question.setSelected(false);
+                question.setDeleted(true);
+                questionRepository.save(question);
+            }
+        }
+        return true;
+    }
+
     private List<QuestionDTO> getQuestionDTOList(Long id) {
         Topic topic = topicRepository.findById(id).get();
         List<QuestionDTO> dtoList = new ArrayList<>();

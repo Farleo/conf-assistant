@@ -23,6 +23,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers( "/like/**", "/save-question/**").hasAnyRole("ADMIN", "CONFOWNER", "USER")
+                .antMatchers( "/moderator/**").hasRole("USER")
+                .antMatchers( "/moderator/**").hasAuthority("moder")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("conf/owner/").hasAnyRole("Admin", "CONFOWNER")
                 .anyRequest().permitAll();
@@ -46,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 });
         http.logout()
                 .logoutUrl("/log-out")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
         http.csrf().disable();

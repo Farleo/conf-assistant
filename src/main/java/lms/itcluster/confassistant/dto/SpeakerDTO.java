@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.dto;
 
 public class SpeakerDTO {
+    private Long userId;
     private String firstName;
     private String lastName;
     private String photo;
@@ -48,5 +49,13 @@ public class SpeakerDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

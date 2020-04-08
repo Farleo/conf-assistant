@@ -13,10 +13,11 @@ insert into conference(name, alias, begin_date, finish_date, info, cover_photo, 
 Later, Edgar Schein (1989) elaborated the process and systemic approach: “As the relationship between the consultant and organization evolves, the concept of who is the client comes gradually to be broadened so that the consultant may be working with individuals, groups, and organizational units at different times.”',
  '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83', 1);
 
-insert into stream(name, conference_id) VALUES
-('Conference Hall №1', 1),
-('Conference Hall №2', 2),
-('Conference Hall №3', 3);
+
+insert into stream(name, conference_id, moderator_id) VALUES
+('Conference Hall №1', 1, 38),
+('Conference Hall №2', 2, 37),
+('Conference Hall №3', 3, 39);
 
 insert into user(first_name, last_name, password, info, photo, email) VALUES
 ('Carla', 'Walton', '147852369', 'Again, we configured the relationship before. Hence, we only need to tell JPA, where can it find that configuration. Note, that we could use this solution to address the previous problem: students rating courses. However, it feels weird to create a dedicated primary key unless we have to. Moreover, from an RDBMS perspective, in the relationship', '/picture/img/user/1.jpg', 'walton@gmail.com'),
@@ -46,6 +47,11 @@ insert into user(email, password) values
 ('13email@gmail.com', ''), ('14email@gmail.com', ''), ('15email@gmail.com', ''), ('16email@gmail.com', ''), ('17email@gmail.com', ''), ('18email@gmail.com', ''),
 ('19email@gmail.com', ''), ('20email@gmail.com', ''), ('21email@gmail.com', ''), ('22email@gmail.com', ''), ('23email@gmail.com', ''), ('24email@gmail.com', ''),
 ('25email@gmail.com', ''), ('26email@gmail.com', ''), ('27email@gmail.com', ''), ('28email@gmail.com', ''), ('29email@gmail.com', ''), ('30email@gmail.com', '');
+
+insert into user(first_name, last_name, password, email) values
+('Alex', 'Fox', 'password', 'alex@gmail.com'),
+('Olena', 'Hrechko', 'hrechko', 'hrechko@gmail.com'),
+('Maruv', 'Pavl', 'pavl', 'maruc@gmail.com');
 
 insert into question(question, topic_id, user_id, created) VALUES
 ('You will build an application that store?', 1, 1, '00:18:11'), (' POJOs (Plain Old Java Objects) in a memory-based?', 1, 1, '00:45:11'),
@@ -94,7 +100,10 @@ insert into user_roles(roles_id, user_id) values
 (3, 7), (3, 8), (3, 9), (3, 10), (3, 11), (3, 12), (3, 13), (3, 14),
 (3, 15), (3, 16), (3, 17), (3, 18), (3, 19), (3, 20), (3, 21), (3, 22),
 (3, 23), (3, 24), (3, 25), (3, 26), (3, 27), (3, 28), (3, 29), (3, 30),
-(3, 31), (3, 32), (3, 33), (3, 34), (3, 35), (3, 36);
+(3, 31), (3, 32), (3, 33), (3, 34), (3, 35), (3, 36),
+(3, 37),
+(3, 38),
+(3, 39);
 
 INSERT INTO participant_type (type_id, name)
 VALUES (1, 'visitor');
@@ -111,5 +120,8 @@ INSERT INTO participants (user_id, conference_id, type_id) VALUES
 (4, 1, 2), (5, 2, 2), (6, 3, 2),
 (7, 1, 1), (8, 1, 1), (9, 1, 1), (10, 1, 1), (11, 1, 1), (12, 1, 1), (13, 1, 1), (14, 1, 1), (15, 1, 1), (16, 1, 1),
 (17, 2, 1), (18, 2, 1), (19, 2, 1), (20, 2, 1), (21, 2, 1), (22, 2, 1), (23, 2, 1), (24, 2, 1), (25, 2, 1), (26, 2, 1),
-(27, 3, 1), (28, 3, 1), (29, 3, 1), (30, 3, 1), (31, 3, 1), (32, 3, 1), (33, 3, 1), (34, 3, 1), (35, 3, 1), (36, 3, 1);
+(27, 3, 1), (28, 3, 1), (29, 3, 1), (30, 3, 1), (31, 3, 1), (32, 3, 1), (33, 3, 1), (34, 3, 1), (35, 3, 1), (36, 3, 1),
+(37, 2, 3),
+(38, 1, 3),
+(39, 3, 3);
 

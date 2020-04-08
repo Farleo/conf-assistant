@@ -1,9 +1,5 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Topic;
-
-import javax.persistence.*;
 import java.util.List;
 
 public class StreamDTO {
@@ -12,6 +8,7 @@ public class StreamDTO {
     private String name;
     private Long conference;
     private List<TopicDTO> topicList;
+    private Long moderator;
 
     public StreamDTO() {
     }
@@ -46,5 +43,13 @@ public class StreamDTO {
 
     public void setTopicList(List<TopicDTO> topicList) {
         this.topicList = topicList;
+    }
+
+    public Long getModerator() {
+        return moderator;
+    }
+
+    public void setModerator(Long moderator) {
+        this.moderator = moderator;
     }
 }

@@ -24,6 +24,10 @@ public class Stream {
     @OneToMany(mappedBy = "stream")
     private List<Topic> topicList;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "moderator_id", nullable = false)
+    private User moderator;
+
     public Stream() {
         super();
     }
@@ -58,6 +62,14 @@ public class Stream {
 
     public void setTopicList(List<Topic> topicList) {
         this.topicList = topicList;
+    }
+
+    public User getModerator() {
+        return moderator;
+    }
+
+    public void setModerator(User moderator) {
+        this.moderator = moderator;
     }
 
     @Override

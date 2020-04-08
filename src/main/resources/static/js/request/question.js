@@ -84,43 +84,61 @@ function show() {
         success: function (result) {
             $('#getResultDiv div').empty();
             $.each(result, function (i, question) {
-                var k = i + 1;
-                var variable =
-                    "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
-                    "<div class='row'>" +
-                    "<button id='" + i + "' type='button' class='btn btn-link'>" +
-                    "<i class='fa fa-heart' style='color: #9c9c9c;'>" + ' ' + question.rating + "</i>" +
-                    "</button>" +
-                    "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
-                    "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
-                    "</div>" +
-                    "</div>" +
+                if (!question.deleted && !question.selected) {
+                    var variable =
+                        "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                        "<div class='row'>" +
+                        "<button id='" + i + "' type='button' class='btn btn-link'>" +
+                        "<i class='fa fa-heart' style='color: #9c9c9c;'>" + ' ' + question.rating + "</i>" +
+                        "</button>" +
+                        "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                        "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                        "</div>" +
+                        "</div>" +
 
-                    "</div>" +
-                    "</div>";
+                        "</div>" +
+                        "</div>";
 
-                $.each(question.likesSet, function (j, userId) {
-                    if (userId == $("#currentGuest").val()) {
-                        variable =
-                            "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
-                            "<div class='row'>" +
-                            "<button id='" + i + "' type='button' class='btn btn-link'>" +
-                            "<i class='fa fa-heart' style='color: #d80700;'>" + ' ' + question.rating + "</i>" +
-                            "</button>" +
-                            "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
-                            "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
-                            "</div>" +
-                            "</div>" +
+                    $.each(question.likesSet, function (j, userId) {
+                        if (userId == $("#currentGuest").val()) {
+                            variable =
+                                "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                                "<div class='row'>" +
+                                "<button id='" + i + "' type='button' class='btn btn-link'>" +
+                                "<i class='fa fa-heart' style='color: #d80700;'>" + ' ' + question.rating + "</i>" +
+                                "</button>" +
+                                "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                                "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                                "</div>" +
+                                "</div>" +
 
-                            "</div>" +
-                            "</div>";
-                    }
-                });
+                                "</div>" +
+                                "</div>";
+                        }
+                    });
 
-                $('#getResultDiv .list-group').append(variable);
-                $('#' + i).click(function () {
-                    sendLike(i, question);
-                });
+                    $('#getResultDiv .list-group').append(variable);
+                    $('#' + i).click(function () {
+                        sendLike(i, question);
+                    });
+                }
+                if (question.selected) {
+                    console.log(question);
+                    $('#selectedQuestion div').empty();
+                    var selectedQ =
+                        "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
+                        "<div class='row'>" +
+                        "<div class='btn'>" +
+                        "<i class='fa fa-heart' style='color: #9c9c9c;'>" + ' ' + question.rating + "</i>" +
+                        "</div>" +
+                        "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
+                        "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+                    $('#selectedQuestion .text-muted').append(selectedQ);
+                }
             });
         },
         error: function (e) {

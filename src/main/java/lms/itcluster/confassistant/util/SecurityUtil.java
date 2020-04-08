@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.util;
 
 import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
@@ -18,6 +19,17 @@ public final class SecurityUtil {
         CurrentUser currentUser = new CurrentUser(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(currentUser, currentUser.getPassword(), currentUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    public static boolean canCurrentUserEditTopic(CurrentUser currentUser, Stream stream) {
+        for (GrantedAuthority authority : currentUser.getAuthorities()) {
+            if (authority.getAuthority().equals("moder")) {
+                if (stream.getModerator().getUserId() == currentUser.getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean userHasAdminRole(CurrentUser currentUser){
@@ -47,14 +59,14 @@ public final class SecurityUtil {
     public static boolean userHasConfVisitorRole(CurrentUser currentUser){
         return userHasAuthority(currentUser, "visitor");
     }
-    
+
     public static boolean userHasAuthority(CurrentUser currentUser, String role) {
         if(currentUser==null){
             return false;
         }
         return  currentUser.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(role));
     }
-    
+
     public static boolean userHasAccessToConf(Conference conference, CurrentUser currentUser){
         return (conference!= null
                         && (SecurityUtil.userHasConfOwnerRole(currentUser)  && conference.getOwner().getUserId()==currentUser.getId()));
