@@ -1,10 +1,9 @@
 package lms.itcluster.confassistant.dto;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-public class ConferenceDTO {
+public class ConferenceDTO extends DTO {
     private Long conferenceId;
     private String name;
     private String alias;
@@ -18,9 +17,8 @@ public class ConferenceDTO {
     private String owner;
 
 
-
     public ConferenceDTO() {
-        }
+    }
 
     public Long getConferenceId() {
         return conferenceId;
@@ -101,12 +99,17 @@ public class ConferenceDTO {
     public void setStreamList(List<StreamDTO> streamList) {
         this.streamList = streamList;
     }
-    
+
     public String getOwner() {
         return owner;
     }
-    
+
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public Long getId() {
+        return conferenceId;
     }
 }

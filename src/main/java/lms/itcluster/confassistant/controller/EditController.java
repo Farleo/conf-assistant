@@ -1,9 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.DateDTO;
-import lms.itcluster.confassistant.dto.EditTopicDTO;
-import lms.itcluster.confassistant.dto.SpeakerDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.TopicService;
@@ -39,12 +36,6 @@ public class EditController {
         return "main";
     }
 
-    @PostMapping(value = "/getDays")
-    @ResponseBody
-    public List<Integer> getDays(@RequestBody DateDTO dateDTO) {
-        return staticDataService.getDays(dateDTO.getYear(), dateDTO.getMonth());
-    }
-
     @PostMapping("/edit/topic/main")
     public String saveMain (EditTopicDTO editTopicDTO, @RequestParam("inpFile") MultipartFile photo) throws IOException, TopicNotFoundException {
         topicService.updateMainTopicData(editTopicDTO, photo);
@@ -61,8 +52,8 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/speaker")
-    public String saveSpeaker (SpeakerDTO speakerDTO, Integer topicId,  @RequestParam("inpFile") MultipartFile photo) throws IOException {
-        userService.updateSpeaker(speakerDTO, photo);
+    public String saveSpeaker (EditProfileDTO editProfileDTO, Integer topicId, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+        userService.updateSpeaker(editProfileDTO, photo);
         return "redirect:/topic/" + topicId;
     }
 
@@ -74,9 +65,9 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/info")
-    public String saveInfo (EditTopicDTO editTopicDTO) throws TopicNotFoundException {
-        topicService.updateTopicInfo(editTopicDTO);
-        return "redirect:/topic/" + editTopicDTO.getTopicId();
+    public String saveInfo (TopicDTO topicDTO) throws TopicNotFoundException {
+        topicService.updateTopicInfo(topicDTO);
+        return "redirect:/topic/" + topicDTO.getTopicId();
     }
 
 

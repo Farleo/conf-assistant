@@ -18,5 +18,5 @@ public interface TopicService {
 
     void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException;
 
-    void updateTopicInfo(EditTopicDTO editTopicDTO) throws TopicNotFoundException;
+    void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException;
 }

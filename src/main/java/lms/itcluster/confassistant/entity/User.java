@@ -1,15 +1,11 @@
 package lms.itcluster.confassistant.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lms.itcluster.confassistant.annotation.UserDataFieldGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
@@ -21,18 +17,14 @@ public class  User {
     private Long userId;
 
     @Column(name = "first_name", length = 45)
-    @UserDataFieldGroup
     private String firstName;
 
     @Column(name = "last_name", length = 45)
-    @UserDataFieldGroup
     private String lastName;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotNull
-    @Email
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
@@ -40,7 +32,6 @@ public class  User {
     private String photo;
 
     @Column(name = "info", length = 1000)
-    @UserDataFieldGroup
     private String info;
 
     @ManyToMany(mappedBy = "likesSet")
@@ -58,7 +49,7 @@ public class  User {
     private List<Stream> streams;
 
     @OneToMany(mappedBy = "participantsKey.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private List<Participants> participants;
+    private List<Participants> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner")
     @JsonIgnore

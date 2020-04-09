@@ -1,14 +1,19 @@
 package lms.itcluster.confassistant.dto;
 
+import org.hibernate.validator.constraints.SafeHtml;
+
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserDTO {
+public class UserDTO extends DTO {
 
     private Long userId;
+    @Max(45)
     private String firstName;
+    @Max(45)
     private String lastName;
     private String password;
     @NotEmpty(message = "Email must by not empty")
@@ -19,19 +24,10 @@ public class UserDTO {
     private Set<String> roles = new HashSet<>();
 
     public UserDTO() {
+
     }
 
-public UserDTO(Long userId, String firstName, String lastName, String password, String email, String info, Set<String> roles) {
-    this.userId = userId;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.password = password;
-    this.email = email;
-    this.info = info;
-    this.roles = roles;
-}
-
-public Long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -85,5 +81,10 @@ public Long getUserId() {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public Long getId() {
+        return userId;
     }
 }

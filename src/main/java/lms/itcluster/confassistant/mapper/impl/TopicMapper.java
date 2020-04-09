@@ -10,6 +10,7 @@ import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
+import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,16 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
     @Qualifier("speakerMapper")
     private Mapper<User, SpeakerDTO> speakerMapper;
 
+
+
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final StreamRepository streamRepository;
 
     @Autowired
-    public TopicMapper(ModelMapper modelMapper, QuestionRepository questionRepository, UserRepository userRepository, StreamRepository streamRepository) {
-        super(Topic.class, TopicDTO.class);
+    public TopicMapper(ModelMapper modelMapper, QuestionRepository questionRepository, UserRepository userRepository, StreamRepository streamRepository, TopicRepository topicRepository) {
+        super(TopicDTO.class, Topic.class, topicRepository);
         this.modelMapper = modelMapper;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;

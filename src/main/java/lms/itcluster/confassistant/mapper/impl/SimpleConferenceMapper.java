@@ -4,6 +4,7 @@ import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
+import lms.itcluster.confassistant.repository.ConferenceRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class SimpleConferenceMapper extends AbstractMapper<Conference, Conferenc
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SimpleConferenceMapper(ModelMapper modelMapper) {
-        super(Conference.class, ConferenceDTO.class);
+    public SimpleConferenceMapper(ModelMapper modelMapper, ConferenceRepository conferenceRepository) {
+        super(ConferenceDTO.class, Conference.class, conferenceRepository);
         this.modelMapper = modelMapper;
     }
 

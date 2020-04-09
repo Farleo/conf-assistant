@@ -1,6 +1,8 @@
 package lms.itcluster.confassistant.mapper;
 
-public interface Mapper<E, D> {
+import lms.itcluster.confassistant.dto.DTO;
+
+public interface Mapper<E, D extends DTO> {
 
     E toEntity(D dto);
 

@@ -4,6 +4,7 @@ import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
+import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
@@ -27,8 +28,8 @@ public class QuestionMapper extends AbstractMapper<Question, QuestionDTO> {
     private final UserRepository userRepository;
 
     @Autowired
-    public QuestionMapper(ModelMapper modelMapper, TopicRepository topicRepository, UserRepository userRepository) {
-        super(Question.class, QuestionDTO.class);
+    public QuestionMapper(ModelMapper modelMapper, TopicRepository topicRepository, UserRepository userRepository, QuestionRepository questionRepository) {
+        super(QuestionDTO.class, Question.class, questionRepository);
         this.modelMapper = modelMapper;
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;

@@ -17,8 +17,8 @@ public class SpeakerMapper extends AbstractMapper<User, SpeakerDTO> {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SpeakerMapper(ModelMapper modelMapper) {
-        super(User.class, SpeakerDTO.class);
+    public SpeakerMapper(ModelMapper modelMapper, UserRepository userRepository) {
+        super(SpeakerDTO.class, User.class, userRepository);
         this.modelMapper = modelMapper;
     }
 

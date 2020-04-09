@@ -65,11 +65,13 @@
                                 <label for="firstName">First Name</label>
                                 <input type="text" class="form-control" th:field="${speaker.firstName}" name="firstName"
                                                                       id="firstName">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('speaker.firstName')}" th:errors="${speaker.firstName}">Name Error</div>
                             </div>
                             <div class="form-group col-6">
                                 <label for="lastName">Last Name</label>
                                 <input type="text" class="form-control" th:field="${speaker.lastName}" name="lastName"
                                                                      id="lastName">
+                                <div class="alert alert-danger" th:if="${#fields.hasErrors('speaker.lastName')}" th:errors="${speaker.lastName}">Name Error</div>
                             </div>
                         </div>
                         <div class="form-row">
@@ -78,6 +80,7 @@
                                 <div class="form-group">
                                     <textarea class="form-control" th:text="${speaker.info}" name="info"
                                               rows="5"></textarea>
+                                    <div class="alert alert-danger" th:if="${#fields.hasErrors('speaker.info')}" th:errors="${speaker.info}">Name Error</div>
                                 </div>
                             </div>
                         </div>

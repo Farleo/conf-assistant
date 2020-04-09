@@ -11,6 +11,7 @@ import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
+import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +29,19 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
 
     private final ModelMapper modelMapper;
 
+    private TopicRepository topicRepository;
+
     @Autowired
-    public EditTopicMapper(ModelMapper modelMapper) {
-        super(Topic.class, EditTopicDTO.class);
+    public EditTopicMapper(ModelMapper modelMapper, TopicRepository topicRepository) {
+        super(EditTopicDTO.class, Topic.class, topicRepository);
         this.modelMapper = modelMapper;
+        this.topicRepository = topicRepository;
     }
 
     @PostConstruct
     public void setupMapper() {
-        modelMapper.createTypeMap(Topic.class, EditTopicDTO.class)
-                .setPostConverter(toDtoConverter());
+        modelMapper.createTypeMap(Topic.class, EditTopicDTO.class);
         modelMapper.createTypeMap(EditTopicDTO.class, Topic.class)
-                .addMappings(mapping -> mapping.skip(Topic::setStream))
-                .addMappings(mapping -> mapping.skip(Topic::setSpeaker))
-                .addMappings(mapping -> mapping.skip(Topic::setQuestionList))
-                .addMappings(mapping -> mapping.skip(Topic::setCoverPhoto))
                 .addMappings(mapping -> mapping.skip(Topic::setDate))
                 .addMappings(mapping -> mapping.skip(Topic::setBeginTime))
                 .addMappings(mapping -> mapping.skip(Topic::setFinishTime))

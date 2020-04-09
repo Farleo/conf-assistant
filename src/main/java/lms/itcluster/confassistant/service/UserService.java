@@ -1,14 +1,11 @@
 package lms.itcluster.confassistant.service;
 
-import lms.itcluster.confassistant.dto.RoleDTO;
-import lms.itcluster.confassistant.dto.SpeakerDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
@@ -16,7 +13,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    UserDTO createNewUserAsGuest(UserDTO userForm);
+    void createNewUserAsGuest(SignUpDTO signUpDTO);
     
     void deleteUser(long id);
 
@@ -24,13 +21,13 @@ public interface UserService {
 
     void updateUser(UserDTO userDTO);
 
-    void completeGuestRegistration (UserDTO userForm);
+    void completeGuestRegistration (EditProfileDTO editProfileDTO);
 
-    UserDTO getUserDTOById(long id);
+    EditProfileDTO getGuestProfileDTOById(long id);
 
     void addNewUserByAdmin(UserDTO userDTO);
 
     SpeakerDTO getSpeakerById(Long id);
 
-    void updateSpeaker(SpeakerDTO speakerDTO, MultipartFile photo) throws IOException;
+    void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException;
 }

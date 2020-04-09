@@ -29,8 +29,8 @@ public class StreamMapper extends AbstractMapper<Stream, StreamDTO> {
     private final UserRepository userRepository;
 
     @Autowired
-    public StreamMapper(ModelMapper modelMapper, ConferenceRepository conferenceRepository, TopicRepository topicRepository, UserRepository userRepository) {
-        super(Stream.class, StreamDTO.class);
+    public StreamMapper(ModelMapper modelMapper, ConferenceRepository conferenceRepository, TopicRepository topicRepository, UserRepository userRepository, StreamRepository streamRepository) {
+        super(StreamDTO.class, Stream.class, streamRepository);
         this.modelMapper = modelMapper;
         this.conferenceRepository = conferenceRepository;
         this.topicRepository = topicRepository;

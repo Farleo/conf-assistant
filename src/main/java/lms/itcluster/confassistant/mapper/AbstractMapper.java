@@ -1,28 +1,42 @@
 package lms.itcluster.confassistant.mapper;
 
-import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.dto.DTO;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Objects;
 
-public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
+public abstract class AbstractMapper<E, D extends DTO> implements Mapper<E, D> {
 
     @Autowired
     private ModelMapper modelMapper;
 
+    private JpaRepository<E, Long> jpaRepository;
+
     private Class<E> entityClass;
     private Class<D> dtoClass;
 
-    public AbstractMapper(Class<E> entityClass, Class<D> dtoClass) {
+    public AbstractMapper(Class<D> dtoClass, Class<E> entityClass, JpaRepository<E, Long> jpaRepository) {
         this.entityClass = entityClass;
         this.dtoClass = dtoClass;
+        this.jpaRepository = jpaRepository;
     }
 
     @Override
     public E toEntity(D dto) {
-        return Objects.isNull(dto) ? null : modelMapper.map(dto, entityClass);
+        E entity;
+        if (dto.getId() != null) {
+            entity = jpaRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
+            modelMapper.map(dto, entity);
+        }
+        else {
+            entity = modelMapper.map(dto, entityClass);
+        }
+        return entity;
     }
 
     @Override
@@ -40,11 +54,14 @@ public abstract class AbstractMapper<E, D> implements Mapper<E, D> {
     }
 
     protected Converter<D, E> toEntityConverter() {
-        return context -> {
-            D source = context.getSource();
-            E destination = context.getDestination();
-            mapSpecificFieldsInDto(source, destination);
-            return context.getDestination();
+        return new Converter<D, E>() {
+            @Override
+            public E convert(MappingContext<D, E> context) {
+                D source = context.getSource();
+                E destination = context.getDestination();
+                AbstractMapper.this.mapSpecificFieldsInDto(source, destination);
+                return context.getDestination();
+            }
         };
     }
 
