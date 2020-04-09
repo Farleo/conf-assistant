@@ -5,6 +5,7 @@ import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.repository.RolesRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,8 @@ public class UserLoginMapper extends AbstractMapper<User, UserDTO> {
     private final RolesRepository rolesRepository;
 
     @Autowired
-    public UserLoginMapper(ModelMapper modelMapper, RolesRepository rolesRepository) {
-        super(User.class, UserDTO.class);
+    public UserLoginMapper(ModelMapper modelMapper, RolesRepository rolesRepository, UserRepository userRepository) {
+        super(UserDTO.class, User.class, userRepository);
         this.modelMapper = modelMapper;
         this.rolesRepository = rolesRepository;
     }

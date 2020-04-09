@@ -1,7 +1,5 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.annotation.TopicDataFieldGroup;
-import lms.itcluster.confassistant.annotation.TopicDataInfo;
 import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
@@ -21,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -67,20 +64,20 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException {
-        Topic topicDb = findTopicById(editTopicDTO.getTopicId());
         Topic updatedData = editTopicMapper.toEntity(editTopicDTO);
 
-        String oldCoverPhotoPath = topicDb.getCoverPhoto();
+        String oldCoverPhotoPath = null;
 
         if (!photo.isEmpty()) {
             String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            topicDb.setCoverPhoto(newCoverPhotoPath);
+            oldCoverPhotoPath = updatedData.getCoverPhoto();
+            updatedData.setCoverPhoto(newCoverPhotoPath);
         }
 
-        updateTopicData(topicDb, updatedData, TopicDataFieldGroup.class);
-
-        topicRepository.save(topicDb);
-        removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+        topicRepository.save(updatedData);
+        if (oldCoverPhotoPath != null) {
+            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+        }
     }
 
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
@@ -95,11 +92,9 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void updateTopicInfo(EditTopicDTO editTopicDTO) throws TopicNotFoundException {
-        Topic topic = findTopicById(editTopicDTO.getTopicId());
-        Topic updatedData = editTopicMapper.toEntity(editTopicDTO);
-
-        updateTopicData(topic, updatedData, TopicDataInfo.class);
+    public void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException {
+        Topic topic = findTopicById(topicDTO.getTopicId());
+        topic.setInfo(topicDTO.getInfo());
         topicRepository.save(topic);
     }
 

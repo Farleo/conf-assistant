@@ -25,16 +25,19 @@
                     <div class="form-row">
                         <div class="form-group col-6">
                             <label for="inputFirstName">First Name</label>
-                            <input type="text" name="firstName" class="form-control" id="inputFirstName">
+                            <input type="text" name="firstName" th:field="*{firstName}" class="form-control" id="inputFirstName">
+                            <div class="alert alert-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name Error</div>
                         </div>
                         <div class="form-group col-6">
                             <label for="inputLastName">Last Name</label>
-                            <input type="text" name="lastName" class="form-control" id="inputLastName">
+                            <input type="text" name="lastName" th:field="*{lastName}" class="form-control" id="inputLastName">
+                            <div class="alert alert-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name Error</div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputInfo">Info</label>
-                        <textarea aria-describedby="infoInput" type="text" name="info" class="form-control" id="inputInfo" placeholder="Write about yourself"></textarea>
+                        <textarea aria-describedby="infoInput" th:field="*{info}" type="text" name="info" class="form-control" id="inputInfo" placeholder="Write about yourself"></textarea>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('info')}" th:errors="*{info}">Name Error</div>
                         <small id="infoInput" class="form-text text-muted text-center">Tell us about yourself, where you work, what your position is, what you are interested in, why you decided to attend this conference ...</small>
                     </div>
                     <div class="form-row">

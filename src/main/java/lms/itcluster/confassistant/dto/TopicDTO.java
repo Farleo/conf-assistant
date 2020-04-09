@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TopicDTO {
+public class TopicDTO extends DTO {
 
     private long topicId;
     private String name;
@@ -107,5 +107,10 @@ public class TopicDTO {
 
     public void setQuestionListDTO(List<QuestionDTO> questionListDTO) {
         this.questionListDTO = questionListDTO;
+    }
+
+    @Override
+    public Long getId() {
+        return topicId;
     }
 }

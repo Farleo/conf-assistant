@@ -1,25 +1,22 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.annotation.UserDataFieldGroup;
+import lms.itcluster.confassistant.dto.EditProfileDTO;
+import lms.itcluster.confassistant.dto.SignUpDTO;
 import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
-import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.repository.RolesRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.UserService;
-import lms.itcluster.confassistant.util.DataUtil;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,11 +26,9 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -45,15 +40,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private RolesRepository rolesRepository;
-
-    @Autowired
     @Qualifier("userLoginMapper")
     private Mapper<User, UserDTO> mapper;
 
     @Autowired
     @Qualifier("speakerMapper")
     private Mapper<User, SpeakerDTO> speakerMapper;
+
+    @Autowired
+    @Qualifier("signUpMapper")
+    private Mapper<User, SignUpDTO> signUpMapper;
+
+    @Autowired
+    @Qualifier("editProfileMapper")
+    private Mapper<User, EditProfileDTO> editProfileMapper;
 
 
     @Override
@@ -69,15 +69,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO createNewUserAsGuest(UserDTO userForm) {
-        if (userRepository.findByEmail(userForm.getEmail()) != null) {
-            throw new UserAlreadyExistException("User with this email is already exist: " + userForm.getEmail());
-        }
-        User user = mapper.toEntity(userForm);
-        user.setRoles(Collections.singleton(rolesRepository.findByRole("User")));
+    @Transactional
+    public void createNewUserAsGuest(SignUpDTO signUpDTO) {
+        User user = signUpMapper.toEntity(signUpDTO);
         user = userRepository.save(user);
-        SecurityUtil.authenticate(user);
-        return mapper.toDto(user);
+        authenticateUserIfTransactionSuccess(user);
+    }
+
+    private void authenticateUserIfTransactionSuccess(final User user) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                SecurityUtil.authenticate(user);
+            }
+        });
     }
 
     @Override
@@ -109,13 +114,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-
     @Override
-    public void completeGuestRegistration(UserDTO userForm) {
-        User dbUser = userRepository.findById(userForm.getUserId()).get();
-        User user = mapper.toEntity(userForm);
-        BeanUtils.copyProperties(user, dbUser, "userId", "password", "email", "roles");
-        userRepository.save(dbUser);
+    public void completeGuestRegistration(EditProfileDTO editProfileDTO) {
+        User user = editProfileMapper.toEntity(editProfileDTO);
+        userRepository.save(user);
     }
 
     @Override
@@ -129,8 +131,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO getUserDTOById(long id) {
-        return mapper.toDto(userRepository.findById(id).orElse(null));
+    public EditProfileDTO getGuestProfileDTOById(long id) {
+        return editProfileMapper.toDto(userRepository.findById(id).orElse(null));
     }
 
     @Override
@@ -150,21 +152,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateSpeaker(SpeakerDTO speakerDTO, MultipartFile photo) throws IOException {
-        User speakerDb = userRepository.findById(speakerDTO.getUserId()).get();
-        User updatedData = speakerMapper.toEntity(speakerDTO);
+    public void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException {
+        User speaker = editProfileMapper.toEntity(editProfileDTO);
 
-        String oldProfilePhotoPath = speakerDb.getPhoto();
+        String oldProfilePhotoPath = null;
 
         if (!photo.isEmpty()) {
             String newProfilePhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            speakerDb.setPhoto(newProfilePhotoPath);
+            oldProfilePhotoPath = speaker.getPhoto();
+            speaker.setPhoto(newProfilePhotoPath);
         }
 
-        DataUtil.copyFields(updatedData, speakerDb, UserDataFieldGroup.class);
-
-        userRepository.save(speakerDb);
-        removeCoverPhotoIfTransactionSuccess(oldProfilePhotoPath);
+        userRepository.save(speaker);
+        if (oldProfilePhotoPath != null) {
+            removeCoverPhotoIfTransactionSuccess(oldProfilePhotoPath);
+        }
     }
 
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {

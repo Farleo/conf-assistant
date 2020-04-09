@@ -1,7 +1,15 @@
 package lms.itcluster.confassistant.dto;
 
-public class EditTopicDTO {
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class EditTopicDTO extends DTO {
     private Long topicId;
+/*
+    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 255)*/
     private String name;
     private int day;
     private int month;
@@ -10,7 +18,6 @@ public class EditTopicDTO {
     private int beginMinuets;
     private int finishHour;
     private int finishMinuets;
-    private String info;
 
     public EditTopicDTO() {
     }
@@ -87,11 +94,8 @@ public class EditTopicDTO {
         this.finishMinuets = finishMinuets;
     }
 
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
+    @Override
+    public Long getId() {
+        return topicId;
     }
 }

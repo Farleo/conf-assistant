@@ -1,13 +1,10 @@
 package lms.itcluster.confassistant.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lms.itcluster.confassistant.annotation.TopicDataFieldGroup;
-import lms.itcluster.confassistant.annotation.TopicDataInfo;
 
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,23 +18,18 @@ public class Topic {
     private long topicId;
 
     @Column(name = "name", nullable = false, unique = true)
-    @TopicDataFieldGroup
     private String name;
 
     @Column(name = "date", nullable = false)
-    @TopicDataFieldGroup
     private LocalDate date;
 
     @Column(name = "begin_time", nullable = false)
-    @TopicDataFieldGroup
     private Time beginTime;
 
     @Column(name = "finish_time", nullable = false)
-    @TopicDataFieldGroup
     private Time finishTime;
 
     @Column(name = "info", nullable = false, length = 2000)
-    @TopicDataInfo
     private String info;
 
     @Column(name = "is_active", nullable = false)

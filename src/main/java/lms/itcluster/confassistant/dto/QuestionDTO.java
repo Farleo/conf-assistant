@@ -1,11 +1,9 @@
 package lms.itcluster.confassistant.dto;
 
-import javax.persistence.Column;
-import java.sql.Date;
 import java.sql.Time;
 import java.util.Set;
 
-public class QuestionDTO {
+public class QuestionDTO extends DTO {
 
     private Long questionId;
     private String question;
@@ -91,5 +89,10 @@ public class QuestionDTO {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public Long getId() {
+        return questionId;
     }
 }

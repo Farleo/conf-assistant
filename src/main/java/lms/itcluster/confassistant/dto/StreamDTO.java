@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StreamDTO {
+public class StreamDTO extends DTO {
 
     private Long streamId;
     private String name;
@@ -53,5 +53,10 @@ public class StreamDTO {
 
     public void setModerator(Long moderator) {
         this.moderator = moderator;
+    }
+
+    @Override
+    public Long getId() {
+        return streamId;
     }
 }

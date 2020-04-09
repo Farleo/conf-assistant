@@ -30,8 +30,8 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     private final UserRepository userRepository;
 
     @Autowired
-    public ConferenceMapper(ModelMapper modelMapper, StreamRepository streamRepository, UserRepository userRepository) {
-        super(Conference.class, ConferenceDTO.class);
+    public ConferenceMapper(ModelMapper modelMapper, StreamRepository streamRepository, UserRepository userRepository, ConferenceRepository conferenceRepository) {
+        super(ConferenceDTO.class, Conference.class, conferenceRepository);
         this.modelMapper = modelMapper;
         this.streamRepository = streamRepository;
         this.userRepository = userRepository;
