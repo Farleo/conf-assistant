@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title th:text="'Edit ' + ${stream.getName()} + ' stream'"/>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<div style="text-align: center;">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3"  th:text="'Edit ' + ${stream.getName()} + ' stream'"></h4>
+        <form th:action="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/edit/' + ${stream.getStreamId() + '/save/'}}" th:object="${stream}" method="post" class="needs-validation" novalidate="" >
+            <input id="id" name="streamId" th:field="*{streamId}" class="form-control" type="hidden"/>
+            <input id="confId" name="streamId" th:field="*{conference}" class="form-control" type="hidden"/>
+            <div class="mb-3">
+                <label for="stream">Stream name</label>
+                <input type="text" name="stream"  th:field="*{name}" class="form-control" id="stream"/>
+            </div>
+            <td>
+                <label th:text="'Select moderator '"></label>
+                <select th:field="*{moderator}">
+                    <option th:each="moder : ${availableModer}"
+                            th:value="${moder.participantId}"
+                            th:text="${moder.email}">
+                        Address
+                    </option>
+                </select>
+            </td>
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-edit fa-fw" aria-hidden="true"></i>&nbsp; Edit</button>
+        </form>
+        <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/'}" type="submit" value="Back" class="btn btn-light btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</a>
+    </div>
+</div>
+</body>
+</html>

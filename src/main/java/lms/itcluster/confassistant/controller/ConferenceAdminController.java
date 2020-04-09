@@ -61,7 +61,6 @@ public class ConferenceAdminController {
 		return "redirect:/";
 	}
 	
-
 	@PostMapping(value="/conf/owner/saveChangeRole/")
 	public String saveChangeRole(@AuthenticationPrincipal CurrentUser currentUser,
 	                             ParticipantDTO participantDTO) {
@@ -75,14 +74,12 @@ public class ConferenceAdminController {
 		
 	}
 	
-	
-	
 	@PostMapping(value = "/conf/owner/{confId}/kick/{userId}")
 	public String confOwnerKickUser (@AuthenticationPrincipal CurrentUser currentUser,
 	                                 @PathVariable Long confId,
 	                                 @PathVariable Long userId) {
 		Conference conference = conferenceService.findById(confId);
-		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
+		if (securityService.canManageConference(currentUser, conference.getConferenceId())) {
 			participantService.blockParticipant(userId, confId);
 			return "redirect:/conf/owner/{confId}";
 		}

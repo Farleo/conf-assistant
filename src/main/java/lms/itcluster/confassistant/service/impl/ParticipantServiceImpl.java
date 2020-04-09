@@ -84,8 +84,14 @@ public class ParticipantServiceImpl implements ParticipantService {
 	public List<Long> findByUserIdAndTypeName (Long userId, String typeName) {
 		return participantRepository.findByUserIdAndTypeName(userId,typeName);
 	}
-	
-	private List<Participants> toEntity(ParticipantDTO participantDTO) {
+
+	@Override
+	public List<ParticipantDTO> findAllParticipantByType(Long confId, String typeName) {
+		List<Participants> participantsList = participantRepository.findAllUserByConfIdAndTypeName(confId,typeName);
+		return participantsList.stream().map(p->toDTO(p)).collect(Collectors.toList());
+	}
+
+private List<Participants> toEntity(ParticipantDTO participantDTO) {
 			List<Participants> participantsList = new ArrayList<>();
 			User user = userRepository.findById(participantDTO.getParticipantId()).get();
 			Conference conference = conferenceRepository.findById(participantDTO.getConferenceId()).get();
@@ -119,6 +125,23 @@ public class ParticipantServiceImpl implements ParticipantService {
 				participantDTO.setConferenceRoles(userConferenceRoles);
 			}
 			return participantDTO;
+	}
+	private ParticipantDTO toDTO(Participants participants) {
+		ParticipantDTO participantDTO = new ParticipantDTO();
+		User user = participants.getParticipantsKey().getUser();
+		Conference conference = participants.getParticipantsKey().getConference();
+		participantDTO.setParticipantId(user.getUserId());
+		participantDTO.setConferenceId(conference.getConferenceId());
+		participantDTO.setEmail(user.getEmail());
+		participantDTO.setFirstName(user.getFirstName());
+		participantDTO.setLastName(user.getLastName());
+		List<Participants> participantsList = participantRepository.findByUserIdAndConfId(user.getUserId(), conference.getConferenceId());
+		Set<String> userConferenceRoles = participantsList.stream()
+				                                  .map(t -> t.getParticipantsKey().getParticipantType().getName())
+				                                  .collect(Collectors.toSet());
+		participantDTO.setConferenceRoles(userConferenceRoles);
+	
+		return participantDTO;
 	}
 	
 }

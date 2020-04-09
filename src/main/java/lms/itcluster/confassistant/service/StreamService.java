@@ -15,4 +15,10 @@ public interface StreamService {
     StreamDTO getStreamDTOByName(String name);
 
     List<StreamDTO> getAllStreamDTOForCurrentModer(CurrentUser currentUser);
+
+	void deleteStream(Long streamId);
+	
+	void updateStream(StreamDTO streamDTO);
+
+	void addNewStream(StreamDTO streamDTO);
 }

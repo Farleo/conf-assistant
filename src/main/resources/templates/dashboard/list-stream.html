@@ -17,20 +17,46 @@
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Streams</h4>
-        <form th:action="@{/conf/owner/stream/new}" method="get">
+        <a th:href="${'/dashboard/conferences'}" th:method="POST">
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
+        </a>
+        <a th:href="@{'/dashboard/conferences/'+ ${confId} +'/stream/new'}" th:method="GET">
             <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add Stream</button>
-        </form>
+        </a>
+        <br/>
         <br/>
         <table class="table table-striped">
 
             <td><b>Stream name</b></td>
+            <td><b>Stream Moder</b></td>
+            <td><b>Edit</b></td>
+            <td><b>Delete</b></td>
             <tr th:each="stream : ${listStreams}">
             <td>
                 <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/' + ${stream.getStreamId()} + '/topic'}" th:text="${stream.name}"/>
             </td>
+            <td>
+                <div th:with="moder=${stream.moderator}">
+                    <div th:each="person,rowStat : ${availableModer.?[participantId == __${moder}__]}">
+                        <span th:text="${person.firstName}"></span>
+                        <span th:text="${person.lastName}"></span>
+                        <span th:text="'('+${person.email}+')'"></span>
+                    </div>
+                 </div>
+            </td>
+            <td >
+                <form th:action="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/edit/' + ${stream.getStreamId()}}" th:method="patch">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp; Edit</button>
+                </form>
+            </td>
+            <td >
+                <form th:action="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/delete/' + ${stream.getStreamId()}}" th:method="delete">
+                    <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
+                </form>
+            </td>
             </tr>
-        </table>
-    </div>
+        </td>
+    </table>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

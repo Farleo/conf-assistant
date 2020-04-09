@@ -101,7 +101,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> dbUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
         if (dbUser.isPresent()) {
             User realUser = mapper.toEntity(userDTO);
-            BeanUtils.copyProperties(realUser, dbUser, "userId");
             User existingUserEmailFromDb = userRepository.findByEmail(realUser.getEmail());
             if (existingUserEmailFromDb != null && userDTO.getUserId() != existingUserEmailFromDb.getUserId()) {
                 throw new UserAlreadyExistException("User with this email is already exist: " + realUser.getEmail());

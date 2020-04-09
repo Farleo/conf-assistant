@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -62,5 +63,26 @@ public class StreamServiceImpl implements StreamService {
             list.add(mapper.toDto(stream));
         }
         return list;
+    }
+
+    @Override
+    public void deleteStream(Long streamId) {
+        Optional<Stream> optionalStream = streamRepository.findById(streamId);
+        streamRepository.delete(optionalStream.get());
+    }
+    
+    @Override
+    public void updateStream(StreamDTO streamDTO) {
+        Optional<Stream> stream = streamRepository.findById(streamDTO.getStreamId());
+        if(stream.isPresent()){
+            Stream realStream = mapper.toEntity(streamDTO);
+            streamRepository.save(realStream);
+        }
+    }
+
+    @Override
+    public void addNewStream(StreamDTO streamDTO) {
+        Stream stream = mapper.toEntity(streamDTO);
+        streamRepository.save(stream);
     }
 }

@@ -12,7 +12,7 @@ public class Stream {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "stream_id", unique = true, nullable = false)
-    private long streamId;
+    private Long streamId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -32,11 +32,11 @@ public class Stream {
         super();
     }
 
-    public long getStreamId() {
+    public Long getStreamId() {
         return streamId;
     }
 
-    public void setStreamId(long streamId) {
+    public void setStreamId(Long streamId) {
         this.streamId = streamId;
     }
 

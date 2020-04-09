@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
+import com.sun.xml.bind.v2.TODO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.service.RoleService;
@@ -89,6 +90,12 @@ public class AdminController {
 			return "admin/edit-user";
 		}
 		return "redirect:/admin/users";
-	
+	}
+	//TODO
+	@GetMapping("admin/")
+	public String adminMainPage (Model model) {
+//		model.addAttribute("userDTO", userService.findById(id));
+//		model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toList()));
+		return "admin/admin-main.html";
 	}
 }

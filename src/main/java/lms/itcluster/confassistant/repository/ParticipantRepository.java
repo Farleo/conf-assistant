@@ -26,4 +26,8 @@ public interface ParticipantRepository extends JpaRepository<Participants, Parti
 	@Transactional
 	@Query("select p.participantsKey.conference.conferenceId from Participants p where p.participantsKey.user.userId=:userId and p.participantsKey.participantType.name=:typeName")
 	List<Long> findByUserIdAndTypeName(@Param("userId") Long userId, @Param("typeName") String typeName);
+
+	@Transactional
+	@Query("select p from Participants p where p.participantsKey.conference.conferenceId=:confId and p.participantsKey.participantType.name=:typeName")
+	List<Participants> findAllUserByConfIdAndTypeName(@Param("confId") Long confId, @Param("typeName") String typeName);
 }

@@ -20,4 +20,6 @@ public interface ParticipantService {
 	 void updateParticipantByConfOwner(ParticipantDTO participantDTO);
 	 
 	 List<Long> findByUserIdAndTypeName (Long userId, String typeName);
+
+	 List<ParticipantDTO> findAllParticipantByType(Long confId, String typeName);
 }

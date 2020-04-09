@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StreamDTO {
@@ -7,17 +8,18 @@ public class StreamDTO {
     private Long streamId;
     private String name;
     private Long conference;
-    private List<TopicDTO> topicList;
+    private List<TopicDTO> topicList = new ArrayList<>();
     private Long moderator;
 
     public StreamDTO() {
     }
+    
 
-    public long getStreamId() {
+    public Long getStreamId() {
         return streamId;
     }
 
-    public void setStreamId(long streamId) {
+    public void setStreamId(Long streamId) {
         this.streamId = streamId;
     }
 
