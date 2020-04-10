@@ -89,7 +89,6 @@ public class TopicServiceImpl implements TopicService {
         });
     }
 
-
     @Override
     @Transactional
     public void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException {
@@ -97,9 +96,4 @@ public class TopicServiceImpl implements TopicService {
         topic.setInfo(topicDTO.getInfo());
         topicRepository.save(topic);
     }
-
-    private <T extends Annotation> void updateTopicData (Topic topicDb, Topic updateData, Class<T> annotationClass) {
-        DataUtil.copyFields(updateData, topicDb, annotationClass);
-    }
-
 }

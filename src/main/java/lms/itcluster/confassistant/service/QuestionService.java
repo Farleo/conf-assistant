@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-    QuestionDTO save(QuestionDTO questionDTO);
+    boolean saveQuestion(QuestionDTO questionDTO);
 
     Question findByName(String name);
 
@@ -16,7 +16,7 @@ public interface QuestionService {
 
     List<QuestionDTO> getSortedQuestionDTOListByDate(Long id);
 
-    boolean selectQuestion(Long questionId);
+    boolean selectNextQuestion(List<QuestionDTO> questionDTOList, Long questionId);
 
-    boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList);
+    boolean like(Long questionId, Long userId);
 }

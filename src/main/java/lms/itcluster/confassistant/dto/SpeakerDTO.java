@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.dto;
 
-public class SpeakerDTO extends DTO {
+public class SpeakerDTO extends AbstractDTO {
     private Long userId;
     private String firstName;
     private String lastName;

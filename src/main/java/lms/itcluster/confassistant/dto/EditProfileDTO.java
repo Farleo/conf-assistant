@@ -1,11 +1,10 @@
 package lms.itcluster.confassistant.dto;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class EditProfileDTO extends DTO {
+public class EditProfileDTO extends AbstractDTO {
 
     private Long userId;
 

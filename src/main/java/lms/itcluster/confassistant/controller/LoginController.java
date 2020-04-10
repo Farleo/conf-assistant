@@ -45,25 +45,9 @@ public class LoginController {
             return "login/sign-up-guest";
         }
         userService.createNewUserAsGuest(signForm);
-        return "redirect:/complete-sign-up-guest";
+        return "redirect:/edit/profile";
     }
 
-    @GetMapping("/complete-sign-up-guest")
-    public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
-        if (currentUser == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
-        return "login/complete-sign-up-guest";
-    }
 
-    @PostMapping("/complete-sign-up-guest")
-    public String saveCompleteSignUp (@Valid @ModelAttribute("user") EditProfileDTO editProfileDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "login/complete-sign-up-guest";
-        }
-        userService.completeGuestRegistration(editProfileDTO);
-        return "redirect:/";
-    }
 
 }

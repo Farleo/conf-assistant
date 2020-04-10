@@ -3,9 +3,11 @@ package lms.itcluster.confassistant.service.impl;
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,13 +26,17 @@ public class QuestionServiceImpl implements QuestionService {
     private TopicRepository topicRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     @Qualifier("questionMapper")
     private Mapper<Question, QuestionDTO> mapper;
 
     @Override
-    public QuestionDTO save(QuestionDTO questionDTO) {
+    public boolean saveQuestion(QuestionDTO questionDTO) {
         Question newQuestion = mapper.toEntity(questionDTO);
-        return mapper.toDto(questionRepository.save(newQuestion));
+        questionRepository.save(newQuestion);
+        return like(newQuestion.getQuestionId(), newQuestion.getUser().getUserId());
     }
 
     @Override
@@ -58,15 +64,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public boolean selectQuestion(Long questionId) {
-        Question question = questionRepository.findById(questionId).get();
-        question.setSelected(true);
-        questionRepository.save(question);
-        return true;
+    public boolean selectNextQuestion(List<QuestionDTO> questionDTOList, Long questionId) {
+        deselectAndDeletePreviousQuestion(questionDTOList);
+        return selectQuestion(questionId);
     }
 
-    @Override
-    public boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList) {
+    private boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList) {
         for (QuestionDTO questionDTO : questionDTOList) {
             if (questionDTO.isSelected()) {
                 Question question = questionRepository.findById(questionDTO.getQuestionId()).get();
@@ -78,10 +81,43 @@ public class QuestionServiceImpl implements QuestionService {
         return true;
     }
 
+    private boolean selectQuestion(Long questionId) {
+        Question question = questionRepository.findById(questionId).get();
+        question.setSelected(true);
+        questionRepository.save(question);
+        return true;
+    }
+
     private List<QuestionDTO> getQuestionDTOList(Long id) {
         Topic topic = topicRepository.findById(id).get();
         List<QuestionDTO> dtoList = new ArrayList<>();
         topic.getQuestionList().forEach(question -> dtoList.add(mapper.toDto(question)));
         return dtoList;
+    }
+
+    @Override
+    public boolean like(Long questionId, Long userId) {
+        Question question = questionRepository.findById(questionId).get();
+        User user = userRepository.findById(userId).get();
+        if (question.getLikesSet().contains(user)) {
+            return unLike(user, question);
+        }
+        return addLike(user, question);
+    }
+
+    private boolean unLike(User user, Question question) {
+        user.getLikes().remove(question);
+        question.getLikesSet().remove(user);
+        userRepository.save(user);
+        questionRepository.save(question);
+        return false;
+    }
+
+    private boolean addLike(User user, Question question) {
+        user.getLikes().add(question);
+        question.getLikesSet().add(user);
+        userRepository.save(user);
+        questionRepository.save(question);
+        return true;
     }
 }

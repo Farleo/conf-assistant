@@ -1,16 +1,15 @@
 package lms.itcluster.confassistant.mapper;
 
-import lms.itcluster.confassistant.dto.DTO;
+import lms.itcluster.confassistant.dto.AbstractDTO;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Objects;
 
-public abstract class AbstractMapper<E, D extends DTO> implements Mapper<E, D> {
+public abstract class AbstractMapper<E, D extends AbstractDTO> implements Mapper<E, D> {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -54,14 +53,11 @@ public abstract class AbstractMapper<E, D extends DTO> implements Mapper<E, D> {
     }
 
     protected Converter<D, E> toEntityConverter() {
-        return new Converter<D, E>() {
-            @Override
-            public E convert(MappingContext<D, E> context) {
-                D source = context.getSource();
-                E destination = context.getDestination();
-                AbstractMapper.this.mapSpecificFieldsInDto(source, destination);
-                return context.getDestination();
-            }
+        return context -> {
+            D source = context.getSource();
+            E destination = context.getDestination();
+            AbstractMapper.this.mapSpecificFieldsInDto(source, destination);
+            return context.getDestination();
         };
     }
 

@@ -33,10 +33,6 @@ public class UserLoginMapper extends AbstractMapper<User, UserDTO> {
                 .addMappings(mapping -> mapping.skip(UserDTO::setRoles)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(UserDTO.class, User.class)
                 .addMappings(mapping -> mapping.skip(User::setPassword))
-                .addMappings(mapping -> mapping.skip(User::setTopicList))
-                .addMappings(mapping -> mapping.skip(User::setQuestionList))
-                .addMappings(mapping -> mapping.skip(User::setParticipants))
-                .addMappings(mapping -> mapping.skip(User::setLikes))
                 .addMappings(mapping -> mapping.skip(User::setRoles)).setPostConverter(toEntityConverter());
     }
 
@@ -44,8 +40,6 @@ public class UserLoginMapper extends AbstractMapper<User, UserDTO> {
     protected void mapSpecificFieldsInEntity(User source, UserDTO destination) {
         destination.setRoles(getRoles(source));
     }
-
-
 
     private Set<String> getRoles(User user) {
         Set<String> roles = new HashSet<>();

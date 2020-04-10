@@ -24,8 +24,7 @@ public class EditProfileMapper extends AbstractMapper<User, EditProfileDTO> {
     @PostConstruct
     public void setupMapper() {
         modelMapper.createTypeMap(User.class, EditProfileDTO.class);
-        modelMapper.createTypeMap(EditProfileDTO.class, User.class)
-                .setPostConverter(toEntityConverter());
+        modelMapper.createTypeMap(EditProfileDTO.class, User.class);
     }
 
     @Override

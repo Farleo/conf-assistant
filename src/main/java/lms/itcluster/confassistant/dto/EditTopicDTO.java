@@ -4,12 +4,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class EditTopicDTO extends DTO {
+public class EditTopicDTO extends AbstractDTO {
     private Long topicId;
-/*
     @NotNull
     @NotBlank
-    @Size(min = 1, max = 255)*/
+    @Size(min = 1, max = 255)
     private String name;
     private int day;
     private int month;

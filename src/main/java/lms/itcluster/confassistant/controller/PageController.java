@@ -37,9 +37,6 @@ public class PageController {
     @Autowired
     private StreamRepository streamRepository;
 
-    @Autowired
-    private RoleService roleService;
-
     @RequestMapping(value = "/")
     public String getList(Model model) {
         model.addAttribute("conferences", conferenceService.getListConferencesDTO());

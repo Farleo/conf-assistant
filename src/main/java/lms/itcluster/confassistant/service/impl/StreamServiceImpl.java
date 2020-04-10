@@ -70,7 +70,7 @@ public class StreamServiceImpl implements StreamService {
         Optional<Stream> optionalStream = streamRepository.findById(streamId);
         streamRepository.delete(optionalStream.get());
     }
-    
+
     @Override
     public void updateStream(StreamDTO streamDTO) {
         Optional<Stream> stream = streamRepository.findById(streamDTO.getStreamId());

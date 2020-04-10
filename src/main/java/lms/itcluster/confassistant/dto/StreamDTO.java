@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StreamDTO extends DTO {
+public class StreamDTO extends AbstractDTO {
 
     private Long streamId;
     private String name;

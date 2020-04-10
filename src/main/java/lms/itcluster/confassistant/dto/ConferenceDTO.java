@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.dto;
 import java.util.Date;
 import java.util.List;
 
-public class ConferenceDTO extends DTO {
+public class ConferenceDTO extends AbstractDTO {
     private Long conferenceId;
     private String name;
     private String alias;

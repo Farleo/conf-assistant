@@ -2,7 +2,7 @@ package lms.itcluster.confassistant.dto;
 
 import lms.itcluster.confassistant.annotation.UniqueEmail;
 
-public class SignUpDTO extends DTO {
+public class SignUpDTO extends AbstractDTO {
 
     @UniqueEmail
     private String email;

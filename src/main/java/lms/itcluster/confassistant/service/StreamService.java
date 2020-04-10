@@ -17,7 +17,7 @@ public interface StreamService {
     List<StreamDTO> getAllStreamDTOForCurrentModer(CurrentUser currentUser);
 
 	void deleteStream(Long streamId);
-	
+
 	void updateStream(StreamDTO streamDTO);
 
 	void addNewStream(StreamDTO streamDTO);

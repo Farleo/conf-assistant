@@ -3,7 +3,7 @@ package lms.itcluster.confassistant.dto;
 import java.sql.Time;
 import java.util.Set;
 
-public class QuestionDTO extends DTO {
+public class QuestionDTO extends AbstractDTO {
 
     private Long questionId;
     private String question;

@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TopicDTO extends DTO {
+public class TopicDTO extends AbstractDTO {
 
     private long topicId;
     private String name;

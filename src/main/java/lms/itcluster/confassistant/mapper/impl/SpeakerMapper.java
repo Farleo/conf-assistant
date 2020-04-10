@@ -24,17 +24,8 @@ public class SpeakerMapper extends AbstractMapper<User, SpeakerDTO> {
 
     @PostConstruct
     public void setupMapper() {
-        modelMapper.createTypeMap(User.class, SpeakerDTO.class)
-                .setPostConverter(toDtoConverter());
-        modelMapper.createTypeMap(SpeakerDTO.class, User.class)
-                .addMappings(mapping -> mapping.skip(User::setPassword))
-                .addMappings(mapping -> mapping.skip(User::setTopicList))
-                .addMappings(mapping -> mapping.skip(User::setQuestionList))
-                .addMappings(mapping -> mapping.skip(User::setLikes))
-                .addMappings(mapping -> mapping.skip(User::setRoles))
-                .addMappings(mapping -> mapping.skip(User::setUserId))
-                .addMappings(mapping -> mapping.skip(User::setParticipants))
-                .setPostConverter(toEntityConverter());
+        modelMapper.createTypeMap(User.class, SpeakerDTO.class);
+        modelMapper.createTypeMap(SpeakerDTO.class, User.class);
     }
 
     @Override
@@ -43,7 +34,6 @@ public class SpeakerMapper extends AbstractMapper<User, SpeakerDTO> {
 
     @Override
     protected void mapSpecificFieldsInDto(SpeakerDTO source, User destination) {
-
     }
 
 }

@@ -2,17 +2,20 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @Controller
 public class EditController {
@@ -26,6 +29,24 @@ public class EditController {
     @Autowired
     private StaticDataService staticDataService;
 
+    @GetMapping("/edit/profile")
+    public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
+        return "edit/profile";
+    }
+
+    @PostMapping("/edit/profile")
+    public String saveCompleteSignUp (@Valid @ModelAttribute("user") EditProfileDTO editProfileDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "edit/profile";
+        }
+        userService.completeGuestRegistration(editProfileDTO);
+        return "redirect:/";
+    }
+
     @GetMapping("/edit/topic/main/{topicId}")
     public String getMain (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
@@ -33,7 +54,7 @@ public class EditController {
         model.addAttribute("month", staticDataService.getMonthMap());
         model.addAttribute("years", staticDataService.getYears());
         model.addAttribute("days", staticDataService.getDays(topicDTO.getDate().getYear(), topicDTO.getDate().getMonthValue()));
-        return "main";
+        return "edit/topic/main";
     }
 
     @PostMapping("/edit/topic/main")
@@ -48,7 +69,7 @@ public class EditController {
         SpeakerDTO speakerDTO = topicDTO.getSpeakerDTO();
         model.addAttribute("speaker", speakerDTO);
         model.addAttribute("topicId", topicDTO.getTopicId());
-        return "speaker";
+        return "edit/topic/speaker";
     }
 
     @PostMapping("/edit/topic/speaker")
@@ -61,7 +82,7 @@ public class EditController {
     public String getInfo (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         model.addAttribute("topic", topicDTO);
-        return "info";
+        return "edit/topic/info";
     }
 
     @PostMapping("/edit/topic/info")
