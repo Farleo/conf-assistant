@@ -23,4 +23,5 @@ public interface ConferenceService {
 
     ListConferenceDTO getConferencesDTOByOwnerId(Long id);
 
+    void addNewConference(ConferenceDTO conferenceDTO);
 }

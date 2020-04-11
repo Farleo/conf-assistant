@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title>Add new conference</title>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<div style="text-align: center;">
+<div class="col-md-8 order-md-1">
+
+    <h4 class="mb-3">Add new conference</h4>
+
+    <form th:object="${conferenceDTO}" method="post" class="needs-validation" novalidate="" >
+        <input id="conferenceId" name="conferenceId" type="hidden"/>
+
+<!--        <div class="col-6" style="padding-top: 25px">-->
+<!--            <h5 style="margin-bottom: 15px">Change cover photo</h5>-->
+<!--            <div class="form-row">-->
+<!--                <input id="originPhoto" type="text" hidden="hidden" />-->
+<!--                <div class="image-preview" id="imagePreview">-->
+<!--                    <img src="" alt="Image Preview"-->
+<!--                         class="image-preview__image">-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="form-row" style="margin-bottom: 20px">-->
+<!--                <input type="file" name="inpFile" id="inpFile"/>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="form-group">
+            <label for="coverPhoto">Cover photo</label>
+            <input id="coverPhoto" name="coverPhoto" type="text"/>
+        </div>
+
+         <div class="mb-3">
+            <label for="name">Name</label>
+             <div class="form-group">
+            <input id="name" name="name" type="text" class="form-control"/>
+             </div>
+         </div>
+
+        <div class="form-row">
+            <div class="col-12" style="padding-top: 10px">
+                <label for="info">Info</label>
+                <div class="form-group">
+                    <textarea class="form-control" id="info" name="info" rows="5"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="venue">Venue</label>
+            <input id="venue" name="venue" type="text" class="form-control"/>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <label for="beginDate">Begin date </label>
+                <input id="beginDate" name="beginDate" type="datetime-local"/>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="finishDate">Finish date </label>
+                <input id="finishDate" name="finishDate" type="datetime-local"/>
+            </div>
+        </div>
+
+            <label for="alias">Alias </label>
+            <input id="alias" name="alias" type="text"/>
+
+
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add</button>
+    </form>
+        <a th:href="@{/dashboard/conferences/}" type="submit" value="Back" class="btn btn-light btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</a>
+</div>
+</div>
+</body>
+</html>

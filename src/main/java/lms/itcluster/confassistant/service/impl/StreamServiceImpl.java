@@ -8,6 +8,7 @@ import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.StreamService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

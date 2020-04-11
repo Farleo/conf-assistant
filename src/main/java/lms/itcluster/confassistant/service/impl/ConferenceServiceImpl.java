@@ -84,6 +84,12 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    public void addNewConference(ConferenceDTO conferenceDTO) {
+    Conference conference = mapper.toEntity(conferenceDTO);
+    conferenceRepository.save(conference);
+    }
+
+@Override
     public List<ConferenceDTO> getAllConferencesDTO() {
         List<ConferenceDTO> list = new ArrayList<>();
         for (Conference conference : conferenceRepository.findAll()) {

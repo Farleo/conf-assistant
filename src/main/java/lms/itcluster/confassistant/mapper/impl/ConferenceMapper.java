@@ -63,8 +63,8 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
         return streams;
     }
 
-    private String getOwner(Conference conference){
-        return conference.getOwner().getEmail();
+    private Long getOwner(Conference conference){
+        return conference.getOwner().getUserId();
     }
     
     @Override
@@ -82,6 +82,6 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     }
     
     private User getOwner(ConferenceDTO conferenceDTO){
-        return userRepository.findByEmail(conferenceDTO.getOwner());
+        return userRepository.findById(conferenceDTO.getOwner()).get();
     }
 }
