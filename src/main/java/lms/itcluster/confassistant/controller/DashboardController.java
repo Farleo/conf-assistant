@@ -98,8 +98,7 @@ public class DashboardController {
 	public String saveEditStream (@AuthenticationPrincipal CurrentUser currentUser,
 	                          @PathVariable Long confId,
 	                          StreamDTO streamDTO,
-	                          @PathVariable Long streamId,
-                              Model model){
+	                          @PathVariable Long streamId){
 		if(securityService.canManageConference(currentUser,confId)){
 			StreamDTO originStreamDTO = streamService.getStreamDTOById(streamId);
 			streamDTO.setTopicList(originStreamDTO.getTopicList());
@@ -115,7 +114,6 @@ public class DashboardController {
 	                         Model model){
 		if(securityService.canManageConference(currentUser,confId)){
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
-//			model.addAttribute("topicList", streamDTO.getTopicList());
 			model.addAttribute(new StreamDTO());
 			model.addAttribute("confId", confId);
 			return "dashboard/stream-new";
@@ -126,8 +124,7 @@ public class DashboardController {
 	@PostMapping(value = "dashboard/conferences/{confId}/stream/new/save")
 	public String saveNewStream (@AuthenticationPrincipal CurrentUser currentUser,
 	                             @PathVariable Long confId,
-	                             @ModelAttribute @Valid StreamDTO streamDTO,
-	                              Model model){
+	                             @ModelAttribute @Valid StreamDTO streamDTO){
 		if(securityService.canManageConference(currentUser,confId)){
 			streamService.addNewStream(streamDTO);
 			return "redirect:/dashboard/conferences/{confId}/stream/";

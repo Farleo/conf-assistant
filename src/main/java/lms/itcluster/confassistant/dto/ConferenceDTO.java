@@ -1,5 +1,8 @@
 package lms.itcluster.confassistant.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,14 +10,16 @@ public class ConferenceDTO extends AbstractDTO {
     private Long conferenceId;
     private String name;
     private String alias;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date beginDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date finishDate;
     private String info;
     private String venue;
     private String coverPhoto;
-    private List<Long> participants;
-    private List<StreamDTO> streamList;
-    private String owner;
+    private List<Long> participants = new ArrayList<>();
+    private List<StreamDTO> streamList = new ArrayList<>();
+    private Long owner;
 
 
     public ConferenceDTO() {
@@ -100,11 +105,11 @@ public class ConferenceDTO extends AbstractDTO {
         this.streamList = streamList;
     }
 
-    public String getOwner() {
+    public Long getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(Long owner) {
         this.owner = owner;
     }
 

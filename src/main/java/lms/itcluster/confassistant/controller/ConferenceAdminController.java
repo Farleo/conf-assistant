@@ -1,6 +1,8 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ParticipantDTO;
+import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
@@ -8,13 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Controller
 public class ConferenceAdminController {
@@ -84,5 +90,30 @@ public class ConferenceAdminController {
 			return "redirect:/conf/owner/{confId}";
 		}
 		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/conf/owner/newConf")
+	public String confOwnerCreateNewConf (@AuthenticationPrincipal CurrentUser currentUser,
+	                                      Model model) {
+			model.addAttribute(new ConferenceDTO());
+			return "conferenceAdmin/add-conf";
+	}
+
+	@PostMapping(value = "/conf/owner/newConf")
+	private String confOwnerCreateNewConfSave (@AuthenticationPrincipal CurrentUser currentUser,
+	                                           @ModelAttribute @Valid ConferenceDTO conferenceDTO) {
+//		if(errors.hasErrors()){
+//			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
+//			return "admin/add-user";
+//		}
+//		try {
+		conferenceDTO.setOwner(currentUser.getId());
+		conferenceService.addNewConference(conferenceDTO);
+//		} catch (UserAlreadyExistException e) {
+//			model.addAttribute("isExistEmail", true);
+//			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
+//			return "admin/add-user";
+//		}
+		return "redirect:/dashboard/conferences";
 	}
 }

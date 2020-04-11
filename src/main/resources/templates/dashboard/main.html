@@ -17,7 +17,7 @@
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Conference dashboard</h4>
-        <form th:action="@{/conf/owner/new}" method="get">
+        <form th:action="@{/conf/owner/newConf}" method="get">
             <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new Conference</button>
         </form>
         <br/>
@@ -35,6 +35,13 @@
                     <a th:href="@{'/dashboard/conferences/' + ${conf.conferenceId} + '/stream/'}" th:text="${conf.name}"/>
                 </td>
                 <td th:text="${conf.owner}"/>
+<!--     TODO           <td>-->
+<!--                    <div th:with="ConfOwner=${conf.owner}">-->
+<!--                        <div th:each="person,rowStat : ${allUser.?[email ==__${ConfOwner}__]}">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </td>-->
+
                 <td >
                     <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">
                         <button type="submit" class="btn btn-info"><i class="fa fa-users" aria-hidden="true"></i>&nbsp; Manage</button>
