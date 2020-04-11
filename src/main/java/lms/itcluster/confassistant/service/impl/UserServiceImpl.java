@@ -1,14 +1,12 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.dto.EditProfileDTO;
-import lms.itcluster.confassistant.dto.SignUpDTO;
-import lms.itcluster.confassistant.dto.SpeakerDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
@@ -17,6 +15,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.MailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,6 +54,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Qualifier("editProfileMapper")
     private Mapper<User, EditProfileDTO> editProfileMapper;
 
+    @Autowired
+    @Qualifier("editContactMapper")
+    private Mapper<User, EditContactsDTO> editContactsMapper;
+
+    @Autowired
+    private EmailService emailService;
+
 
     @Override
     public UserDTO findById(long id) {
@@ -74,6 +80,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = signUpMapper.toEntity(signUpDTO);
         user = userRepository.save(user);
         authenticateUserIfTransactionSuccess(user);
+        String link = "Please follow the link - http://localhost:8080/active/" + user.getActiveCode();
+        emailService.sendSimpleMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
     }
 
     private void authenticateUserIfTransactionSuccess(final User user) {
@@ -169,6 +177,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+
+
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
@@ -178,5 +188,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
     }
 
+    @Override
+    @Transactional
+    public UserDTO findByActivationCode(String code) {
+        User user = userRepository.findByActiveCode(code);
+        if (user == null) {
+            return null;
+        }
+        user.setActive(true);
+        user.setActiveCode(null);
+        userRepository.save(user);
+        authenticateUserIfTransactionSuccess(user);
+        return mapper.toDto(user);
+    }
+
+    @Override
+    public boolean updateUserEmail(EditContactsDTO editContactsDTO) {
+        User user = userRepository.findById(editContactsDTO.getId()).get();
+        long n = Math.round(100000 + Math.random() * 900000);
+        user.setActiveCode(String.valueOf(n));
+        String link = "Please enter current number to change email address - " + user.getActiveCode();
+        emailService.sendSimpleMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
+        userRepository.save(user);
+        return true;
+    }
 
 }

@@ -3,8 +3,6 @@ package lms.itcluster.confassistant.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity
@@ -33,6 +31,12 @@ public class  User {
 
     @Column(name = "info", length = 1000)
     private String info;
+
+    @Column(name = "activ_code")
+    private String activeCode;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean IsActive;
 
     @ManyToMany(mappedBy = "likesSet")
     @JsonIgnore
@@ -176,6 +180,30 @@ public class  User {
 
     public void setStreams(List<Stream> streams) {
         this.streams = streams;
+    }
+
+    public String getActiveCode() {
+        return activeCode;
+    }
+
+    public void setActiveCode(String activeCode) {
+        this.activeCode = activeCode;
+    }
+
+    public Boolean getActive() {
+        return IsActive;
+    }
+
+    public void setActive(Boolean active) {
+        IsActive = active;
+    }
+
+    public List<Conference> getConferences() {
+        return conferences;
+    }
+
+    public void setConferences(List<Conference> conferences) {
+        this.conferences = conferences;
     }
 
     @Override

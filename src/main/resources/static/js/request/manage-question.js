@@ -43,7 +43,7 @@ function fun1() {
 function show() {
     $.ajax({
         type: "GET",
-        url: "http://localhost:8080/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
+        url: document.location.origin + "/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
         cache: false,
         success: function (result) {
             $('#getResultDiv div').empty();
@@ -98,7 +98,7 @@ function select(question) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "http://localhost:8080/select/" + question.questionId + "/" + $('#topicId').val(),
+        url: document.location.origin + "/select/" + question.questionId + "/" + $('#topicId').val(),
         dataType: 'json',
         success: function (result) {
             if (result) {

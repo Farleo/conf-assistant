@@ -30,4 +30,8 @@ public interface UserService {
     SpeakerDTO getSpeakerById(Long id);
 
     void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException;
+
+    UserDTO findByActivationCode(String code);
+
+    boolean updateUserEmail(EditContactsDTO editContactsDTO);
 }

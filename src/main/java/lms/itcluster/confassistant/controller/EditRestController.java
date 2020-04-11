@@ -1,21 +1,26 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.DateDTO;
-import lms.itcluster.confassistant.dto.QuestionDTO;
-import lms.itcluster.confassistant.dto.StreamDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
+import lms.itcluster.confassistant.dto.*;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.service.QuestionService;
-import lms.itcluster.confassistant.service.StaticDataService;
-import lms.itcluster.confassistant.service.StreamService;
-import lms.itcluster.confassistant.service.TopicService;
+import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -32,6 +37,15 @@ public class EditRestController {
 
     @Autowired
     private StreamService streamService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping(value = "/save-question")
     public boolean saveQuestion(@RequestBody QuestionDTO questionDTO) {
@@ -67,4 +81,29 @@ public class EditRestController {
     public List<Integer> getDays(@RequestBody DateDTO dateDTO) {
         return staticDataService.getDays(dateDTO.getYear(), dateDTO.getMonth());
     }
+
+    @PostMapping("/edit/speaker/valid/contacts")
+    public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
+        userService.updateUserEmail(contactsDTO);
+        return ResponseEntity.ok("User is valid");
+    }
+
+    @PostMapping("/edit/speaker/valid/cod")
+    public ResponseEntity<String> validCod (@RequestBody String cod) {
+        return ResponseEntity.ok("User is valid");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
 }

@@ -19,7 +19,7 @@ function sendCredential(){
         cache : false,
         contentType : false,
         processData: false,
-        url : "http://localhost:8080/login-handler",
+        url : document.location.origin + "/login-handler",
         data : formData,
         success: function(data, textStatus, xhr) {
             window.location.href = document.referrer;

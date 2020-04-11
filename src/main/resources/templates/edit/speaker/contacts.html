@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/scroll.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+
+    <title>Conference Assistant</title>
+
+    <style>
+        .image-preview {
+            width: 250px;
+            min-height: 250px;
+            border: 2px solid #dddddd;
+
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #cccccc;
+        }
+
+        .image-preview__image {
+            width: 100%;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<div class="container-fluid">
+    <div class="row justify-content-center border-0" style="margin-top: 25px">
+        <div class="card col-7 border-0">
+            <div th:replace="fragment/edit :: speaker"></div>
+            <form id="contactForm" method="POST" enctype="multipart/form-data" action="/edit/speaker/contacts">
+                <input id="userId" type="text" hidden="hidden" name="userId" th:value="${speaker.getUserId()}"/>
+
+                <div id="ContactError" class="form-group">
+                    <h5 style="margin-top: 15px">Email address</h5>
+                    <div class="input-group" id="emailGroup">
+                        <input id="email" type="text" class="form-control" th:field="${speaker.email}" name="email"/>
+                        <input id="code" type="hidden" class="form-control" name="code" value="" placeholder="Enter password to proceed">
+                    </div>
+
+                    <div></div>
+                </div>
+
+
+                <div class="form-row">
+                    <input type="submit" class="btn btn-success" value="Send email"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/bootstrap/js/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/request/valid.js"></script>
+</body>
+</html>
+
+
+

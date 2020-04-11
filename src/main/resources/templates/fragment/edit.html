@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
     <title>Conference Assistant</title>
@@ -26,10 +26,24 @@
 </ul>
 </div>
 
+<div th:fragment="speaker">
+    <ul class="nav nav-tabs  nav-fill"  >
+        <li class="nav-item" >
+            <a th:href="${'/edit/speaker/main'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('main') ? 'active':''}">Main</a>
+        </li>
+        <li class="nav-item">
+            <a  th:href="${'/edit/speaker/contacts'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('contacts') ? 'active':''}">Contacts</a>
+        </li>
+        <li class="nav-item" >
+            <a  th:href="${'/edit/speaker/password'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('password') ? 'active':''}">Change password</a>
+        </li>
+    </ul>
+</div>
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="/static/bootstrap/js/jquery.slim.min.js"></script>
-<script src="/static/bootstrap/js/popper.min.js"></script>
-<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/bootstrap/js/jquery.slim.min.js"></script>
+<script src="/bootstrap/js/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

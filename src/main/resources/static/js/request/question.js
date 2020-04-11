@@ -61,7 +61,7 @@ function askQuestion() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "http://localhost:8080/save-question",
+        url: document.location.origin + "/save-question",
         data: JSON.stringify(formData),
         dataType: 'json',
         success: function () {
@@ -79,7 +79,7 @@ function askQuestion() {
 function show() {
     $.ajax({
         type: "GET",
-        url: "http://localhost:8080/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
+        url: document.location.origin + "/get-all-questions/" + $("#topicId").val() + "/" + orderBy,
         cache: false,
         success: function (result) {
             $('#getResultDiv div').empty();
@@ -152,7 +152,7 @@ function sendLike(i, question) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "http://localhost:8080/like/" + question.questionId,
+        url: document.location.origin + "/like/" + question.questionId,
         dataType: 'json',
         success: function (isLike) {
             show()

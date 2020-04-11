@@ -14,7 +14,7 @@ public class CurrentUser extends User {
     private Long id;
 
     public CurrentUser(lms.itcluster.confassistant.entity.User user) {
-        super(user.getEmail(), user.getPassword(), getAllRoles(user));
+        super(user.getEmail(), user.getPassword(), user.getActive(), true, true, true, getAllRoles(user));
         this.id = user.getUserId();
     }
 

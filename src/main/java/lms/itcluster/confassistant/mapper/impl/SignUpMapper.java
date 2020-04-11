@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.UUID;
 
 @Component
 public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
@@ -38,6 +39,7 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
         modelMapper.createTypeMap(SignUpDTO.class, User.class)
                 .addMappings(mapping -> mapping.skip(User::setRoles))
                 .addMappings(mapping -> mapping.skip(User::setPassword))
+                .addMappings(mapping -> mapping.skip(User::setActiveCode))
                 .setPostConverter(toEntityConverter());
     }
 
@@ -49,5 +51,7 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
     protected void mapSpecificFieldsInDto(SignUpDTO source, User destination) {
         destination.setRoles(Collections.singleton(rolesRepository.findByRole(Constant.USER_ROLE)));
         destination.setPassword(Constant.USER_PASSWORD);
+        destination.setActiveCode(UUID.randomUUID().toString());
+        destination.setActive(false);
     }
 }

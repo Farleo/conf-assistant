@@ -54,7 +54,7 @@ public class PageController {
         TopicDTO topicDTO = topicService.getTopicDTOById(id);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
-        if (currentUser == null) {
+        if (currentUser == null || !currentUser.isEnabled()) {
             model.addAttribute("isPresentUser", false);
         }
         else {

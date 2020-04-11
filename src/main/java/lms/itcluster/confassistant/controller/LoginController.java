@@ -2,6 +2,8 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.EditProfileDTO;
 import lms.itcluster.confassistant.dto.SignUpDTO;
+import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -45,9 +48,17 @@ public class LoginController {
             return "login/sign-up-guest";
         }
         userService.createNewUserAsGuest(signForm);
-        return "redirect:/edit/profile";
+        return "confirm-email";
     }
 
-
+    @GetMapping("/active/{code}")
+    public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser) {
+        UserDTO userDTO = userService.findByActivationCode(code);
+        if (userDTO != null) {
+            return "redirect:/edit/profile";
+        } else {
+            return "not-found";
+        }
+    }
 
 }

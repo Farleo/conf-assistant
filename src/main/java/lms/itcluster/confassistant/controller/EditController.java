@@ -1,8 +1,11 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
+import lms.itcluster.confassistant.repository.ParticipantsTypeRepository;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
@@ -29,13 +32,24 @@ public class EditController {
     @Autowired
     private StaticDataService staticDataService;
 
+    @Autowired
+    private ParticipantsTypeRepository participantsType;
+
+    @Autowired
+    private EmailService emailService;
+
     @GetMapping("/edit/profile")
     public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
         if (currentUser == null) {
             return "redirect:/login";
         }
-        model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
-        return "edit/profile";
+        if (currentUser.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Constant.SPEAKER))) {
+            return "redirect:/edit/speaker/main";
+        }
+        else {
+            model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
+            return "edit/profile";
+        }
     }
 
     @PostMapping("/edit/profile")
@@ -44,6 +58,33 @@ public class EditController {
             return "edit/profile";
         }
         userService.completeGuestRegistration(editProfileDTO);
+        return "redirect:/";
+    }
+
+    @GetMapping("/edit/speaker/main")
+    public String getSpeaker (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+        model.addAttribute("speaker", userService.getSpeakerById(currentUser.getId()));
+        return "edit/speaker/main";
+    }
+
+    @PostMapping("/edit/speaker/main")
+    public String saveSpeaker (EditProfileDTO editProfileDTO, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+        userService.updateSpeaker(editProfileDTO, photo);
+        return "redirect:/";
+    }
+
+    @GetMapping("/edit/speaker/contacts")
+    public String getContacts (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+        model.addAttribute("speaker", userService.getSpeakerById(currentUser.getId()));
+        return "edit/speaker/contacts";
+    }
+
+    @PostMapping("/edit/speaker/contacts")
+    public String saveContacts (@Valid @ModelAttribute("speaker") EditContactsDTO contactsDTO, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "edit/speaker/contacts";
+        }
+
         return "redirect:/";
     }
 

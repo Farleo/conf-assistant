@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByRoles(Roles roles);
     
     List<User> findAll();
+
+    User findByActiveCode(String activationCode);
 }
