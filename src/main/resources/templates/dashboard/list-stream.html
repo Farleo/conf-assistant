@@ -37,7 +37,7 @@
             </td>
             <td>
                 <div th:with="moder=${stream.moderator}">
-                    <div th:each="person,rowStat : ${availableModer.?[participantId == __${moder}__]}">
+                    <div th:each="person : ${availableModer.?[participantId == __${moder}__]}">
                         <span th:text="${person.firstName}"></span>
                         <span th:text="${person.lastName}"></span>
                         <span th:text="'('+${person.email}+')'"></span>

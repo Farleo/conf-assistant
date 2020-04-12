@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ParticipantDTO;
-import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
@@ -10,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.validation.Valid;
-import java.util.List;
+import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -101,19 +98,34 @@ public class ConferenceAdminController {
 
 	@PostMapping(value = "/conf/owner/newConf")
 	private String confOwnerCreateNewConfSave (@AuthenticationPrincipal CurrentUser currentUser,
-	                                           @ModelAttribute @Valid ConferenceDTO conferenceDTO) {
-//		if(errors.hasErrors()){
-//			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
-//			return "admin/add-user";
-//		}
-//		try {
+	                                           @RequestParam("inpFile") MultipartFile photo,
+	                                           @ModelAttribute @Valid ConferenceDTO conferenceDTO) throws IOException {
 		conferenceDTO.setOwner(currentUser.getId());
-		conferenceService.addNewConference(conferenceDTO);
-//		} catch (UserAlreadyExistException e) {
-//			model.addAttribute("isExistEmail", true);
-//			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
-//			return "admin/add-user";
-//		}
+		conferenceService.addNewConference(conferenceDTO, photo);
+		return "redirect:/dashboard/conferences";
+	}
+
+	@GetMapping(value = "/conf/owner/edit/{id}")
+	public String editConferenceGet (@AuthenticationPrincipal CurrentUser currentUser,
+	                                 @PathVariable Long id,
+	                                 Model model) {
+		model.addAttribute("confDTO", conferenceService.getConferenceDTOById(id));
+		return "conferenceAdmin/edit-conf";
+	}
+
+	@PostMapping(value = "/conf/owner/edit/{id}")
+	public String editConferenceSave (@AuthenticationPrincipal CurrentUser currentUser,
+	                                  @PathVariable Long id,
+	                                  @RequestParam("inpFile") MultipartFile photo,
+	                                  @ModelAttribute @Valid ConferenceDTO conferenceDTO) throws IOException  {
+		conferenceService.updateConference(conferenceDTO, photo);
+		return "redirect:/dashboard/conferences";
+	}
+	
+	@RequestMapping(value = "conf/owner/delete/{id}")
+	public String deleteConference (@AuthenticationPrincipal CurrentUser currentUser,
+	                                @PathVariable Long id){
+		conferenceService.deleteConference(id);
 		return "redirect:/dashboard/conferences";
 	}
 }

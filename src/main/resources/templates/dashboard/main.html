@@ -17,7 +17,7 @@
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Conference dashboard</h4>
-        <form th:action="@{/conf/owner/newConf}" method="get">
+        <form th:action="@{/conf/owner/newConf}"  method="get">
             <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add new Conference</button>
         </form>
         <br/>
@@ -34,13 +34,15 @@
                 <td>
                     <a th:href="@{'/dashboard/conferences/' + ${conf.conferenceId} + '/stream/'}" th:text="${conf.name}"/>
                 </td>
-                <td th:text="${conf.owner}"/>
-<!--     TODO           <td>-->
-<!--                    <div th:with="ConfOwner=${conf.owner}">-->
-<!--                        <div th:each="person,rowStat : ${allUser.?[email ==__${ConfOwner}__]}">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </td>-->
+                <td>
+                    <div th:with="ConfOwner=${conf.owner}">
+                        <div th:each="person : ${allUser.?[id ==__${ConfOwner}__]}">
+                            <span th:text="${person.firstName}"></span>
+                            <span th:text="${person.lastName}"></span>
+                            <span th:text="'('+${person.email}+')'"></span>
+                        </div>
+                    </div>
+                </td>
 
                 <td >
                     <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">
@@ -48,12 +50,12 @@
                     </form>
                 </td>
                 <td >
-                    <form th:action="@{'/dashboard/conferences/edit/{id}'(id=${conf.conferenceId})}" th:method="patch">
+                    <form th:action="@{'/conf/owner/edit/{id}'(id=${conf.conferenceId})}" enctype="multipart/form-data" th:method="get">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp; Edit</button>
                     </form>
                 </td>
                 <td >
-                    <form th:action="@{'/dashboard/conferences/delete/{id}'(id=${conf.conferenceId})}" th:method="delete">
+                    <form th:action="@{'/conf/owner/delete/{id}'(id=${conf.conferenceId})}" th:method="delete">
                         <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
                     </form>
                 </td>

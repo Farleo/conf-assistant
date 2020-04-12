@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
 
-    <title>Add new conference</title>
+    <title>Edit conference</title>
     <style>
         .image-preview {
             width: auto;
@@ -37,10 +37,12 @@
 <div style="text-align: center;">
 <div class="col-md-8 order-md-1">
 
-    <h4 class="mb-3">Add new conference</h4>
+    <h4 class="mb-3">Edit conference</h4>
 
-    <form th:object="${conferenceDTO}" enctype="multipart/form-data" method="post" class="needs-validation" novalidate="" >
-        <input id="conferenceId" name="conferenceId" type="hidden"/>
+    <form th:object="${confDTO}" enctype="multipart/form-data" method="post" class="needs-validation" novalidate="" >
+        <input id="conferenceId" name="conferenceId" th:value="*{conferenceId}" type="hidden"/>
+<!--        <input id="owner" name="owner" type="hidden"/>-->
+        <input id="owner" name="owner" th:value="*{owner}" class="form-control" type="hidden"/>
 
         <div class="mb-3">
             <label for="name">Add cover photo</label>
@@ -59,7 +61,7 @@
          <div class="mb-3">
             <label for="name">Name</label>
              <div class="form-group">
-            <input id="name" name="name" type="text" class="form-control"/>
+            <input id="name" name="name" th:field="*{name}" type="text" class="form-control"/>
              </div>
          </div>
 
@@ -67,33 +69,33 @@
             <div class="col-12" style="padding-top: 10px">
                 <label for="info">Info</label>
                 <div class="form-group">
-                    <textarea class="form-control" id="info" name="info" rows="5"></textarea>
+                    <textarea class="form-control" id="info" th:field="*{info}" name="info" rows="5"></textarea>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
             <label for="venue">Venue</label>
-            <input id="venue" name="venue" type="text" class="form-control"/>
+            <input id="venue" name="venue" type="text" th:field="*{venue}" class="form-control"/>
         </div>
 
         <div class="form-row">
             <div class="col-md-6 mb-3">
                 <label for="beginDate">Begin date </label>
-                <input id="beginDate" name="beginDate" type="datetime-local"/>
+                <input id="beginDate" name="beginDate" th:field="*{beginDate}" type="datetime-local"/>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="finishDate">Finish date </label>
-                <input id="finishDate" name="finishDate" type="datetime-local"/>
+                <input id="finishDate" name="finishDate" th:field="*{finishDate}" type="datetime-local"/>
             </div>
         </div>
 
             <label for="alias">Alias </label>
-            <input id="alias" name="alias" type="text"/>
+            <input id="alias" name="alias" th:field="*{alias}" type="text"/>
 
 
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Save</button>
     </form>
         <a th:href="@{/dashboard/conferences/}" type="submit" value="Back" class="btn btn-light btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</a>
 </div>
