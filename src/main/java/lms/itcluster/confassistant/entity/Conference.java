@@ -17,7 +17,7 @@ public class Conference {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "conference_id", unique = true, nullable = false)
-    private long conferenceId;
+    private Long conferenceId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -57,11 +57,11 @@ public Conference() {
         super();
     }
 
-    public long getConferenceId() {
+    public Long getConferenceId() {
         return conferenceId;
     }
 
-    public void setConferenceId(long conferenceId) {
+    public void setConferenceId(Long conferenceId) {
         this.conferenceId = conferenceId;
     }
 

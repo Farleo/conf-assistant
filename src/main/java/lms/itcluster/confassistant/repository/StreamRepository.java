@@ -1,6 +1,5 @@
 package lms.itcluster.confassistant.repository;
 
-import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,14 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import java.util.List;
-
 @Repository
 public interface StreamRepository extends JpaRepository<Stream, Long> {
 
     Stream findByName(String name);
 
-    List<Stream> findAllByModerator_UserIdAndConference_ConferenceId(Long userId, long conferenceId);
+    List<Stream> findAllByModerator_UserIdAndConference_ConferenceId(Long userId, Long conferenceId);
 
     List<Stream> findAllByModerator(User moderator);
 

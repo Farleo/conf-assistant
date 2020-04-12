@@ -1,12 +1,8 @@
 package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
-import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.dto.StreamDTO;
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Question;
-import lms.itcluster.confassistant.entity.Stream;
-import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.*;
@@ -17,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> {
@@ -28,13 +27,15 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     private final ModelMapper modelMapper;
     private final StreamRepository streamRepository;
     private final UserRepository userRepository;
+    private final ParticipantRepository participantRepository;
 
     @Autowired
-    public ConferenceMapper(ModelMapper modelMapper, StreamRepository streamRepository, UserRepository userRepository, ConferenceRepository conferenceRepository) {
+    public ConferenceMapper(ModelMapper modelMapper, StreamRepository streamRepository, UserRepository userRepository, ConferenceRepository conferenceRepository, ParticipantRepository participantRepository) {
         super(ConferenceDTO.class, Conference.class, conferenceRepository);
         this.modelMapper = modelMapper;
         this.streamRepository = streamRepository;
         this.userRepository = userRepository;
+        this.participantRepository = participantRepository;
     }
 
     @PostConstruct
@@ -53,6 +54,7 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     protected void mapSpecificFieldsInEntity(Conference source, ConferenceDTO destination) {
         destination.setStreamList(getStreamList(source));
         destination.setOwner(getOwner(source));
+        destination.setParticipants(getParticipantList(source));
     }
 
     private List<StreamDTO> getStreamList(Conference conference) {
@@ -61,6 +63,10 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
             streams.add(mapper.toDto(stream));
         }
         return streams;
+    }
+    
+    private List<Long> getParticipantList(Conference conference){
+        return conference.getParticipants().stream().map(p->p.getParticipantsKey().getUser().getUserId()).distinct().collect(Collectors.toList());
     }
 
     private Long getOwner(Conference conference){
@@ -71,6 +77,7 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     protected void mapSpecificFieldsInDto(ConferenceDTO source, Conference destination) {
         destination.setStreamList(getSteamList(source));
         destination.setOwner(getOwner(source));
+        destination.setParticipants(getParticipantList(source));
     }
 
     private List<Stream> getSteamList(ConferenceDTO conferenceDTO) {
@@ -83,5 +90,13 @@ public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> 
     
     private User getOwner(ConferenceDTO conferenceDTO){
         return userRepository.findById(conferenceDTO.getOwner()).get();
+    }
+    
+    private List<Participants> getParticipantList(ConferenceDTO conferenceDTO){
+        List<Participants> participantsList = new ArrayList<>();
+        for(Long participantId : conferenceDTO.getParticipants()){
+            participantsList.addAll(participantRepository.findByUserIdAndConfId(participantId,conferenceDTO.getConferenceId()));
+        }
+        return participantsList;
     }
 }

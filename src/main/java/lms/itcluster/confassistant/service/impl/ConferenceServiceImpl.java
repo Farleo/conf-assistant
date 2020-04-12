@@ -2,10 +2,8 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
-import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Participants;
-import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,7 +143,7 @@ private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
     public List<ConferenceDTO> getAllConferencesDTO() {
         List<ConferenceDTO> list = new ArrayList<>();
         for (Conference conference : conferenceRepository.findAll()) {
-            list.add(simpleMapper.toDto(conference));
+            list.add(mapper.toDto(conference));
         }
         return list;
     }

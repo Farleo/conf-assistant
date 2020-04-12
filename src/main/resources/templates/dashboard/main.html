@@ -26,6 +26,7 @@
             <td><b>Conference name</b></td>
             <td><b>Conference owner</b></td>
             <td><b>Manage participants</b></td>
+            <td><b>Count participants</b></td>
             <td><b>Edit</b></td>
             <td><b>Delete</b></td>
 
@@ -48,6 +49,9 @@
                     <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">
                         <button type="submit" class="btn btn-info"><i class="fa fa-users" aria-hidden="true"></i>&nbsp; Manage</button>
                     </form>
+                </td>
+                <td>
+                    <label th:text="${conf.participants.size()}"></label>
                 </td>
                 <td >
                     <form th:action="@{'/conf/owner/edit/{id}'(id=${conf.conferenceId})}" enctype="multipart/form-data" th:method="get">
