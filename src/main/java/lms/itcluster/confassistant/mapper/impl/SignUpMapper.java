@@ -11,6 +11,7 @@ import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,9 @@ import java.util.UUID;
 public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
 
     private final ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RolesRepository rolesRepository;
@@ -40,6 +44,7 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
                 .addMappings(mapping -> mapping.skip(User::setRoles))
                 .addMappings(mapping -> mapping.skip(User::setPassword))
                 .addMappings(mapping -> mapping.skip(User::setActiveCode))
+                .addMappings(mapping -> mapping.skip(User::setCreated))
                 .setPostConverter(toEntityConverter());
     }
 
@@ -50,8 +55,9 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
     @Override
     protected void mapSpecificFieldsInDto(SignUpDTO source, User destination) {
         destination.setRoles(Collections.singleton(rolesRepository.findByRole(Constant.USER_ROLE)));
-        destination.setPassword(Constant.USER_PASSWORD);
+        destination.setPassword(passwordEncoder.encode(Constant.USER_PASSWORD));
         destination.setActiveCode(UUID.randomUUID().toString());
         destination.setActive(false);
+        destination.setCreated(LocalDate.now());
     }
 }

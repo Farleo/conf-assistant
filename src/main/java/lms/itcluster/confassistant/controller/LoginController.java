@@ -53,7 +53,7 @@ public class LoginController {
 
     @GetMapping("/active/{code}")
     public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser) {
-        UserDTO userDTO = userService.findByActivationCode(code);
+        UserDTO userDTO = userService.findByActivationCode(code, currentUser.getId());
         if (userDTO != null) {
             return "redirect:/edit/profile";
         } else {

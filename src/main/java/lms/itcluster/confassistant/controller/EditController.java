@@ -88,6 +88,26 @@ public class EditController {
         return "redirect:/";
     }
 
+    @GetMapping("/edit/speaker/password")
+    public String getPassword (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+        model.addAttribute("speaker", new EditPasswordDTO(){{setUserId(currentUser.getId());}});
+        return "edit/speaker/password";
+    }
+
+    @PostMapping("/edit/speaker/password")
+    public String savePassword (@Valid @ModelAttribute("speaker") EditPasswordDTO passwordDTO, BindingResult bindingResult, Model model) throws IOException {
+        if (bindingResult.hasErrors()) {
+            return "edit/speaker/password";
+        }
+        boolean result = userService.updatePassword(passwordDTO);
+        if (result) {
+            model.addAttribute("message", "You have successfully updated password");
+            return "message";
+        }
+        model.addAttribute("message", "Password not updated. Try again later");
+        return "message";
+    }
+
     @GetMapping("/edit/topic/main/{topicId}")
     public String getMain (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);

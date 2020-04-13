@@ -17,6 +17,8 @@ import java.util.stream.IntStream;
 @Service
 public class StaticDataServiceImpl implements StaticDataService {
 
+    private Map<Long, String> updatedEmail = new HashMap<>();
+
     @Override
     public Map<Integer, String> getMonthMap() {
         String[] month = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
@@ -46,5 +48,25 @@ public class StaticDataServiceImpl implements StaticDataService {
             list.add(i);
         }
         return list;
+    }
+
+    @Override
+    public String getUpdatedEmail(Long userId) {
+        return updatedEmail.get(userId);
+    }
+
+    @Override
+    public void addUpdatedEmail(Long id, String email) {
+        updatedEmail.put(id, email);
+    }
+
+    @Override
+    public void removeUpdatedEmail(Long id) {
+        updatedEmail.remove(id);
+    }
+
+    @Override
+    public Map<Long, String> getEmailMap() {
+        return updatedEmail;
     }
 }

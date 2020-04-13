@@ -37,6 +37,9 @@ public class PageController {
     @Autowired
     private StreamRepository streamRepository;
 
+    @Autowired
+    private StaticDataService staticDataService;
+
     @RequestMapping(value = "/")
     public String getList(Model model) {
         model.addAttribute("conferences", conferenceService.getListConferencesDTO());
@@ -77,5 +80,25 @@ public class PageController {
         UserDTO user = userService.findById(currentUser.getId());
         participantService.addParticipant(user,conference);
         return "redirect:/topic/{id}";
+    }
+
+    @GetMapping("/change/{code}")
+    public String changeEmail(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        UserDTO userDTO = userService.findByCode(code, currentUser.getId());
+        if (userDTO != null) {
+            String newEmail = staticDataService.getUpdatedEmail(userDTO.getUserId());
+            if (userService.findByEmail(newEmail) != null) {
+                staticDataService.removeUpdatedEmail(userDTO.getUserId());
+                model.addAttribute("message", "User with email: " + userDTO.getEmail() + " already exist");
+                return "message";
+            }
+            userDTO.setEmail(newEmail);
+            userService.updateEmail(userDTO);
+            staticDataService.removeUpdatedEmail(userDTO.getUserId());
+            model.addAttribute("message", "You email address " + userDTO.getEmail() + " was successfully updated");
+            return "message";
+        } else {
+            return "not-found";
+        }
     }
 }

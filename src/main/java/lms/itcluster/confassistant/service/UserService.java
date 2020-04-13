@@ -31,7 +31,13 @@ public interface UserService {
 
     void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException;
 
-    UserDTO findByActivationCode(String code);
+    UserDTO findByActivationCode(String code, Long currentUserId);
 
     boolean updateUserEmail(EditContactsDTO editContactsDTO);
+
+    void updateEmail(UserDTO userDTO);
+
+    UserDTO findByCode(String code, Long currentUserId);
+
+    boolean updatePassword(EditPasswordDTO editPasswordDTO);
 }

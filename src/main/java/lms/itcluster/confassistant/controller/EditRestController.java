@@ -88,10 +88,6 @@ public class EditRestController {
         return ResponseEntity.ok("User is valid");
     }
 
-    @PostMapping("/edit/speaker/valid/cod")
-    public ResponseEntity<String> validCod (@RequestBody String cod) {
-        return ResponseEntity.ok("User is valid");
-    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

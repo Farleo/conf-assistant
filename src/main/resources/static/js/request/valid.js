@@ -24,9 +24,8 @@ function sendCredential() {
         },
         error: function (xhr, status, error) {
             if (xhr.status === 200) {
-/*                var code = prompt("Emter verifiying code")*/
+                alert("On your new email address was sent link. Please check your email")
                 console.log(document.location.origin);
-/*                sendCode(code);*/
             } else {
                 var json = JSON.parse(xhr.responseText);
                 $('#ContactError div').empty();
@@ -34,28 +33,6 @@ function sendCredential() {
                     "<div class=\"alert alert-danger\">" + json.email + "</div>";
                 $('#ContactError div').append(notValid);
             }
-        }
-    });
-}
-
-function sendCode(code) {
-    // PREPARE FORM DATA
-    var formData = {
-        code: code
-    };
-
-    // DO POST
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: document.location.origin + "/edit/speaker/valid/cod",
-        data: JSON.stringify(formData),
-        dataType: 'json',
-        success: function (data, textStatus, xhr) {
-
-        },
-        error: function (xhr, status, error) {
-
         }
     });
 }

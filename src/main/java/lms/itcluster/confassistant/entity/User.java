@@ -3,6 +3,7 @@ package lms.itcluster.confassistant.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -20,7 +21,7 @@ public class  User {
     @Column(name = "last_name", length = 45)
     private String lastName;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 60)
     private String password;
 
     @Column(name = "email", nullable = false, length = 100, unique = true)
@@ -36,7 +37,10 @@ public class  User {
     private String activeCode;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean IsActive;
+    private Boolean isActive;
+
+    @Column(name = "created")
+    private LocalDate created;
 
     @ManyToMany(mappedBy = "likesSet")
     @JsonIgnore
@@ -190,12 +194,23 @@ public class  User {
         this.activeCode = activeCode;
     }
 
+
+
+    public LocalDate getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDate created) {
+        this.created = created;
+    }
+
+
     public Boolean getActive() {
-        return IsActive;
+        return isActive;
     }
 
     public void setActive(Boolean active) {
-        IsActive = active;
+        isActive = active;
     }
 
     public List<Conference> getConferences() {

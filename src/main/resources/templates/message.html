@@ -12,48 +12,13 @@
 
     <title>Conference Assistant</title>
 
-    <style>
-        .image-preview {
-            width: 250px;
-            min-height: 250px;
-            border: 2px solid #dddddd;
-
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #cccccc;
-        }
-
-        .image-preview__image {
-            width: 100%;
-        }
-
-
-    </style>
-
 </head>
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid">
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">
-            <div th:replace="fragment/edit :: speaker"></div>
-            <form id="contactForm" method="POST" enctype="multipart/form-data" action="/edit/speaker/contacts">
-                <input id="userId" type="text" hidden="hidden" name="userId" th:value="${speaker.getUserId()}"/>
-
-                <div id="ContactError" class="form-group">
-                    <h5 style="margin-top: 15px">Email address</h5>
-                    <input id="email" type="text" class="form-control" th:field="${speaker.email}" name="email"/>
-                    <div></div>
-                </div>
-
-
-                <div class="form-row">
-                    <input type="submit" class="btn btn-success" value="Send email"/>
-                </div>
-            </form>
+            <p th:text="${message}"></p>
         </div>
     </div>
 </div>
@@ -63,7 +28,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="/bootstrap/js/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
-<script src="/js/request/valid.js"></script>
+<script src="/js/request/question.js"></script>
+
 </body>
 </html>
 

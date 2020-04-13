@@ -8,16 +8,21 @@ import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.service.ImageStorageService;
+import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.MailSender;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -26,10 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private ImageStorageService imageStorageService;
@@ -60,6 +67,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private StaticDataService staticDataService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Value("${remove.not.completed.profiles.interval}")
+    private int removeNotCompletedProfilesInterval;
+
 
     @Override
     public UserDTO findById(long id) {
@@ -80,7 +96,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user = userRepository.save(user);
         authenticateUserIfTransactionSuccess(user);
         String link = "Please follow the link - https://conf-assistant.azurewebsites.net/active/" + user.getActiveCode();
-        emailService.sendSimpleMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
+        emailService.sendMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
     }
 
     private void authenticateUserIfTransactionSuccess(final User user) {
@@ -189,9 +205,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDTO findByActivationCode(String code) {
+    public UserDTO findByActivationCode(String code, Long currentUserId) {
         User user = userRepository.findByActiveCode(code);
         if (user == null) {
+            return null;
+        }
+        if (!user.getUserId().equals(currentUserId)) {
             return null;
         }
         user.setActive(true);
@@ -204,12 +223,53 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean updateUserEmail(EditContactsDTO editContactsDTO) {
         User user = userRepository.findById(editContactsDTO.getId()).get();
-        long n = Math.round(100000 + Math.random() * 900000);
-        user.setActiveCode(String.valueOf(n));
-        String link = "Please enter current number to change email address - " + user.getActiveCode();
-        emailService.sendSimpleMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
+        String activationCode = UUID.randomUUID().toString();
+        user.setActiveCode(activationCode);
+        String link = "Please follow the link - http://localhost:8080/change/" + user.getActiveCode();
+        emailService.sendMessage(editContactsDTO.getEmail(), "Change email address on Conference Assistant", link);
+        userRepository.save(user);
+        staticDataService.addUpdatedEmail(user.getUserId(), editContactsDTO.getEmail());
+        return true;
+    }
+
+    @Override
+    public void updateEmail(UserDTO userDTO) {
+        User user = userRepository.findById(userDTO.getUserId()).get();
+        user.setEmail(userDTO.getEmail());
+        user.setActiveCode(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserDTO findByCode(String code, Long currentUserId) {
+        User user = userRepository.findByActiveCode(code);
+        if (user == null) {
+            return null;
+        }
+        if (!user.getUserId().equals(currentUserId)) {
+            return null;
+        }
+        return mapper.toDto(user);
+    }
+
+    @Override
+    public boolean updatePassword(EditPasswordDTO editPasswordDTO) {
+        User user = userRepository.findById(editPasswordDTO.getId()).get();
+        user.setPassword(passwordEncoder.encode(editPasswordDTO.getPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    @Scheduled(cron = "0 59 23 * * *")
+    public void removeNotActiveProfiles() {
+        LocalDate date = LocalDate.now().minusDays(removeNotCompletedProfilesInterval);
+        userRepository.deleteUserByIsActiveAndCreatedLessThan(false, date);
+        for (Map.Entry<Long, String> user : staticDataService.getEmailMap().entrySet()) {
+            if (!userRepository.existsById(user.getKey())) {
+                staticDataService.removeUpdatedEmail(user.getKey());
+            }
+        }
+        LOGGER.info("Removed all non active user");
     }
 
 }

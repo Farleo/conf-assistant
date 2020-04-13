@@ -10,4 +10,12 @@ public interface StaticDataService {
     List<Integer> getYears();
 
     List<Integer> getDays(Integer year, Integer month);
+
+    String getUpdatedEmail(Long userId);
+
+    void addUpdatedEmail(Long id, String email);
+
+    void removeUpdatedEmail(Long id);
+
+    Map<Long, String> getEmailMap();
 }

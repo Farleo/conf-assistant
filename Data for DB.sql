@@ -1,7 +1,7 @@
 insert into user(first_name, last_name, password, email, is_active)
-values ('Ivan', 'Smith', '123qweasd', 'smith@gmail.com', 1),
-       ('John', 'Simpson', 'dsaewq321', 'simpson@gmail.com', 1),
-       ('Fray', 'Bullok', '1qasw23ed', 'fray@gmail.com', 1);
+values ('Ivan', 'Smith', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'smith@gmail.com', 1),
+       ('John', 'Simpson', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'simpson@gmail.com', 1),
+       ('Fray', 'Bullok', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'fray@gmail.com', 1);
 
 insert into conference(name, alias, begin_date, finish_date, info, cover_photo, venue, owner_id)
 values ('5G in 2020', '5G20', '2020-02-09', '2020-02-13', 'The 2020 edition of The European 5G Conference will take place in Brussels, Belgium on 29 & 30 January. Now in its 4th year, the European 5G Conference has an established reputation as Brussels’ leading meeting place for discussion on 5G policy.
@@ -23,13 +23,13 @@ VALUES ('Conference Hall №1', 1, 38),
        ('Conference Hall №3', 3, 39);
 
 insert into user(first_name, last_name, password, info, photo, email, is_active)
-VALUES ('Carla', 'Walton', '147852369',
+VALUES ('Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.',
         'Again, we configured the relationship before. Hence, we only need to tell JPA, where can it find that configuration. Note, that we could use this solution to address the previous problem: students rating courses. However, it feels weird to create a dedicated primary key unless we have to. Moreover, from an RDBMS perspective, in the relationship',
         '/picture/img/user/1.jpg', 'walton@gmail.com', 1),
-       ('Radgesh', 'Kutrapali', 'qweasd321',
+       ('Radgesh', 'Kutrapali', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.',
         'In this case, there''re multiple connections between the same student-course pairs, or multiple rows, with the same student_id-course_id pairs. We can''t model it using any of the previous solutions because all primary keys must be unique. Therefore, we need to use a separate primary key.',
         '/picture/img/user/2.jpg', 'radgesh@gmail.com', 1),
-       ('Hovard', 'Volovits', '][pl;',
+       ('Hovard', 'Volovits', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.',
         'Moreover, this solution has an additional feature we didn''t mention yet. The simple many-to-many solution creates a relationship between two entities. Therefore, we cannot expand the relationship to more entities. However, in this solution we don''t have this limit: we can model relationships between any number of entity types.',
         '/picture/img/user/3.jpg', 'hovard@gmail.com', 1);
 
@@ -55,42 +55,42 @@ Note, that it''s possible for entity types to be in a relationship with themselv
         '/picture/img/topic/maxresdefault.jpg');
 
 
-insert into user(email, password, is_active)
-values ('1email@gmail.com', '', 1),
-       ('2email@gmail.com', '', 1),
-       ('3email@gmail.com', '', 1),
-       ('4email@gmail.com', '', 1),
-       ('5email@gmail.com', '', 1),
-       ('6email@gmail.com', '', 1),
-       ('7email@gmail.com', '', 1),
-       ('8email@gmail.com', '', 1),
-       ('9email@gmail.com', '', 1),
-       ('10email@gmail.com', '', 1),
-       ('11email@gmail.com', '', 1),
-       ('12email@gmail.com', '', 1),
-       ('13email@gmail.com', '', 1),
-       ('14email@gmail.com', '', 1),
-       ('15email@gmail.com', '', 1),
-       ('16email@gmail.com', '', 1),
-       ('17email@gmail.com', '', 1),
-       ('18email@gmail.com', '', 1),
-       ('19email@gmail.com', '', 1),
-       ('20email@gmail.com', '', 1),
-       ('21email@gmail.com', '', 1),
-       ('22email@gmail.com', '', 1),
-       ('23email@gmail.com', '', 1),
-       ('24email@gmail.com', '', 1),
-       ('25email@gmail.com', '', 1),
-       ('26email@gmail.com', '', 1),
-       ('27email@gmail.com', '', 1),
-       ('28email@gmail.com', '', 1),
-       ('29email@gmail.com', '', 1),
-       ('30email@gmail.com', '', 1);
+insert into user(email, password, is_active, created)
+values ('1email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('2email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('3email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('4email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('5email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('6email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('7email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('8email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('9email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('10email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('11email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('12email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('13email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('14email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('15email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('16email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('17email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('18email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('19email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('20email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('21email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('22email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('23email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 0, '2020-02-04'),
+       ('24email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('25email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('26email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('27email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('28email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('29email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04'),
+       ('30email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04');
 
 insert into user(first_name, last_name, password, email, is_active)
-values ('Alex', 'Fox', 'password', 'alex@gmail.com', 1),
-       ('Olena', 'Hrechko', 'hrechko', 'hrechko@gmail.com', 1),
-       ('Maruv', 'Pavl', 'pavl', 'maruc@gmail.com', 1);
+values ('Alex', 'Fox', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'alex@gmail.com', 1),
+       ('Olena', 'Hrechko', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'hrechko@gmail.com', 1),
+       ('Maruv', 'Pavl', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'maruc@gmail.com', 1);
 
 insert into question(question, topic_id, user_id, created)
 VALUES ('You will build an application that store?', 1, 1, '00:18:11'),
@@ -254,4 +254,5 @@ VALUES (1, 1, 4),
        (37, 2, 3),
        (38, 1, 3),
        (39, 3, 3);
+
 
