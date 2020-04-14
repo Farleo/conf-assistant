@@ -16,6 +16,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -115,6 +116,7 @@ public class QuestionServiceImpl implements QuestionService {
         Topic topic = topicRepository.findById(topicId).get();
         User speaker = userRepository.findById(topic.getSpeaker().getUserId()).get();
         List<Question> questions = topic.getQuestionList();
+        questions.sort(Comparator.comparingInt(Question::getRating));
         StringBuilder letter = new StringBuilder("Here is all your question from topic: " + topic.getName() + "\n");
         int i = 1;
         for (Question question : questions) {
@@ -124,7 +126,17 @@ public class QuestionServiceImpl implements QuestionService {
             } else {
                 answered = "Not answered";
             }
-            letter.append(i).append(". ").append(question.getQuestion()).append(" ").append(answered).append("\n");
+            letter
+                    .append(i)
+                    .append(". ")
+                    .append(question.getQuestion())
+                    .append(" Author - ")
+                    .append(question.getUser().getEmail())
+                    .append(". ")
+                    .append(answered)
+                    .append(". Rating: ")
+                    .append(question.getRating())
+                    .append("\n");
             i++;
         }
         emailService.sendMessage(speaker.getEmail(), "Questions from topic: " + topic.getName(), letter.toString());
