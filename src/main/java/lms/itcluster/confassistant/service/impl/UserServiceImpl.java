@@ -114,14 +114,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setIsDeleted(1);
+            user.setDeleted(true);
             userRepository.save(user);
         }
     }
 
     @Override
     public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll().stream().filter(f->f.getIsDeleted()!=1).collect(Collectors.toList());
+        List<User> users = userRepository.findAll().stream().filter(f->!f.getDeleted()).collect(Collectors.toList());
         Type listType = new TypeToken<List<UserDTO>>() {
         }.getType();
         ModelMapper modelMapper = new ModelMapper();
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
-        if (user != null && user.getIsDeleted()!=1) {
+        if (user != null && !user.getDeleted()) {
             return new CurrentUser(user);
         } else {
             throw new UsernameNotFoundException("Profile not found by email " + username);

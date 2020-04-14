@@ -86,6 +86,7 @@ public class StreamController {
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
 			model.addAttribute(new StreamDTO());
 			model.addAttribute("confId", confId);
+			model.addAttribute("currentUser", currentUser.getId());
 			return "stream/stream-new";
 		}
 		return "redirect:/";

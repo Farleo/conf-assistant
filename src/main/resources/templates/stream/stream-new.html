@@ -27,10 +27,10 @@
             <td>
                 <label th:text="'Select moderator '"></label>
                 <select th:field="*{moderator}">
+                    <option th:value="${currentUser}">&nbsp;</option>
                     <option th:each="moder : ${availableModer}"
                             th:value="${moder.participantId}"
                             th:text="${moder.email}">
-                        Address
                     </option>
                 </select>
             </td>
