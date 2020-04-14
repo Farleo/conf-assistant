@@ -19,6 +19,7 @@ CREATE TABLE `roles` (
    `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
    `is_active` bit(1) NOT NULL,
    `activ_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+   `created`    date        COLLATE utf8mb4_unicode_ci DEFAULT NULL,
    `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
    `first_name` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
    `info` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

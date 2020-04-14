@@ -10,15 +10,15 @@ INSERT INTO participant_type (type_id, name) VALUES
 (4, 'admin');
 
 # Insert `admin` users
-insert into user (user_id,  first_name, last_name, password, email, is_active) values
- (1, 'Ivan', 'Smith', '123qweasd', 'smith@gmail.com', 1);
+insert into user (user_id,  first_name, last_name, password, email, is_active, is_deleted) values
+ (1, 'Ivan', 'Smith', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'smith@gmail.com', 1, 0);
 insert into user_roles(roles_id, user_id) values
  (1, 1);
 
 # Insert `confOwner` users
-insert into user (user_id,  first_name, last_name, password, email, is_active) values
-(10, 'John', 'Simpson', 'dsaewq321', 'simpson@gmail.com', 1),
-(11, 'Fray', 'Bullok', '1qasw23ed', 'fray@gmail.com', 1);
+insert into user (user_id,  first_name, last_name, password, email, is_active,is_deleted) values
+(10, 'John', 'Simpson', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'simpson@gmail.com', 1, 0),
+(11, 'Fray', 'Bullok', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'fray@gmail.com', 1, 0);
 insert into user_roles(roles_id, user_id) values
 (2, 10), (2, 11);
 
@@ -34,10 +34,10 @@ Later, Edgar Schein (1989) elaborated the process and systemic approach: “As t
  '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83', 11);
 
 # Insert `conf admin` users
-insert into user(user_id,  first_name, last_name, password, email, is_active) values
-(20, 'Joe', 'Morris', 'joe', 'j.morris@gmail.com', 1),
-(21, 'James', 'Nash', 'james', 'j.nash@gmail.com', 1),
-(22, 'Colin', 'Barker', 'colin', 'c.barker@gmail.com', 1);
+insert into user(user_id,  first_name, last_name, password, email, is_active, is_deleted) values
+(20, 'Joe', 'Morris', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'j.morris@gmail.com', 1, 0),
+(21, 'James', 'Nash', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'j.nash@gmail.com', 1, 0),
+(22, 'Colin', 'Barker', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'c.barker@gmail.com', 1, 0);
 
 insert into user_roles(roles_id, user_id) values
 (3, 20), (3, 21), (3, 22);
@@ -46,10 +46,10 @@ INSERT INTO participants (user_id, conference_id, type_id) VALUES
 (20, 1, 4), (21, 2, 4), (22, 3, 4); 
 
 # Insert `conf moder` users
-insert into user(user_id,  first_name, last_name, password, email, is_active) values
-(30, 'Alex', 'Fox', 'password', 'alex@gmail.com', 1),
-(31, 'Olena', 'Hrechko', 'hrechko', 'hrechko@gmail.com', 1),
-(32, 'Maruv', 'Pavl', 'pavl', 'maruc@gmail.com', 1);
+insert into user(user_id,  first_name, last_name, password, email, is_active, is_deleted) values
+(30, 'Alex', 'Fox', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'alex@gmail.com', 1, 0),
+(31, 'Olena', 'Hrechko', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'hrechko@gmail.com', 1, 0),
+(32, 'Maruv', 'Pavl', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'maruc@gmail.com', 1, 0);
 
 insert into user_roles(roles_id, user_id) values
 (3, 30), (3, 31), (3, 32);
@@ -63,10 +63,10 @@ insert into stream(name, conference_id, moderator_id) VALUES
 ('Conference Hall №3', 3, 32);
 
 # Insert `conf speaker` users
-insert into user(user_id,  first_name, last_name, password, info, photo, email, is_active) VALUES
-(40, 'Carla', 'Walton', '147852369', 'Again, we configured the relationship before. Hence, we only need to tell JPA, where can it find that configuration. Note, that we could use this solution to address the previous problem: students rating courses. However, it feels weird to create a dedicated primary key unless we have to. Moreover, from an RDBMS perspective, in the relationship', '/picture/img/user/1.jpg', 'walton@gmail.com', 1),
-(41, 'Radgesh', 'Kutrapali', 'qweasd321', 'In this case, there''re multiple connections between the same student-course pairs, or multiple rows, with the same student_id-course_id pairs. We can''t model it using any of the previous solutions because all primary keys must be unique. Therefore, we need to use a separate primary key.', '/picture/img/user/2.jpg', 'radgesh@gmail.com', 1),
-(42, 'Hovard', 'Volovits', '][pl;', 'Moreover, this solution has an additional feature we didn''t mention yet. The simple many-to-many solution creates a relationship between two entities. Therefore, we cannot expand the relationship to more entities. However, in this solution we don''t have this limit: we can model relationships between any number of entity types.', '/picture/img/user/3.jpg', 'hovard@gmail.com', 1);
+insert into user(user_id,  first_name, last_name, password, info, photo, email, is_active, is_deleted) VALUES
+(40, 'Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'Again, we configured the relationship before. Hence, we only need to tell JPA, where can it find that configuration. Note, that we could use this solution to address the previous problem: students rating courses. However, it feels weird to create a dedicated primary key unless we have to. Moreover, from an RDBMS perspective, in the relationship', '/picture/img/user/1.jpg', 'walton@gmail.com', 1, 0),
+(41, 'Radgesh', 'Kutrapali', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'In this case, there''re multiple connections between the same student-course pairs, or multiple rows, with the same student_id-course_id pairs. We can''t model it using any of the previous solutions because all primary keys must be unique. Therefore, we need to use a separate primary key.', '/picture/img/user/2.jpg', 'radgesh@gmail.com', 1, 0),
+(42, 'Hovard', 'Volovits', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.', 'Moreover, this solution has an additional feature we didn''t mention yet. The simple many-to-many solution creates a relationship between two entities. Therefore, we cannot expand the relationship to more entities. However, in this solution we don''t have this limit: we can model relationships between any number of entity types.', '/picture/img/user/3.jpg', 'hovard@gmail.com', 1, 0);
 
 insert into user_roles(roles_id, user_id) values
 (3, 40), (3, 41), (3, 42);
@@ -94,12 +94,12 @@ Note, that we could use this solution to address the previous problem: students 
 Note, that it''s possible for entity types to be in a relationship with themselves.', 1, 3, 42, '/picture/img/topic/maxresdefault.jpg');
 
 # Insert `conf visitor` users
-insert into user(user_id, email, password, is_active) values
-(50, '1email@gmail.com', '', 1), (51, '2email@gmail.com', '', 1), (52, '3email@gmail.com', '', 1), (53, '4email@gmail.com', '', 1), (54, '5email@gmail.com', '', 1), (55, '6email@gmail.com', '', 1),
-(56, '7email@gmail.com', '', 1), (57, '8email@gmail.com', '', 1), (58, '9email@gmail.com', '', 1), (59, '10email@gmail.com', '', 1), (60, '11email@gmail.com', '', 1), (61, '12email@gmail.com', '', 1),
-(62, '13email@gmail.com', '', 1), (63, '14email@gmail.com', '', 1), (64, '15email@gmail.com', '', 1), (65, '16email@gmail.com', '', 1), (66, '17email@gmail.com', '', 1), (67, '18email@gmail.com', '', 1),
-(68, '19email@gmail.com', '', 1), (69, '20email@gmail.com', '', 1), (70, '21email@gmail.com', '', 1), (71, '22email@gmail.com', '', 1), (72, '23email@gmail.com', '', 1), (73, '24email@gmail.com', '', 1),
-(74, '25email@gmail.com', '', 1), (75, '26email@gmail.com', '', 1), (76, '27email@gmail.com', '', 1), (77, '28email@gmail.com', '', 1), (78, '29email@gmail.com', '', 1), (79, '30email@gmail.com', '', 1);
+insert into user(user_id, email, password, is_active, created, is_deleted) values
+(50, '1email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (51, '2email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (52, '3email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (53, '4email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (54, '5email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (55, '6email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0),
+(56, '7email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (57, '8email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (58, '9email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (59, '10email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (60, '11email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (61, '12email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0),
+(62, '13email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (63, '14email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (64, '15email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (65, '16email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (66, '17email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (67, '18email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0),
+(68, '19email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (69, '20email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (70, '21email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (71, '22email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (72, '23email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (73, '24email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0),
+(74, '25email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (75, '26email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (76, '27email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (77, '28email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (78, '29email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0), (79, '30email@gmail.com', '$2a$10$pWd6DyHtanJpO4H/KkDXcu1LuqLGdB0W9VR.B2rfBbo0F32tUC0D.', 1, '2020-05-04', 0);
 
 insert into user_roles(roles_id, user_id) values
 (3, 50), (3, 51), (3, 52), (3, 53), (3, 54), (3, 55), (3, 56), (3, 57), (3, 58), (3, 59), (3, 60),

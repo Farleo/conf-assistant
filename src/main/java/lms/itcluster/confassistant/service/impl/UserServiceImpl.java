@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -110,13 +111,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(long id) {
-        Optional<User> user = userRepository.findById(id);
-        userRepository.delete(user.get());
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setIsDeleted(1);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAll().stream().filter(f->f.getIsDeleted()!=1).collect(Collectors.toList());
         Type listType = new TypeToken<List<UserDTO>>() {
         }.getType();
         ModelMapper modelMapper = new ModelMapper();
@@ -126,13 +131,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(UserDTO userDTO) {
-        Optional<User> dbUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
-        if (dbUser.isPresent()) {
+        Optional<User> optionalUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
+        if (optionalUser.isPresent()) {
+            User dbUser = optionalUser.get();
+            if(dbUser.getPassword()!=userDTO.getPassword()){
+                userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
             User realUser = mapper.toEntity(userDTO);
-            User existingUserEmailFromDb = userRepository.findByEmail(realUser.getEmail());
-            if (existingUserEmailFromDb != null && userDTO.getUserId() != existingUserEmailFromDb.getUserId()) {
+            if (dbUser != null && userDTO.getUserId() != dbUser.getUserId()) {
                 throw new UserAlreadyExistException("User with this email is already exist: " + realUser.getEmail());
             }
+            
             userRepository.save(realUser);
         }
     }
@@ -146,7 +155,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
-        if (user != null) {
+        if (user != null && user.getIsDeleted()!=1) {
             return new CurrentUser(user);
         } else {
             throw new UsernameNotFoundException("Profile not found by email " + username);

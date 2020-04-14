@@ -41,6 +41,9 @@ public class  User {
 
     @Column(name = "created")
     private LocalDate created;
+    
+    @Column(name = "is_deleted")
+    private int isDeleted = 0;
 
     @ManyToMany(mappedBy = "likesSet")
     @JsonIgnore
@@ -194,7 +197,13 @@ public class  User {
         this.activeCode = activeCode;
     }
 
-
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+    
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
     public LocalDate getCreated() {
         return created;

@@ -16,7 +16,7 @@ public interface UserService {
     void createNewUserAsGuest(SignUpDTO signUpDTO);
     
     void deleteUser(long id);
-
+    
     List<UserDTO> getAllUsers();
 
     void updateUser(UserDTO userDTO);
