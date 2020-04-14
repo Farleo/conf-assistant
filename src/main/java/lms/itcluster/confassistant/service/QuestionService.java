@@ -19,4 +19,6 @@ public interface QuestionService {
     boolean selectNextQuestion(List<QuestionDTO> questionDTOList, Long questionId);
 
     boolean like(Long questionId, Long userId);
+
+    boolean sendQuestionToSpeaker(Long topicId);
 }

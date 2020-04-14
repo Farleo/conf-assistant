@@ -9,6 +9,7 @@ import lms.itcluster.confassistant.repository.ParticipantsTypeRepository;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -43,7 +44,7 @@ public class EditController {
         if (currentUser == null) {
             return "redirect:/login";
         }
-        if (currentUser.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Constant.SPEAKER))) {
+        if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
             return "redirect:/edit/speaker/main";
         }
         else {
@@ -125,9 +126,15 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/speaker/{topicId}")
-    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
+    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+        if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
+            return "redirect:/edit/profile";
+        }
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         SpeakerDTO speakerDTO = topicDTO.getSpeakerDTO();
+        if (SecurityUtil.userHasAdminRole(currentUser)) {
+            return "redirect:/admin/users/edit/" + speakerDTO.getUserId();
+        }
         model.addAttribute("speaker", speakerDTO);
         model.addAttribute("topicId", topicDTO.getTopicId());
         return "edit/topic/speaker";

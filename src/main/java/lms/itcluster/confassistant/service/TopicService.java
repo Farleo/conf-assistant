@@ -7,6 +7,7 @@ import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface TopicService {
 
@@ -19,4 +20,6 @@ public interface TopicService {
     void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException;
 
     void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException;
+
+    List<TopicDTO> getAllTopicForCurrentSpeaker(Long userId);
 }

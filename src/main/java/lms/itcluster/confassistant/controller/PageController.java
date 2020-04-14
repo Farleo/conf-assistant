@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.*;
@@ -47,8 +48,12 @@ public class PageController {
     }
 
     @GetMapping("/conf/{id}")
-    public String getConference(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("conference", conferenceService.getConferenceDTOById(id));
+    public String getConference(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        ConferenceDTO conferenceDTO = conferenceService.getConferenceDTOById(id);
+        model.addAttribute("conference", conferenceDTO);
+        if (currentUser != null) {
+            model.addAttribute("canEdit", SecurityUtil.canEditConference(currentUser, conferenceDTO));
+        }
         return "conference";
     }
 
@@ -68,7 +73,9 @@ public class PageController {
                 model.addAttribute("isPresentUser", true);
             }
             model.addAttribute("user", currentUser);
-            model.addAttribute("canEdit", SecurityUtil.canCurrentUserEditTopic(currentUser, stream));
+            model.addAttribute("canEditTopic", SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO));
+            model.addAttribute("canEditSpeaker", SecurityUtil.canCurrentUserEditSpeaker(currentUser, stream, topicDTO));
+            model.addAttribute("canManageQuestion", SecurityUtil.canManageQuestion(currentUser, stream));
         }
         return "topic";
     }
@@ -101,4 +108,6 @@ public class PageController {
             return "not-found";
         }
     }
+
+
 }

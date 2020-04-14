@@ -80,7 +80,7 @@
                 <div class="col-6" style="padding-left: 10px; padding-top: 10px">
                         <div class="d-flex justify-content-between">
                             <h1 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h1>
-                            <a th:if="${canEdit}"
+                            <a th:if="${canEditTopic}"
                                th:href="${'/edit/topic/main/' + topic.getTopicId()}">
                                 <button class="btn btn-outline-light text-secondary" >Edit</button>
                             </a>
@@ -98,7 +98,7 @@
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
                         <h3 class="text-muted">About Topic</h3>
-                        <a th:if="${canEdit}"
+                        <a th:if="${canEditTopic}"
                            th:href="${'/edit/topic/info/' + topic.getTopicId()}">
                             <button class="btn btn-outline-light text-secondary" >Edit</button>
                         </a>
@@ -117,7 +117,7 @@
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
                         <h3 class="text-muted">Speaker</h3>
-                        <a th:if="${canEdit}"
+                        <a th:if="${canEditSpeaker}"
                            th:href="${'/edit/topic/speaker/' + topic.getTopicId()}">
                             <button class="btn btn-outline-light text-secondary" >Edit</button>
                         </a>
@@ -145,7 +145,7 @@
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
                         <h3 class="text-muted">Question's list</h3>
-                        <a th:if="${canEdit}"
+                        <a th:if="${canManageQuestion}"
                            th:href="${'/moderator/questions/' + topic.getTopicId()}">
                             <button class="btn btn-outline-light text-secondary" >Manage questions</button>
                         </a>

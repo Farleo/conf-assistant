@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.util;
 
+import lms.itcluster.confassistant.dto.ConferenceDTO;
+import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.User;
@@ -21,54 +23,83 @@ public final class SecurityUtil {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    public static boolean canCurrentUserEditTopic(CurrentUser currentUser, Stream stream) {
-        for (GrantedAuthority authority : currentUser.getAuthorities()) {
-            if (authority.getAuthority().equals("moder")) {
-                if (stream.getModerator().getUserId() == currentUser.getId()) {
-                    return true;
-                }
-            }
+    public static boolean canCurrentUserEditTopic(CurrentUser currentUser, Stream stream, TopicDTO topicDTO) {
+        if (userHasConfOwnerRole(currentUser)) {
+            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
         }
-        return false;
+        if (userHasConfModerRole(currentUser)) {
+            return stream.getModerator().getUserId().equals(currentUser.getId());
+        }
+        if (userHasConfSpeakerRole(currentUser)) {
+            return topicDTO.getSpeakerDTO().getUserId().equals(currentUser.getId());
+        }
+        return userHasAdminRole(currentUser);
     }
 
-    public static boolean userHasAdminRole(CurrentUser currentUser){
+    public static boolean canCurrentUserEditSpeaker(CurrentUser currentUser, Stream stream, TopicDTO topicDTO) {
+        if (userHasConfOwnerRole(currentUser)) {
+            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
+        }
+        if (userHasConfSpeakerRole(currentUser)) {
+            return topicDTO.getSpeakerDTO().getUserId().equals(currentUser.getId());
+        }
+        return userHasAdminRole(currentUser);
+    }
+
+    public static boolean canManageQuestion(CurrentUser currentUser, Stream stream) {
+        if (userHasConfOwnerRole(currentUser)) {
+            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
+        }
+        if (userHasConfModerRole(currentUser)) {
+            return stream.getModerator().getUserId().equals(currentUser.getId());
+        }
+        return userHasAdminRole(currentUser);
+    }
+
+    public static boolean canEditConference(CurrentUser currentUser, ConferenceDTO conferenceDTO) {
+        if (userHasConfOwnerRole(currentUser)) {
+            return conferenceDTO.getOwner().equals(currentUser.getId());
+        }
+        return userHasAdminRole(currentUser);
+    }
+
+    public static boolean userHasAdminRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "ROLE_ADMIN");
     }
 
-    public static boolean userHasConfOwnerRole(CurrentUser currentUser){
+    public static boolean userHasConfOwnerRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "ROLE_CONFOWNER");
     }
 
-    public static boolean userHasUserRole(CurrentUser currentUser){
+    public static boolean userHasUserRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "ROLE_USER");
     }
 
-    public static boolean userHasConfAdminRole(CurrentUser currentUser){
+    public static boolean userHasConfAdminRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "admin");
     }
 
-    public static boolean userHasConfModerRole(CurrentUser currentUser){
+    public static boolean userHasConfModerRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "moder");
     }
 
-    public static boolean userHasConfSpeakerRole(CurrentUser currentUser){
+    public static boolean userHasConfSpeakerRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "speaker");
     }
 
-    public static boolean userHasConfVisitorRole(CurrentUser currentUser){
+    public static boolean userHasConfVisitorRole(CurrentUser currentUser) {
         return userHasAuthority(currentUser, "visitor");
     }
 
     public static boolean userHasAuthority(CurrentUser currentUser, String role) {
-        if(currentUser==null){
+        if (currentUser == null) {
             return false;
         }
-        return  currentUser.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(role));
+        return currentUser.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(role));
     }
 
-    public static boolean userHasAccessToConf(Conference conference, CurrentUser currentUser){
-        return (conference!= null
-                        && (SecurityUtil.userHasConfOwnerRole(currentUser)  && conference.getOwner().getUserId()==currentUser.getId()));
+    public static boolean userHasAccessToConf(Conference conference, CurrentUser currentUser) {
+        return (conference != null
+                && (SecurityUtil.userHasConfOwnerRole(currentUser) && conference.getOwner().getUserId() == currentUser.getId()));
     }
 }

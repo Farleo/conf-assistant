@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = signUpMapper.toEntity(signUpDTO);
         user = userRepository.save(user);
         authenticateUserIfTransactionSuccess(user);
-        String link = "Please follow the link - https://conf-assistant.azurewebsites.net/active/" + user.getActiveCode();
+        String link = "Please follow the link - http://localhost:8080/active/" + user.getActiveCode();
         emailService.sendMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
     }
 
