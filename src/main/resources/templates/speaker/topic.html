@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+    <title>Conference Assistant</title>
+    <style>
+
+        .tab {
+            /* элемент тени */
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            /* элемент тени конец */
+        }
+
+        .tab:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            /* элемент тени если наведен курсор конец */
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<section>
+    <div class="container-fluid ">
+        <div class="row justify-content-center ">
+            <div class="card col-7 border-0">
+                <div class="card text-center border-0 " style="margin-top: 20px">
+                    <h2 style="font-family: Calibri,serif; color: #4089c4">Your current Topics</h2>
+                </div>
+                <div class="row " style="padding-top: 0em">
+                    <div class="card col-6 border-0 p-3"
+                         th:each="topic, index : ${topics}"
+                         style="margin-top: 20px">
+                        <a th:href="${'/topic/' + topic.topicId}" class="tab">
+                            <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                            <div class="card-body border-0">
+                                <h5 class="card-title text-dark" th:text="${topic.name}"></h5>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/bootstrap/js/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+</section>
+</body>
+</html>

@@ -10,11 +10,11 @@ values ('5G in 2020', '5G20', '2020-02-09', '2020-02-13', 'The 2020 edition of T
 
        ('IT in 2020', 'IT20', '2020-02-04', '2020-02-20',
         'This year the event will be fully devoted to the preparation of the new generation of cross-border cooperation programmes under the NDICI Instrument. Most important, it will represent the first forum for common exchange on the draft “Joint paper on NDICI Interreg Strategic Programming 2021 – 2027”.',
-        '/picture/img/conf/2.jpg', 'Ukraine, Lviv st. Zelena 185', 1),
+        '/picture/img/conf/2.jpg', 'Ukraine, Lviv st. Zelena 185', 2),
 
        ('Busines Psychology', 'BP', '2020-05-04', '2020-05-25', 'Society of Consulting Psychology members are contributing to the definition of consulting psychology and the methods used by consultants. Former CE Chair DeWayne Kurpius explained that consultation helps individuals and organizations “become more efficient and effective” (1978). Consultants develop a climate for interdependent problem-solving, or they share their expertise in solving a specific problem.
 Later, Edgar Schein (1989) elaborated the process and systemic approach: “As the relationship between the consultant and organization evolves, the concept of who is the client comes gradually to be broadened so that the consultant may be working with individuals, groups, and organizational units at different times.”',
-        '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83', 1);
+        '/picture/img/conf/Screenshot-2019-11-19-at-13.41.30.jpg', 'France, Paris st. St. Loiu83', 2);
 
 
 insert into stream(name, conference_id, moderator_id)

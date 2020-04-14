@@ -61,8 +61,12 @@
             </div>
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
-                        <h1 style="font-family: Calibri,serif" class="text-muted">About Conference</h1>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="text-muted">About Conference</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/conf/owner/edit/' + conference.conferenceId}">
+                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -75,8 +79,12 @@
         <div class="card border-0 col-7">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
-                        <h1 style="font-family: Calibri,serif" class="text-muted">Topic's list</h1>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="text-muted">Topic's list</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/dashboard/conferences/'  + conference.conferenceId + '/stream/'}">
+                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -101,8 +109,12 @@
         <div class="card border-0 col-7" >
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
-                    <div class="card border-0">
-                        <h1 style="font-family: Calibri,serif" class="text-muted">Venue</h1>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="text-muted">Venue</h3>
+                        <a th:if="${canEdit}"
+                           th:href="${'/conf/owner/edit/' + conference.conferenceId}">
+                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                        </a>
                     </div>
                 </div>
             </div>

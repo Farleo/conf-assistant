@@ -3,9 +3,11 @@ package lms.itcluster.confassistant.service.impl;
 import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.TopicRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.util.DataUtil;
@@ -19,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -36,6 +40,9 @@ public class TopicServiceImpl implements TopicService {
     @Autowired
     @Qualifier("editTopicMapper")
     private Mapper<Topic, EditTopicDTO> editTopicMapper;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Topic findByName(String name) {
@@ -95,5 +102,15 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = findTopicById(topicDTO.getTopicId());
         topic.setInfo(topicDTO.getInfo());
         topicRepository.save(topic);
+    }
+
+    @Override
+    public List<TopicDTO> getAllTopicForCurrentSpeaker(Long userId) {
+        List<TopicDTO> list = new ArrayList<>();
+        User user = userRepository.findById(userId).get();
+        for (Topic topic : topicRepository.findAllBySpeaker(user)) {
+            list.add(mapper.toDto(topic));
+        }
+        return list;
     }
 }

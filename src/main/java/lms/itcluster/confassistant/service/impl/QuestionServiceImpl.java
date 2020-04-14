@@ -8,12 +8,15 @@ import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,6 +30,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     @Qualifier("questionMapper")
@@ -103,6 +109,38 @@ public class QuestionServiceImpl implements QuestionService {
             return unLike(user, question);
         }
         return addLike(user, question);
+    }
+
+    @Override
+    public boolean sendQuestionToSpeaker(Long topicId) {
+        Topic topic = topicRepository.findById(topicId).get();
+        User speaker = userRepository.findById(topic.getSpeaker().getUserId()).get();
+        List<Question> questions = topic.getQuestionList();
+        questions.sort(Comparator.comparingInt(Question::getRating));
+        StringBuilder letter = new StringBuilder("Here is all your question from topic: " + topic.getName() + "\n");
+        int i = 1;
+        for (Question question : questions) {
+            String answered;
+            if (question.isDeleted()) {
+                answered = "Answered";
+            } else {
+                answered = "Not answered";
+            }
+            letter
+                    .append(i)
+                    .append(". ")
+                    .append(question.getQuestion())
+                    .append(" Author - ")
+                    .append(question.getUser().getEmail())
+                    .append(". ")
+                    .append(answered)
+                    .append(". Rating: ")
+                    .append(question.getRating())
+                    .append("\n");
+            i++;
+        }
+        emailService.sendMessage(speaker.getEmail(), "Questions from topic: " + topic.getName(), letter.toString());
+        return true;
     }
 
     private boolean unLike(User user, Question question) {
