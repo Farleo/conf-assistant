@@ -41,7 +41,6 @@
 
     <form th:object="${confDTO}" enctype="multipart/form-data" method="post" class="needs-validation" novalidate="" >
         <input id="conferenceId" name="conferenceId" th:value="*{conferenceId}" type="hidden"/>
-<!--        <input id="owner" name="owner" type="hidden"/>-->
         <input id="owner" name="owner" th:value="*{owner}" class="form-control" type="hidden"/>
 
         <div class="mb-3">

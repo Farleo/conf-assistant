@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+
+
+    <title>List of topics</title>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<div style="text-align: center;">
+    <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">List of topics</h4>
+        <a th:href="@{'/dashboard/conferences/'+ ${confId} +'/stream/'}" th:method="POST">
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back</button>
+        </a>
+        <a th:href="@{'/dashboard/conferences/'+ ${confId} +'/stream/'+ ${streamId} +'/newTopic/'}" th:method="GET">
+            <button type="submit" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add Topic</button>
+        </a>
+        <br/>
+        <br/>
+        <table class="table table-striped">
+            <td><b>Topic name</b></td>
+            <td><b>Speaker</b></td>
+            <td><b>Begin Time</b></td>
+            <td><b>Finish Time</b></td>
+            <td><b>Date</b></td>
+            <td><b>Edit</b></td>
+            <td><b>Delete</b></td>
+            <tr th:each="topic : ${listTopics}">
+                <td>
+                    <label th:text="${topic.getName()}"></label>
+                </td>
+                <td>
+                    <label th:text="${topic.speakerDTO.firstName} + ' ' + ${topic.speakerDTO.lastName} + ' ' + ${topic.speakerDTO.getEmail()}"></label>
+                </td>
+                <td>
+                    <label th:text="${topic.beginTime}"></label>
+                </td>
+                <td>
+                    <label th:text="${topic.finishTime}"></label>
+                </td>
+                <td>
+                    <label th:text="${topic.date}"></label>
+                </td>
+                <td >
+                    <form th:action="@{'/dashboard/conferences/' + ${confId} + '/stream/' + ${streamId} + '/edit/' + ${topic.id}}" th:method="patch">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp; Edit</button>
+                    </form>
+                </td>
+                <td >
+                    <form th:action="@{'/dashboard/conferences/' + ${confId} + '/stream/' + ${streamId} + '/delete/'+ ${topic.id}}" th:method="DELETE">
+                        <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </td>
+        </table>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/static/bootstrap/js/popper.min.js"></script>
+        <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+    </div>
+</div>
+</body>
+</html>

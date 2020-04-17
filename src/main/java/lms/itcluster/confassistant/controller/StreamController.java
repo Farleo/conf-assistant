@@ -58,6 +58,7 @@ public class StreamController {
 			StreamDTO streamDTO = streamService.getStreamDTOById(streamId);
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
 			model.addAttribute("stream", streamDTO);
+			model.addAttribute("currentUser", currentUser.getId());
 			model.addAttribute("topicList", streamDTO.getTopicList());
 			return "stream/stream-edit";
 		}

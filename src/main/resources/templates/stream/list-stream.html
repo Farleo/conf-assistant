@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
 
-    <title>List stream</title>
+    <title>List of streams</title>
 </head>
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
-        <h4 class="mb-3">Streams</h4>
+        <h4 class="mb-3">List of streams</h4>
         <a th:href="${'/dashboard/conferences'}" th:method="POST">
             <button type="submit" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
         </a>
@@ -33,7 +33,7 @@
             <td><b>Delete</b></td>
             <tr th:each="stream : ${listStreams}">
             <td>
-                <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/' + ${stream.getStreamId()} + '/topic'}" th:text="${stream.name}"/>
+                <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/' + ${stream.getStreamId()} + '/topics'}" th:text="${stream.name}"/>
             </td>
             <td>
                 <div th:with="moder=${stream.moderator}">

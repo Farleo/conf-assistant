@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.EditTopicDTO;
+import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
@@ -10,7 +11,6 @@ import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.TopicService;
-import lms.itcluster.confassistant.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,10 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -36,6 +37,10 @@ public class TopicServiceImpl implements TopicService {
     @Autowired
     @Qualifier("topicMapper")
     private Mapper<Topic, TopicDTO> mapper;
+
+    @Autowired
+    @Qualifier("simpleTopicMapper")
+    private Mapper<Topic, SimpleTopicDTO> simpleTopicMapper;
 
     @Autowired
     @Qualifier("editTopicMapper")
@@ -57,6 +62,11 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO getTopicDTOById(Long id) throws TopicNotFoundException {
         return mapper.toDto(findTopicById(id));
+    }
+
+    @Override
+    public SimpleTopicDTO getSimpleTopicDTOById(Long id) throws TopicNotFoundException {
+        return simpleTopicMapper.toDto(findTopicById(id));
     }
 
     private Topic findTopicById (Long id) throws TopicNotFoundException {
@@ -112,5 +122,33 @@ public class TopicServiceImpl implements TopicService {
             list.add(mapper.toDto(topic));
         }
         return list;
+    }
+
+    @Override
+    public List<TopicDTO> findAllTopicByStreamId(Long streamId) {
+        List<Topic> topicList = topicRepository.findAllByStreamId(streamId);
+        return topicList.stream().map(t->mapper.toDto(t)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteTopic(Long topicId) {
+        Optional<Topic> optionalTopic = topicRepository.findById(topicId);
+        if(optionalTopic.isPresent()){
+        Topic topic = optionalTopic.get();
+        topicRepository.delete(topic);
+        }
+    }
+
+    @Override
+    public void updateTopic(SimpleTopicDTO simpleTopicDTO){
+        Topic realTopic = simpleTopicMapper.toEntity(simpleTopicDTO);
+        realTopic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
+        topicRepository.save(realTopic);
+    }
+
+    @Override
+    public void createTopic(SimpleTopicDTO simpleTopicDTO) {
+        Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
+        topicRepository.save(topic);
     }
 }
