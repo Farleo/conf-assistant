@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @Controller
@@ -75,9 +75,10 @@ public class TopicController {
 	                            @PathVariable Long confId,
 	                            @PathVariable Long streamId,
 	                            @PathVariable Long topicId,
+	                            @RequestParam("inpFile") MultipartFile photo,
 	                            @ModelAttribute SimpleTopicDTO simpleTopicDTO,
-	                            Model model) throws TopicNotFoundException {
-		topicService.updateTopic(simpleTopicDTO);
+	                            Model model) throws TopicNotFoundException, IOException {
+		topicService.updateTopic(simpleTopicDTO,photo);
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}
 	
@@ -97,8 +98,9 @@ public class TopicController {
 	public String createTopicSave (@AuthenticationPrincipal CurrentUser currentUser,
                                    @PathVariable Long confId,
                                    @PathVariable Long streamId,
-                                   @ModelAttribute SimpleTopicDTO simpleTopicDTO) {
-		topicService.createTopic(simpleTopicDTO);
+                                   @RequestParam("inpFile") MultipartFile photo,
+                                   @ModelAttribute SimpleTopicDTO simpleTopicDTO) throws IOException, TopicNotFoundException {
+		topicService.createTopic(simpleTopicDTO,photo);
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}
 }

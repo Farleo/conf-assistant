@@ -138,17 +138,39 @@ public class TopicServiceImpl implements TopicService {
         topicRepository.delete(topic);
         }
     }
+    
 
     @Override
-    public void updateTopic(SimpleTopicDTO simpleTopicDTO){
-        Topic realTopic = simpleTopicMapper.toEntity(simpleTopicDTO);
-        realTopic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
-        topicRepository.save(realTopic);
+    @Transactional
+    public void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
+        Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
+        String oldCoverPhotoPath = null;
+        if (!photo.isEmpty()) {
+            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+            oldCoverPhotoPath = topic.getCoverPhoto();
+            topic.setCoverPhoto(newCoverPhotoPath);
+        }
+        topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
+        topicRepository.save(topic);
+        if (oldCoverPhotoPath != null) {
+            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+        }
     }
 
     @Override
-    public void createTopic(SimpleTopicDTO simpleTopicDTO) {
+    @Transactional
+    public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException  {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
+        String oldCoverPhotoPath = null;
+        if (!photo.isEmpty()) {
+            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+            oldCoverPhotoPath = topic.getCoverPhoto();
+            topic.setCoverPhoto(newCoverPhotoPath);
+        }
+        topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
+        if (oldCoverPhotoPath != null) {
+            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+        }
     }
 }

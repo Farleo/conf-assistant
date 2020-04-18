@@ -76,7 +76,7 @@
                                     th:selected="${i==topic.beginTime.hours}"></option>
                         </select>
                     <label for="date"> : </label>
-                        <select id="beginMinuets" name="beginMinuets">
+                        <select id="beginMinutes" name="beginMinutes">
                             <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
                                     th:selected="${i==topic.beginTime.minutes}"></option>
                         </select>
@@ -89,7 +89,7 @@
                                         th:selected="${i==topic.finishTime.hours}"></option>
                             </select>
                         <label for="date"> : </label>
-                            <select id="finishMinuets" name="finishMinuets">
+                            <select id="finishMinutes" name="finishMinutes">
                                 <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
                                         th:selected="${i==topic.finishTime.minutes}"></option>
                             </select>

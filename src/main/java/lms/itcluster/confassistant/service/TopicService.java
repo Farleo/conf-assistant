@@ -30,7 +30,7 @@ public interface TopicService {
 
     void deleteTopic(Long topicId);
 
-    void updateTopic(SimpleTopicDTO simpleTopicDTO);
+    void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException;
 
-    void createTopic(SimpleTopicDTO simpleTopicDTO);
+    void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException;
 }

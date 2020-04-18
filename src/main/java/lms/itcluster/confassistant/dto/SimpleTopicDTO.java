@@ -15,9 +15,9 @@ public class SimpleTopicDTO extends AbstractDTO {
 	private Time beginTime;
 	private Time finishTime;
 	private int beginHour;
-	private int beginMinuets;
+	private int beginMinutes;
 	private int finishHour;
-	private int finishMinuets;
+	private int finishMinutes;
 	private String info;
 	private String coverPhoto;
 	private String stream;
@@ -58,12 +58,12 @@ public class SimpleTopicDTO extends AbstractDTO {
 		this.beginHour = beginHour;
 	}
 	
-	public int getBeginMinuets() {
-		return beginMinuets;
+	public int getBeginMinutes() {
+		return beginMinutes;
 	}
 	
-	public void setBeginMinuets(int beginMinuets) {
-		this.beginMinuets = beginMinuets;
+	public void setBeginMinutes (int beginMinutes) {
+		this.beginMinutes = beginMinutes;
 	}
 	
 	public int getFinishHour() {
@@ -74,12 +74,12 @@ public class SimpleTopicDTO extends AbstractDTO {
 		this.finishHour = finishHour;
 	}
 	
-	public int getFinishMinuets() {
-		return finishMinuets;
+	public int getFinishMinutes() {
+		return finishMinutes;
 	}
 	
-	public void setFinishMinuets(int finishMinuets) {
-		this.finishMinuets = finishMinuets;
+	public void setFinishMinutes(int finishMinutes) {
+		this.finishMinutes = finishMinutes;
 	}
 	
 	public String getInfo() {
