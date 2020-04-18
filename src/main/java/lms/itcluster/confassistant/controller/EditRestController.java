@@ -102,4 +102,9 @@ public class EditRestController {
         return errors;
     }
 
+    @GetMapping("/enable/{topicId}")
+    public boolean enable(@PathVariable("topicId") Long topicId, @AuthenticationPrincipal CurrentUser currentUser) {
+        return topicService.enableOrDisableQuestion(topicId);
+    }
+
 }

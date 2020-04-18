@@ -125,6 +125,21 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public boolean enableOrDisableQuestion(Long topicID) {
+        Topic topic = topicRepository.findById(topicID).get();
+        boolean result;
+        if (topic.isActive()) {
+            topic.setActive(false);
+            result = false;
+        } else {
+            topic.setActive(true);
+            result = true;
+        }
+        topicRepository.save(topic);
+        return result;
+    }
+
+    @Override
     public List<TopicDTO> findAllTopicByStreamId(Long streamId) {
         List<Topic> topicList = topicRepository.findAllByStreamId(streamId);
         return topicList.stream().map(t->mapper.toDto(t)).collect(Collectors.toList());

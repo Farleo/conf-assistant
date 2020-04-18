@@ -7,12 +7,12 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
     <title>Hello, world!</title>
 </head>
 <body>
-
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">

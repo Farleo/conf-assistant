@@ -25,6 +25,8 @@ public interface TopicService {
     void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException;
 
     List<TopicDTO> getAllTopicForCurrentSpeaker(Long userId);
+
+    boolean enableOrDisableQuestion(Long topicID);
     
     List<TopicDTO> findAllTopicByStreamId(Long streamId);
 

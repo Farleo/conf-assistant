@@ -17,9 +17,6 @@
     <li class="nav-item" >
         <a th:href="${'/edit/topic/main/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('main') ? 'active':''}">Main</a>
     </li>
-    <li class="nav-item">
-        <a  th:href="${'/edit/topic/speaker/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('speaker') ? 'active':''}">Speaker</a>
-    </li>
     <li class="nav-item" >
         <a  th:href="${'/edit/topic/info/' + topicId}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('info') ? 'active':''}">Info</a>
     </li>

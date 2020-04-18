@@ -7,7 +7,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
 
     <title>Conference Assistant</title>
     <style>
@@ -42,31 +43,56 @@
         <div class="row justify-content-center ">
             <div class="card col-7 border-0">
                 <div class="card text-center border-0 " style="margin-top: 20px">
-                    <h2 style="font-family: Calibri,serif; color: #4089c4">Your conferences at near time</h2>
+                    <h2 style="font-family: Calibri,serif; color: #4089c4">Your topics at near time</h2>
                 </div>
                 <div class="row " style="padding-top: 0em">
                     <div class="card border p-3 col-12"
                          th:each="conference, index : ${conferences.getConferenceList()}"
                          style="margin-top: 20px">
-                        <a th:href="${'/conf/' + conference.getConferenceId()}" class="btn-link">
-                            <div class="card border-0" style="padding: 10px">
-                                <h1 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.getName()}"></h1>
-                                <h6 id="name" class="form-text text-muted" th:text="${conference.getVenue() + ', since ' + conference.getBeginDate() + ' to ' + conference.getFinishDate()}"></h6>
-                            </div>
+                        <a th:href="${'/conf/' + conference.getId()}" class="btn text-left border-0">
+                            <h2 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.name}"></h2>
+                            <h6 id="name" class="form-text text-muted"
+                                th:text="${conference.getVenue() + ', since ' + #dates.format(conference.getBeginDate(), 'dd-MM') + ' to ' + #dates.format(conference.getFinishDate(), 'dd-MM') + ' ' + #dates.format(conference.getFinishDate(), 'yyyy')}"></h6>
                         </a>
-                        <div th:each="stream : ${conference.getStreamList()}" class="border">
+                        <div th:each="stream : ${conference.getStreamList()}">
                             <div class="card border-0" style="margin-top: 20px">
                                 <h6 aria-describedby="name" th:text="${stream.getName()}"></h6>
                             </div>
                             <div class="row " style="padding-top: 0em">
-                                <div  class="card col-4 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}" style="margin-top: 20px">
+                                <table class="table m-3">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Topic Name</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Speaker</th>
+                                        <th scope="col">Manage Question</th>
+                                        <th scope="col">Edit Topic</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="topic, index : ${stream.getTopicList()}" style="margin-top: 20px">
+                                        <th scope="row"><a class="btn border-secondary text-muted" th:href="${'/topic/' + topic.topicId}" th:text="${topic.name}"></a></th>
+                                        <th th:text="${topic.date}"></th>
+                                        <td th:text="${topic.speakerDTO.firstName + ' ' + topic.speakerDTO.lastName}"></td>
+                                        <td><a class="btn border-success text-muted" th:href="${'/moderator/questions/' + topic.topicId}">Manage Question</a></td>
+                                        <td><a class="btn border-info text-muted" th:href="${'/edit/topic/main/' + topic.topicId}">Edit</a></td>
+                                        <td th:if="${topic.isActiveTopic()}"><i class="fa fa-hourglass-half text-warning" aria-hidden="true"></i></td>
+                                        <th:block th:unless="${topic.isActiveTopic()}">
+                                            <td th:if="${topic.finished}"><i class="fa fa-check-circle-o text-success" aria-hidden="true"></i></td>
+                                            <td th:if="${!topic.finished}"><i class="fa fa-clock-o text-muted" aria-hidden="true"></i></td>
+                                        </th:block>
+                                    </tr>
+                                    </tbody>
+                                </table>
+<!--                                <div  class="card col-4 border-0 p-3" >
                                     <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
                                         <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
                                         <div class="card-body border-0">
                                             <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
                                         </div>
                                     </a>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>

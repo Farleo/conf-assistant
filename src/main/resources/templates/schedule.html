@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
+
+    <title>Conference Assistant</title>
+    <style>
+
+        .tab {
+            /* элемент тени */
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            /* элемент тени конец */
+        }
+
+        .tab:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            /* элемент тени если наведен курсор конец */
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        div.scrollmenu {
+            background-color: #333;
+            overflow: auto;
+            white-space: nowrap;
+        }
+
+        div.scrollmenu a {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        div.scrollmenu a:hover {
+            background-color: #777;
+        }
+
+    </style>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<section>
+    <div class="container-fluid ">
+        <a class="btn-back text-muted" th:href="${#httpServletRequest.getHeader('referer')}" role="button">
+            <i class="fa fa-chevron-left  text-secondary"></i>
+            <span style="margin-left: 5px">Go back</span>
+        </a>
+        <th:block th:each="conference, index : ${page.content}">
+            <div class="row justify-content-center ">
+                <div class="card col-7 border-0">
+                    <div class="d-flex justify-content-between" style="margin-top: 20px">
+                        <a th:href="${'/conf/' + conference.getId()}" class="btn text-left border-0">
+                            <h2 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.name}"></h2>
+                            <h6 id="name" class="form-text text-muted"
+                                th:text="${conference.getVenue() + ', since ' + #dates.format(conference.getBeginDate(), 'dd-MM') + ' to ' + #dates.format(conference.getFinishDate(), 'dd-MM') + ' ' + #dates.format(conference.getFinishDate(), 'yyyy')}"></h6>
+                        </a>
+                        <div class="dropdown" th:if="${page.totalPages > 0}">
+                            <a class="btn btn-secondary dropdown-toggle btn-sm" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Conferences
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <div th:each="conf, index : ${conferences}">
+                                    <a th:href="@{/schedule(page=${index.count})}"
+                                       th:text="${conf}"
+                                       th:class="${index==page.number + 1} ? active"
+                                       class="text-dark"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Carousel Wrapper-->
+                    <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel"
+                         data-interval="false">
+
+
+                        <!--Indicators-->
+                        <ol class="carousel-indicators">
+                            <li data-target="#multi-item-example" th:attr="data-slide-to=${index.count - 1}"
+                                th:each="enty, index : ${conference.schedule}"
+                                style="background-color: rgba(255,103,55,0.94);"
+                                th:classappend="${index.count == 1 ? 'active':''}"></li>
+                        </ol>
+                        <!--/.Indicators-->
+
+                        <!--Slides-->
+                        <div class="carousel-inner" role="listbox">
+
+                            <!--Controls-->
+                            <th:block th:if="${conference.schedule.size() > 1}">
+                                <a class="carousel-control-prev text-muted" href="#multi-item-example" role="button"
+                                   data-slide="prev" style="max-height: 50px">
+                                    <i class="fa fa-chevron-left  text-secondary"></i><span
+                                        style="margin-left: 5px"> Previous day</span>
+                                </a>
+                                <a class="carousel-control-next text-muted" href="#multi-item-example" role="button"
+                                   data-slide="next" style="max-height: 50px">
+                                    <span style="margin-right: 5px">Next day </span> <i
+                                        class="fa fa-chevron-right text-secondary"></i>
+                                </a>
+                            </th:block>
+                            <!--/.Controls-->
+
+                            <!--First slide-->
+                            <div class="carousel-item" th:each="entry, index : ${conference.schedule}"
+                                 th:classappend="${index.count == 1 ? 'active':''}">
+
+
+                                <h4 class="d-flex justify-content-center text-muted"
+                                    th:text="${#temporals.day(entry.key) + ' ' + #temporals.monthName(entry.key)}"></h4>
+
+
+                                <div class="row" style="margin-top: 20px">
+                                    <div class="col-1">
+                                        <div>Hours</div>
+                                    </div>
+                                    <div class="col" th:each="stream, index : ${entry.value}">
+                                        <div th:text="${stream.name}"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-1 border ">
+                                        <div class="text-center border d-flex align-items-center justify-content-center"
+                                             th:each="hour, index : ${#numbers.sequence(8, 23)}"
+                                             style="height: 3em">
+                                            <span th:text="${hour + ':00'}"></span>
+                                        </div>
+                                        <div class="" style="height: 2em">
+
+                                        </div>
+                                    </div>
+                                    <div class="col border " th:each="stream, index : ${entry.value}">
+                                        <th:block th:each="topic, index : ${stream.topicList}">
+                                            <div style=""
+                                                 th:styleappend="${'height: ' + topic.backdown + '%'}"></div>
+                                            <a th:href="${'/topic/' + topic.topicId}"
+                                               class="btn d-inline-block text-muted"
+                                               style=" width: 100%; background-color: rgba(0,01,255,0.1); border-color: #a8a8a8"
+                                               th:if="${topic.isActiveTopic()}"
+                                               th:styleappend="${'; height: ' + topic.bodySize + '%'}">
+                                                <div class="d-flex justify-content-between">
+                                                <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
+                                                    </span>
+                                                    <i class="fa fa-hourglass-half text-warning" aria-hidden="true"></i>
+                                                </div>
+                                            </a>
+                                            <th:block th:unless="${topic.isActiveTopic()}">
+                                            <a th:href="${'/topic/' + topic.topicId}"
+                                               class="btn d-inline-block text-muted"
+                                               style=" width: 100%;  border-color: #a8a8a8"
+                                               th:if="${topic.finished}"
+                                               th:styleappend="${'; height: ' + topic.bodySize + '%'}">
+                                                <div class="d-flex justify-content-between">
+                                                <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
+                                                    </span>
+                                                <i class="fa fa-check-circle-o text-success"
+                                                   aria-hidden="true"></i>
+                                                </div>
+                                            </a>
+                                            <a th:href="${'/topic/' + topic.topicId}"
+                                               class="btn d-inline-block text-muted"
+                                               style=" width: 100%;  border-color: #a8a8a8"
+                                               th:if="${!topic.finished}"
+                                               th:styleappend="${'; height: ' + topic.bodySize + '%'}">
+                                                <div class="d-flex justify-content-between">
+                                                <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
+                                                    </span>
+                                                    <i class="fa fa-clock-o text-muted"
+                                                       aria-hidden="true"></i>
+                                                </div>
+                                            </a>
+                                            </th:block>
+
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/.First slide-->
+
+            </div>
+            <!--/.Slides-->
+        </th:block>
+        <div class="row justify-content-center ">
+
+
+        </div>
+    </div>
+    <!--/.Carousel Wrapper-->
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/bootstrap/js/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+</section>
+</body>
+</html>

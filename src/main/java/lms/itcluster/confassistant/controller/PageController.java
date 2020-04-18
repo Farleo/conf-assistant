@@ -1,8 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.ConferenceDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -11,14 +9,24 @@ import lms.itcluster.confassistant.service.*;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Controller
 public class PageController {
@@ -62,20 +70,18 @@ public class PageController {
         TopicDTO topicDTO = topicService.getTopicDTOById(id);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
+        model.addAttribute("confId", conferenceService.getConfIdByTopicId(topicDTO.getTopicId()));
         if (currentUser == null || !currentUser.isEnabled()) {
             model.addAttribute("isPresentUser", false);
-        }
-        else {
-            Stream stream = streamRepository.findByName(topicDTO.getStream());
+        } else {
+/*            Stream stream = streamRepository.findByName(topicDTO.getStream());
             Conference currentConference = conferenceService.findById(stream.getConference().getConferenceId());
             List<Participants> confUserList = currentConference.getParticipants();
-            if(confUserList.stream().anyMatch(u-> u.getParticipantsKey().getUser().getUserId()==currentUser.getId())){
-                model.addAttribute("isPresentUser", true);
-            }
+            if (confUserList.stream().anyMatch(u -> u.getParticipantsKey().getUser().getUserId() == currentUser.getId())) {
+
+            }*/
+            model.addAttribute("isPresentUser", true);
             model.addAttribute("user", currentUser);
-            model.addAttribute("canEditTopic", SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO));
-            model.addAttribute("canEditSpeaker", SecurityUtil.canCurrentUserEditSpeaker(currentUser, stream, topicDTO));
-            model.addAttribute("canManageQuestion", SecurityUtil.canManageQuestion(currentUser, stream));
         }
         return "topic";
     }
@@ -85,7 +91,7 @@ public class PageController {
         Topic topic = topicService.findById(id);
         Conference conference = topic.getStream().getConference();
         UserDTO user = userService.findById(currentUser.getId());
-        participantService.addParticipant(user,conference);
+        participantService.addParticipant(user, conference);
         return "redirect:/topic/{id}";
     }
 
@@ -109,5 +115,22 @@ public class PageController {
         }
     }
 
+    @GetMapping("/schedule")
+    public String getSchedule(Model model,
+                              @RequestParam("page") Optional<Integer> page) {
+        int currentPage = page.orElse(1);
+        Page<ScheduleConferenceDTO> conferenceDTOS = conferenceService.getConferencesForSchedule(PageRequest.of(currentPage - 1, 1));
+        model.addAttribute("page", conferenceDTOS);
 
+        int totalPages = conferenceDTOS.getTotalPages();
+        if (totalPages > 0) {
+            List<ConferenceDTO> dtos = conferenceService.getAllConferencesDTO();
+            List<String> pageNumbers = new ArrayList<>();
+            for (ConferenceDTO conferenceDTO : dtos) {
+                pageNumbers.add(conferenceDTO.getName());
+            }
+            model.addAttribute("conferences", pageNumbers);
+        }
+        return "schedule";
+    }
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
     @Override
     protected void mapSpecificFieldsInDto(EditTopicDTO source, Topic destination) {
         destination.setDate(LocalDate.of(source.getYear(), source.getMonth(), source.getDay()));
-        destination.setBeginTime(new Time(source.getBeginHour(), source.getBeginMinuets(), 0));
-        destination.setFinishTime(new Time(source.getFinishHour(), source.getFinishHour(), 0));
+        destination.setBeginTime(LocalTime.of(source.getBeginHour(), source.getBeginMinuets(), 0));
+        destination.setFinishTime(LocalTime.of(source.getFinishHour(), source.getFinishHour(), 0));
     }
 
 }

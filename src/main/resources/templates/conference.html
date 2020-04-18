@@ -7,7 +7,8 @@
 
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
     <title>Conference Assistant</title>
 
@@ -50,23 +51,23 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid" th:object="${conference}">
+    <a class="btn-back text-muted" th:href="${'/'}" role="button">
+        <i class="fa fa-chevron-left  text-secondary"></i>
+        <span style="margin-left: 5px">Go to Conferences</span>
+    </a>
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <img th:src="*{coverPhoto}" alt="coverPhoto" class="col-7 border">
     </div>
     <div class="row justify-content-center">
         <div class="card border-0 col-7" >
             <div class="card border-0 text-center">
-                <h1 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.getName()}"></h1>
+                <h2 style="font-family: Calibri,serif; color: #4089c4" th:text="${conference.getName()}"></h2>
                 <h6 id="name" class="form-text text-muted" th:text="${conference.getVenue() + ', since ' + conference.getBeginDate() + ' to ' + conference.getFinishDate()}"></h6>
             </div>
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">About Conference</h3>
-                        <a th:if="${canEdit}"
-                           th:href="${'/conf/owner/edit/' + conference.conferenceId}">
-                            <button class="btn btn-outline-light text-secondary" >Edit</button>
-                        </a>
+                        <h4 class="text-muted">About Conference</h4>
                     </div>
                 </div>
             </div>
@@ -80,11 +81,7 @@
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">Topic's list</h3>
-                        <a th:if="${canEdit}"
-                           th:href="${'/dashboard/conferences/'  + conference.conferenceId + '/stream/'}">
-                            <button class="btn btn-outline-light text-secondary" >Edit</button>
-                        </a>
+                        <h4 class="text-muted">Topic's list</h4>
                     </div>
                 </div>
             </div>
@@ -93,11 +90,11 @@
                     <h6 aria-describedby="name" th:text="${stream.getName()}"></h6>
                 </div>
                 <div class="row " style="padding-top: 0em">
-                    <div  class="card col-4 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}" style="margin-top: 20px">
+                    <div  class="card col-3 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}" style="margin-top: 20px">
                         <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
                             <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
                             <div class="card-body border-0">
-                                <h5 class="card-title text-dark" th:text="${conference.name}"></h5>
+                                <h6 class="card-title text-dark" th:text="${topic.name}"></h6>
                             </div>
                         </a>
                     </div>
@@ -110,11 +107,7 @@
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">Venue</h3>
-                        <a th:if="${canEdit}"
-                           th:href="${'/conf/owner/edit/' + conference.conferenceId}">
-                            <button class="btn btn-outline-light text-secondary" >Edit</button>
-                        </a>
+                        <h4 class="text-muted">Venue</h4>
                     </div>
                 </div>
             </div>

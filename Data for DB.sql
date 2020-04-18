@@ -20,7 +20,9 @@ Later, Edgar Schein (1989) elaborated the process and systemic approach: “As t
 insert into stream(name, conference_id, moderator_id)
 VALUES ('Conference Hall №1', 1, 38),
        ('Conference Hall №2', 2, 37),
-       ('Conference Hall №3', 3, 39);
+       ('Conference Hall №3', 3, 39),
+       ('Conference Hall №4', 3, 39),
+       ('Conference Hall №5', 3, 39);
 
 insert into user(first_name, last_name, password, info, photo, email, is_active, is_deleted)
 VALUES ('Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.',
@@ -42,17 +44,74 @@ Besides, it''s more clear if we talk about many-to-many relationships, because t
 In an ideal world, we could solve this with the previous solution, when we had an entity with a composite key. However, our world is far from ideal and students don''t always accomplish a course on the first try.',
         1, 2, 5, '/picture/img/topic/5.jpg'),
 
-       ('Problem and solutions in busines psychology', '2020-02-11', '17:00:00', '19:00:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
-Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
-        1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
-
        ('Future of mobile internet', '2020-02-12', '17:00:00', '19:00:00', 'Again, we configured the relationship before. Hence, we only need to tell JPA, where can it find that configuration.
 Note, that we could use this solution to address the previous problem: students rating courses. However, it feels weird to create a dedicated primary key unless we have to. ',
         1, 1, 6, '/picture/img/topic/FF0234-01-multi-purpose-powerpoint-template-1.jpg'),
 
        ('5G in Europe', '2020-02-13', '17:00:00', '19:00:00', 'A relationship is a connection between two types of entities. In case of a many-to-many relationship, both sides can relate to multiple instances of the other side.
 Note, that it''s possible for entity types to be in a relationship with themselves.', 1, 1, 6,
-        '/picture/img/topic/maxresdefault.jpg');
+        '/picture/img/topic/maxresdefault.jpg'),
+
+       ('Some funny topic', '2020-02-13', '10:00:00', '12:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        0, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Super Topic Name', '2020-02-13', '12:30:00', '14:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        0, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('New Topic Name', '2020-02-12', '14:40:00', '17:00:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        0, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Topic Name without fantasy', '2020-02-12', '17:10:00', '19:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+('Problem and solutions in busines psychology', '2020-02-11', '19:30:00', '21:45:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+    1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Java in 2020', '2020-02-12', '9:00:00', '11:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 4, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Disasters in Australia', '2020-02-13', '13:00:00', '15:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 4, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Trump and his Problem', '2020-02-11', '15:30:00', '17:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 4, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Economic problem after pandemic', '2020-02-12', '17:30:00', '19:25:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 4, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Coronavirus in China', '2020-02-13', '11:30:00', '12:30:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 4, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('What is new in Tesla', '2020-02-11', '8:30:00', '11:30:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 5, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Hystory of Elon Mask', '2020-02-11', '11:45:00', '13:00:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 5, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Colonize Mars', '2020-02-13', '13:10:00', '15:10:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 5, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+
+       ('Solar City', '2020-02-12', '15:25:00', '17:30:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 5, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+
+       ('Space-X', '2020-02-13', '17:45:00', '19:30:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
+        1, 5, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg');
 
 
 insert into user(email, password, is_active, created, is_deleted)

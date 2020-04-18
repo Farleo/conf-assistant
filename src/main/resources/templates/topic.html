@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap/css/scroll.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
     <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
     <title>Conference Assistant</title>
@@ -71,6 +72,10 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid" th:object="${topic}">
+    <a class="btn-back text-muted" th:href="${'/conf/' + confId}" role="button">
+        <i class="fa fa-chevron-left  text-secondary"></i>
+        <span style="margin-left: 5px">Go to the Conference</span>
+    </a>
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">
             <div class="row no-gutters">
@@ -78,30 +83,23 @@
                     <img th:src="*{coverPhoto}" class="card-img border" alt="...">
                 </div>
                 <div class="col-6" style="padding-left: 10px; padding-top: 10px">
-                        <div class="d-flex justify-content-between">
-                            <h1 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h1>
-                            <a th:if="${canEditTopic}"
-                               th:href="${'/edit/topic/main/' + topic.getTopicId()}">
-                                <button class="btn btn-outline-light text-secondary" >Edit</button>
-                            </a>
-                        </div>
-                        <h6 id="name" class="form-text text-muted" th:text="${topic.getStream() + ', since ' + topic.getBeginTime() + ' to ' + topic.getFinishTime()}"></h6>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <div class="d-flex justify-content-between">
+                        <h2 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h2>
+                    </div>
+                    <h6 id="name" class="form-text text-muted"
+                        th:text="${topic.getStream() + ', since ' + topic.getBeginTime() + ' to ' + topic.getFinishTime()}"></h6>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
 
                 </div>
             </div>
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="card border-0 col-7" >
+        <div class="card border-0 col-7">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">About Topic</h3>
-                        <a th:if="${canEditTopic}"
-                           th:href="${'/edit/topic/info/' + topic.getTopicId()}">
-                            <button class="btn btn-outline-light text-secondary" >Edit</button>
-                        </a>
+                        <h4 class="text-muted">About Topic</h4>
                     </div>
                 </div>
             </div>
@@ -116,10 +114,10 @@
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">Speaker</h3>
+                        <h4 class="text-muted">Speaker</h4>
                         <a th:if="${canEditSpeaker}"
                            th:href="${'/edit/topic/speaker/' + topic.getTopicId()}">
-                            <button class="btn btn-outline-light text-secondary" >Edit</button>
+                            <button class="btn btn-outline-light text-secondary">Edit</button>
                         </a>
                     </div>
                 </div>
@@ -130,7 +128,8 @@
                 </div>
                 <div class="col-10">
                     <div class="card-body">
-                        <h4 style="font-family: Calibri,serif;" aria-describedby="Speaker"  th:text="${speaker.firstName + ' ' + speaker.lastName}"></h4>
+                        <h4 style="font-family: Calibri,serif;" aria-describedby="Speaker"
+                            th:text="${speaker.firstName + ' ' + speaker.lastName}"></h4>
                         <p id="Speaker" class="form-text text-muted" th:text="${speaker.info}"></p>
                     </div>
                 </div>
@@ -138,17 +137,13 @@
         </div>
     </div>
 
-    <div  class="row justify-content-center border-0" style="margin-top: 25px">
+    <div class="row justify-content-center border-0" style="margin-top: 25px">
         <input id="isPresentUser" hidden="hidden" th:attr="value=${isPresentUser}"/>
         <div class="card border-0 col-7">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">Question's list</h3>
-                        <a th:if="${canManageQuestion}"
-                           th:href="${'/moderator/questions/' + topic.getTopicId()}">
-                            <button class="btn btn-outline-light text-secondary" >Manage questions</button>
-                        </a>
+                        <h4 class="text-muted">Question's list</h4>
                     </div>
                 </div>
             </div>
@@ -162,12 +157,14 @@
 
 
             <div th:if="${isPresentUser}">
-                <div th:text=" 'Welcome, ' + ${user.getUsername()}"></div>
                 <div class="card border-0 col-12">
                     <form id="QuestionForm" class="form-inline " style="margin-top: 20px">
-<!--                        <button style="background-color: rgba(255,103,55,0.94); max-width: max-content" id="refresh" type="button" class="btn btn-danger col text-white">Refresh list</button>-->
-                        <input style="margin-right: 10px; margin-left: 10px"  id="question" class="form-control col" placeholder="Write your question">
-                        <button style="background-color: rgba(255,103,55,0.94); max-width: max-content" class="btn col text-white" type="submit"> Send </button>
+                        <!--                        <button style="background-color: rgba(255,103,55,0.94); max-width: max-content" id="refresh" type="button" class="btn btn-danger col text-white">Refresh list</button>-->
+                        <input style="margin-right: 10px; margin-left: 10px" id="question" class="form-control col"
+                               placeholder="Write your question">
+                        <button style="background-color: rgba(255,103,55,0.94); max-width: max-content"
+                                class="btn col text-white" type="submit"> Send
+                        </button>
                     </form>
                     <input hidden="hidden" id="topicId" th:attr="value=${topic.getTopicId()}">
                     <input hidden="hidden" id="currentGuest" th:attr="value=${user.getId()}">
@@ -175,21 +172,20 @@
                     <div id="options" class="row-12 m-0" style="padding:0px 20px 0px 20px">
                         <div class="list-group list-group-horizontal">
                             <div id="OrderGroup" class='list-group-item border-0 col-2 '>
-                                <div  class="card-title  ">
+                                <div class="card-title  ">
                                     <small id="Text" class="text-muted">Order by rating</small>
-                                    <div  class="card-subtitle ">
-                                        <button id="OrderBy" class="fa fa-sort-desc fa-lg text-muted border-0" aria-hidden="true"></button>
+                                    <div class="card-subtitle ">
+                                        <button id="OrderBy" class="fa fa-sort-desc fa-lg text-muted border-0"
+                                                aria-hidden="true"></button>
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class='list-group-item border-0' style="max-width: max-content">
                                 <div class="card-title  ">
                                     <div class="form-group">
                                         <button id="refresh" class="btn btn-danger text-white">
-                                        <i class="fa fa-refresh" aria-hidden="true"></i>
-                                        <small>Refresh</small>
+                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                            <small>Refresh</small>
                                         </button>
                                     </div>
                                 </div>
@@ -197,7 +193,8 @@
                             <div class='list-group-item border-0' style="max-width: max-content">
                                 <div class="card-title  ">
                                     <div class="form-group form-check">
-                                        <input type="checkbox" class="form-check-input" onchange="fun1()" id="AutoRefresh">
+                                        <input type="checkbox" class="form-check-input" onchange="fun1()"
+                                               id="AutoRefresh">
                                         <label class="form-check-label" for="AutoRefresh">Enable auto refresh</label>
                                     </div>
                                 </div>
@@ -213,27 +210,16 @@
             </div>
             <!-- ELSE -->
             <div th:unless="${isPresentUser}">
-
-                <div th:if="${user==null}">
-                    <div>Hi, Guest</div>
-                    <div id="QuestionBlock2" class="card border-0">
-                        <p>In order to be able to ask your speaker a question or vote, please register
-                            <a th:href="${'/login'}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Sign-in</a>
-                        </p>
-                    </div>
-                </div>
-                <div th:if="${user!=null}">
-
-                    <div th:text=" 'Welcome, ' + ${user.getUsername()} "></div>
-                    <div id="QuestionBlock" class="card border-0">
-                        <p>In order to be able to ask your speaker a question or vote, please join to conference
-                            <a th:href="${'/topic/join/' + topic.getTopicId()}" style="background-color: rgba(255,103,55,0.94)" class="btn text-white float-right">Join</a>
-                        </p>
-                    </div>
+                <div id="QuestionBlock2" class="card border-0">
+                    <p>In order to be able to ask your speaker a question or vote, please register
+                        <a th:href="${'/login'}" style="background-color: rgba(255,103,55,0.94)"
+                           class="btn text-white float-right">Sign-in</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Optional JavaScript -->

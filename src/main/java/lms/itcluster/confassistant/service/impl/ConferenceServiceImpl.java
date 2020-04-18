@@ -1,18 +1,22 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.dto.ConferenceDTO;
-import lms.itcluster.confassistant.dto.ListConferenceDTO;
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Participants;
-import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.dto.*;
+import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ConferenceRepository;
+import lms.itcluster.confassistant.repository.StreamRepository;
+import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.ImageStorageService;
+import lms.itcluster.confassistant.service.StreamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -20,13 +24,21 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Service
 public class ConferenceServiceImpl implements ConferenceService {
+
+    @Autowired
+    private StreamService streamService;
+
+    @Autowired
+    private TopicRepository topicRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -44,6 +56,10 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Autowired
     @Qualifier("conferenceMapper")
     private Mapper<Conference, ConferenceDTO> mapper;
+
+    @Autowired
+    @Qualifier("topicMapper")
+    private Mapper<Topic, TopicDTO> topicMapper;
 
     @Override
     public List<Conference> getAllConferences() {
@@ -87,7 +103,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public ListConferenceDTO getConferencesDTOByOwnerId(Long id) {
         List<Conference> conferenceList = conferenceRepository.findAllByOwnerId(id);
-        List<ConferenceDTO> dtos = conferenceList.stream().map(c->simpleMapper.toDto(c)).collect(Collectors.toList());
+        List<ConferenceDTO> dtos = conferenceList.stream().map(c -> simpleMapper.toDto(c)).collect(Collectors.toList());
         return new ListConferenceDTO(dtos);
     }
 
@@ -106,7 +122,7 @@ public class ConferenceServiceImpl implements ConferenceService {
             removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
         }
     }
-    
+
     @Transactional
     @Override
     public void updateConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
@@ -121,7 +137,7 @@ public class ConferenceServiceImpl implements ConferenceService {
         if (oldCoverPhotoPath != null) {
             removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
         }
-        
+
     }
 
     @Override
@@ -130,7 +146,7 @@ public class ConferenceServiceImpl implements ConferenceService {
         conferenceRepository.delete(conferenceOptional.get());
     }
 
-private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
+    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
@@ -138,7 +154,7 @@ private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
             }
         });
     }
-    
+
     @Override
     public List<ConferenceDTO> getAllConferencesDTO() {
         List<ConferenceDTO> list = new ArrayList<>();
@@ -146,6 +162,112 @@ private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
             list.add(mapper.toDto(conference));
         }
         return list;
+    }
+
+    @Override
+    public Page<ScheduleConferenceDTO> getConferencesForSchedule(Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<ScheduleConferenceDTO> conferenceDTOS = new ArrayList<>();
+        List<Conference> conferences = conferenceRepository.findAll();
+        List<Topic> topics = topicRepository.findAll();
+
+        for (Conference conference : conferences) {
+            Map<LocalDate, List<StreamDTO>> schedule = new HashMap<>();
+            List<StreamDTO> streams = streamService.getAllStreamDtoByConference(conference);
+            for (StreamDTO streamDTO : streams) {
+                streamDTO.setTopicList(new ArrayList<>());
+            }
+            for (Topic topic : topics) {
+                if (topic.getStream().getConference().getConferenceId().equals(conference.getConferenceId())) {
+                    if (schedule.containsKey(topic.getDate())) {
+                        List<StreamDTO> streamDTOS = schedule.get(topic.getDate());
+                        for (StreamDTO streamDTO : streamDTOS) {
+                            if (streamDTO.getStreamId().equals(topic.getStream().getStreamId())) {
+                                TopicDTO topicDTO = new TopicDTO();
+                                topicDTO.setDate(topic.getDate());
+                                topicDTO.setActive(topic.isActive());
+                                topicDTO.setTopicId(topic.getTopicId());
+                                topicDTO.setName(topic.getName());
+                                topicDTO.setBeginTime(topic.getBeginTime());
+                                topicDTO.setFinishTime(topic.getFinishTime());
+                                streamDTO.getTopicList().add(topicDTO);
+                            }
+                        }
+                    } else {
+                        List<StreamDTO> dtoList = new ArrayList<>();
+                        for (StreamDTO dto : streams) {
+                            StreamDTO streamDTO = new StreamDTO();
+                            streamDTO.setModerator(dto.getModerator());
+                            streamDTO.setConference(dto.getConference());
+                            streamDTO.setName(dto.getName());
+                            streamDTO.setStreamId(dto.getStreamId());
+                            streamDTO.setTopicList(new ArrayList<>());
+                            if (dto.getStreamId().equals(topic.getStream().getStreamId())) {
+                                TopicDTO topicDTO = new TopicDTO();
+                                topicDTO.setDate(topic.getDate());
+                                topicDTO.setActive(topic.isActive());
+                                topicDTO.setTopicId(topic.getTopicId());
+                                topicDTO.setName(topic.getName());
+                                topicDTO.setBeginTime(topic.getBeginTime());
+                                topicDTO.setFinishTime(topic.getFinishTime());
+                                streamDTO.getTopicList().add(topicDTO);
+                            }
+                            dtoList.add(streamDTO);
+                        }
+                        schedule.put(topic.getDate(), dtoList);
+                    }
+                }
+            }
+            ScheduleConferenceDTO scheduleConferenceDTO = new ScheduleConferenceDTO();
+            scheduleConferenceDTO.setConferenceId(conference.getConferenceId());
+            scheduleConferenceDTO.setName(conference.getName());
+            scheduleConferenceDTO.setAlias(conference.getAlias());
+            scheduleConferenceDTO.setVenue(conference.getVenue());
+            scheduleConferenceDTO.setBeginDate(conference.getBeginDate());
+            scheduleConferenceDTO.setFinishDate(conference.getFinishDate());
+            scheduleConferenceDTO.setSchedule(schedule);
+            conferenceDTOS.add(scheduleConferenceDTO);
+        }
+        completeTopic(conferenceDTOS);
+        if (conferenceDTOS.size() < startItem) {
+            conferenceDTOS = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, conferenceDTOS.size());
+            conferenceDTOS = conferenceDTOS.subList(startItem, toIndex);
+        }
+        return new PageImpl<>(conferenceDTOS, PageRequest.of(currentPage, pageSize), conferences.size());
+    }
+
+    @Override
+    public Long getConfIdByTopicId(Long topicId) {
+        Topic topic = topicRepository.findById(topicId).get();
+        Conference conference = conferenceRepository.findById(topic.getStream().getConference().getConferenceId()).get();
+        return conference.getConferenceId();
+    }
+
+    private void completeTopic(List<ScheduleConferenceDTO> conferenceDTOS) {
+        for (ScheduleConferenceDTO schedule : conferenceDTOS) {
+            for (Map.Entry<LocalDate, List<StreamDTO>> entry : schedule.getSchedule().entrySet()) {
+                for (StreamDTO streamDTO : entry.getValue()) {
+                    List<TopicDTO> listTopic = streamDTO.getTopicList();
+                    listTopic.sort(Comparator.comparing(TopicDTO::getBeginTime));
+                    LocalTime startTime = LocalTime.of(8, 0, 0);
+                    for (TopicDTO topicDTO : listTopic) {
+                        LocalTime beginTime = topicDTO.getBeginTime();
+                        LocalTime finishTime = topicDTO.getFinishTime();
+                        double begin;
+                        double finish;
+                        begin = (MINUTES.between(startTime, beginTime)) / 5.0 * 0.5;
+                        finish = (MINUTES.between(beginTime, finishTime)) / 5.0 * 0.5;
+                        topicDTO.setBackdown(begin);
+                        topicDTO.setBodySize(finish);
+                        startTime = finishTime;
+                    }
+                }
+            }
+        }
     }
 
 }

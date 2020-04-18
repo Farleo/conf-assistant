@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.StreamDTO;
+import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -86,4 +87,15 @@ public class StreamServiceImpl implements StreamService {
         Stream stream = mapper.toEntity(streamDTO);
         streamRepository.save(stream);
     }
+
+    @Override
+    public List<StreamDTO> getAllStreamDtoByConference(Conference conference) {
+        List<Stream> list = streamRepository.findAllByConference(conference);
+        List<StreamDTO> streamDTOS = new ArrayList<>();
+        for (Stream stream : list) {
+            streamDTOS.add(mapper.toDto(stream));
+        }
+        return streamDTOS;
+    }
+
 }
