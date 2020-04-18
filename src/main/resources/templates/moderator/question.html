@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap/css/scroll.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
     <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
     <title>Conference Assistant</title>
@@ -66,86 +67,133 @@
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
         }
+
+        .checkbox {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+            margin: 10px 0 0 20px;
+        }
+        .checkbox + label {
+            position: relative;
+            padding: 0 0 0 60px;
+            cursor: pointer;
+        }
+
+        .checkbox input {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+            margin: 10px 0 0 20px;
+        }
+        .checkbox__text {
+            position: relative;
+            padding: 0 0 0 60px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid">
-
-
-    <div class="row justify-content-center border-0" style="margin-top: 25px">
+    <a class="btn-back text-muted" th:href="${'/moderator'}" role="button">
+        <i class="fa fa-chevron-left  text-secondary"></i>
+        <span style="margin-left: 5px">Return to cabinet</span>
+    </a>
+    <div class="row justify-content-center border-0">
         <div class="card border-0 col-7">
-            <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
-                <div class="card border-0">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="text-muted">Question's list</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="row-12 border" style="margin-top: 30px; margin-bottom: 30px">
-                <div class="card border-0">
-                    <div id="selectedQuestion" class="d-flex justify-content-between">
-                        <div class="text-muted"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-0 col-12">
-                <input hidden="hidden" id="topicId" th:attr="value=${topicId}">
-
-                <div id="options" class="row-12 m-0" style="padding:0px 20px 0px 20px">
-                    <div class="list-group list-group-horizontal">
-                        <div id="OrderGroup" class='list-group-item border-0 col-2 '>
-                            <div class="card-title  ">
-                                <small id="Text" class="text-muted">Order by rating</small>
-                                <div class="card-subtitle ">
-                                    <button id="OrderBy" class="fa fa-sort-desc fa-lg text-muted border-0"
-                                            aria-hidden="true"></button>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class='list-group-item border-0' style="max-width: max-content">
-                            <div class="card-title  ">
-                                <div class="form-group">
-                                    <button id="refresh" class="btn btn-danger text-white">
-                                        <i class="fa fa-refresh" aria-hidden="true"></i>
-                                        <small>Refresh</small>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class='list-group-item border-0' style="max-width: max-content">
-                            <div class="card-title  ">
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" onchange="fun1()" id="AutoRefresh">
-                                    <label class="form-check-label" for="AutoRefresh">Enable auto refresh</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="getResultDiv" class="col-12 border" style="padding:0px 20px 0px 20px">
-                    <div class="list-group scrollbar scrollbar-danger ">
-                    </div>
-                </div>
-                <a th:href="${'/moderator/questions/send/' + topicId}" class="tab">
-                    <button class="btn btn-success">
-                        Send question
-                    </button>
+            <div class="row-12" style="margin-top: 20px">
+            <div class="d-flex justify-content-between" style="margin-top: 20px">
+                <a th:href="${'/topic/' + topic.topicId}" class="btn text-left border-0">
+                    <h2 style="font-family: Calibri,serif; color: #4089c4" th:text="${topic.name}"></h2>
                 </a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a href="#" id="enableButton" class="dropdown-item text-secondary"></a>
+                        <a class="dropdown-item text-secondary" th:href="${'/moderator/questions/send/' + topicId}">
+                                Send question
+                        </a>
+                    </div>
+                </div>
+                </div>
+                </div>
+
+                <div>
+                    <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
+                        <div class="card border-0">
+                            <div class="d-flex justify-content-between">
+                                <h4 class="text-muted">Question's list</h4>
+                                <input id="isEnable" hidden="hidden" th:value="${isEnable}">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0" style="margin-top: 20px">
+                        <input hidden="hidden" id="topicId" th:attr="value=${topicId}">
+
+                        <div id="options" class=" m-0 border-0" style="padding:0px 20px 0px 20px">
+                            <div class=" d-flex justify-content-between">
+                                <div id="OrderGroup" class='border-0 col-2 '>
+                                    <div class="card-title  ">
+                                        <small id="Text" class="text-muted">Order by rating</small>
+                                        <div class="card-subtitle ">
+                                            <button id="OrderBy" class="fa fa-sort-desc fa-lg text-muted border-0"
+                                                    aria-hidden="true"></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="list-group list-group-horizontal">
+                                    <div class='list-group-item border-0' style="max-width: max-content">
+                                        <div class="card-title  ">
+                                            <div class="form-group">
+                                                <button id="refresh" class="btn btn-danger text-white">
+                                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                    <small>Refresh</small>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='list-group-item border-0' style="max-width: max-content">
+                                        <div class="card-title  ">
+                                            <div class="form-group form-check">
+                                                <input type="checkbox" class="form-check-input" onchange="fun1()"
+                                                       id="AutoRefresh">
+                                                <label class="form-check-label" for="AutoRefresh">Enable auto
+                                                    refresh</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-12" style="margin-right: 20px; margin-left: 20px;">
+                            <div class="card border-0">
+                                <div id="selectedQuestion" class="d-flex justify-content-between">
+                                    <div class="text-muted"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="getResultDiv" style="padding:20px 20px 0px 20px" class="border-top">
+                            <div class="list-group scrollbar scrollbar-danger">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        </div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="/bootstrap/js/popper.min.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
-<script src="/js/request/manage-question.js"></script>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/bootstrap/js/popper.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/js/request/manage-question.js"></script>
 
 </body>
 </html>

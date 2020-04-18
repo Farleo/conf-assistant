@@ -15,4 +15,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     Topic findByName(String name);
 
     List<Topic> findAllBySpeaker(User speaker);
+
 }

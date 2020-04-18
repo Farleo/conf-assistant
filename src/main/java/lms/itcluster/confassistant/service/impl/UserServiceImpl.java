@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -269,7 +271,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return true;
     }
 
-    @Scheduled(cron = "0 59 23 * * *")
+    @Scheduled(cron = "0 01 00 * * *")
+    @Transactional
     public void removeNotActiveProfiles() {
         LocalDate date = LocalDate.now().minusDays(removeNotCompletedProfilesInterval);
         userRepository.deleteUserByIsActiveAndCreatedLessThan(false, date);

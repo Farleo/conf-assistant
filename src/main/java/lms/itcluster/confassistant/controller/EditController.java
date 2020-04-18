@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.entity.Stream;
+import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
@@ -38,6 +40,9 @@ public class EditController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private StreamRepository streamRepository;
 
     @GetMapping("/edit/profile")
     public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
@@ -110,8 +115,13 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/main/{topicId}")
-    public String getMain (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
+    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
+        Stream stream = streamRepository.findByName(topicDTO.getStream());
+        if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
+            model.addAttribute("message", "You can't edit this topic!");
+            return "message";
+        }
         model.addAttribute("topic", topicDTO);
         model.addAttribute("month", staticDataService.getMonthMap());
         model.addAttribute("years", staticDataService.getYears());
@@ -128,16 +138,14 @@ public class EditController {
     @GetMapping("/edit/topic/speaker/{topicId}")
     public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
         if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
-            return "redirect:/edit/profile";
+            return "redirect:/edit/speaker/main";
         }
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         SpeakerDTO speakerDTO = topicDTO.getSpeakerDTO();
         if (SecurityUtil.userHasAdminRole(currentUser)) {
             return "redirect:/admin/users/edit/" + speakerDTO.getUserId();
         }
-        model.addAttribute("speaker", speakerDTO);
-        model.addAttribute("topicId", topicDTO.getTopicId());
-        return "edit/topic/speaker";
+        return "/";
     }
 
     @PostMapping("/edit/topic/speaker")
@@ -147,8 +155,13 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/info/{topicId}")
-    public String getInfo (@PathVariable("topicId") Long topicId, Model model) throws TopicNotFoundException {
+    public String getInfo (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
+        Stream stream = streamRepository.findByName(topicDTO.getStream());
+        if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
+            model.addAttribute("message", "You can't edit this topic!");
+            return "message";
+        }
         model.addAttribute("topic", topicDTO);
         return "edit/topic/info";
     }

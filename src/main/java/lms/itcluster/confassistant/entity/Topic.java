@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,10 +25,10 @@ public class Topic {
     private LocalDate date;
 
     @Column(name = "begin_time", nullable = false)
-    private Time beginTime;
+    private LocalTime beginTime;
 
     @Column(name = "finish_time", nullable = false)
-    private Time finishTime;
+    private LocalTime finishTime;
 
     @Column(name = "info", nullable = false, length = 2000)
     private String info;
@@ -86,19 +87,19 @@ public class Topic {
         this.name = name;
     }
 
-    public Time getBeginTime() {
+    public LocalTime getBeginTime() {
         return beginTime;
     }
 
-    public void setBeginTime(Time beginTime) {
+    public void setBeginTime(LocalTime beginTime) {
         this.beginTime = beginTime;
     }
 
-    public Time getFinishTime() {
+    public LocalTime getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Time finishTime) {
+    public void setFinishTime(LocalTime finishTime) {
         this.finishTime = finishTime;
     }
 

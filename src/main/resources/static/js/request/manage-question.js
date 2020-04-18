@@ -19,8 +19,38 @@ $(document).ready(function () {
         show();
     });
 
-        show();
+    show();
 
+    var variable;
+    $("#enableButton").empty();
+    if ($("#isEnable").val() === 'true') {
+        variable = "Disable Questions";
+    } else {
+        variable = "Enable Questions";
+    }
+    $("#enableButton").append(variable);
+
+
+    $("#enableButton").click(function () {
+        console.log($("#enableButton"));
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: document.location.origin + "/enable/" + $('#topicId').val(),
+            success: function (result) {
+                $("#enableButton").empty();
+                var variable;
+                if (result) {
+                    alert("All question was Enabled");
+                    variable = "Disable Questions";
+                } else {
+                    alert("All question was Disabled");
+                    variable = "Enable Questions";
+                }
+                $("#enableButton").append(variable);
+            }
+        });
+    });
 });
 
 
@@ -29,13 +59,11 @@ var intervalID;
 
 function fun1() {
     var chbox;
-    chbox=document.getElementById('AutoRefresh');
-    console.log(chbox);
+    chbox = document.getElementById('AutoRefresh');
 
     if (chbox.checked) {
         intervalID = setInterval(show, 1500);
-    }
-    else {
+    } else {
         clearInterval(intervalID);
     }
 }
@@ -69,7 +97,6 @@ function show() {
                     });
                 }
                 if (question.selected) {
-                    console.log(question);
                     $('#selectedQuestion div').empty();
                     var selectedQ =
                         "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
@@ -103,11 +130,8 @@ function select(question) {
         success: function (result) {
             if (result) {
                 show();
-                console.log(result)
-            }
-            else {
+            } else {
                 show();
-                console.log(result)
             }
         }
     });

@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.dto.StreamDTO;
+import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface StreamService {
 	void updateStream(StreamDTO streamDTO);
 
 	void addNewStream(StreamDTO streamDTO);
+
+	List<StreamDTO> getAllStreamDtoByConference(Conference conference);
 }

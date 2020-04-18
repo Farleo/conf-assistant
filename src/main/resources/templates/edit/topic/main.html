@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap/css/scroll.css">
+    <link rel="stylesheet" href="/bootstrap/css/app.css">
     <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
     <title>Conference Assistant</title>
@@ -37,6 +38,10 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid">
+    <a class="btn-back text-muted" th:href="${'/moderator'}" role="button">
+        <i class="fa fa-chevron-left  text-secondary"></i>
+        <span style="margin-left: 5px">Return to cabinet</span>
+    </a>
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">
 
@@ -99,14 +104,14 @@
                                 <label for="beginHour">Select hour</label>
                                 <select id="beginHour" name="beginHour">
                                     <option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}" th:text="${i}"
-                                            th:selected="${i==topic.beginTime.hours}"></option>
+                                            th:selected="${i==topic.beginTime.hour}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="beginMinuets">Select minuets</label>
                                 <select id="beginMinuets" name="beginMinuets">
                                     <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
-                                            th:selected="${i==topic.beginTime.minutes}"></option>
+                                            th:selected="${i==topic.beginTime.minute}"></option>
                                 </select>
                             </div>
                         </div>
@@ -117,14 +122,14 @@
                                 <label for="finishHour">Select hour</label>
                                 <select id="finishHour" name="finishHour">
                                     <option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}" th:text="${i}"
-                                            th:selected="${i==topic.finishTime.hours}"></option>
+                                            th:selected="${i==topic.finishTime.hour}"></option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="finishMinuets">Select minuets</label>
                                 <select id="finishMinuets" name="finishMinuets">
                                     <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
-                                            th:selected="${i==topic.finishTime.minutes}"></option>
+                                            th:selected="${i==topic.finishTime.minute}"></option>
                                 </select>
                             </div>
                         </div>

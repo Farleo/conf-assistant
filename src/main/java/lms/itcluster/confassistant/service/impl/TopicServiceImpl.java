@@ -113,4 +113,19 @@ public class TopicServiceImpl implements TopicService {
         }
         return list;
     }
+
+    @Override
+    public boolean enableOrDisableQuestion(Long topicID) {
+        Topic topic = topicRepository.findById(topicID).get();
+        boolean result;
+        if (topic.isActive()) {
+            topic.setActive(false);
+            result = false;
+        } else {
+            topic.setActive(true);
+            result = true;
+        }
+        topicRepository.save(topic);
+        return result;
+    }
 }

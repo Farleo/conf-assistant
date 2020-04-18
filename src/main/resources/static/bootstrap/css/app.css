@@ -1,0 +1,31 @@
+.btn-back {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 15%;
+    height: border-box;
+    color: #fff;
+    text-align: center;
+    opacity: .5;
+    transition: opacity .15s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-back {
+        transition: none
+    }
+}
+
+.btn-back:focus, .btn-back:hover {
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    opacity: .9
+}
