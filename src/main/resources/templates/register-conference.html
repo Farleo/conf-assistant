@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+
+    <title>Conference Assistant</title>
+    <style>
+
+        .tab {
+            /* элемент тени */
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+            /* элемент тени конец */
+        }
+
+        .tab:hover {
+            /* элемент тени если наведен курсор */
+            -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -moz-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            -o-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+            /* элемент тени если наведен курсор конец */
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
+<section>
+    <div class="container-fluid ">
+        <div class="row justify-content-center ">
+            <form th:action="@{/register/conference(confId=${conference.conferenceId})}" method="post" class="card col-4 border-0">
+                <div class="card text-center border-0 " style="margin-top: 20px">
+                    <h4 style="font-family: Calibri,serif; color: #4089c4">Confirm registration</h4>
+                </div>
+                <div class="d-flex justify-content-between">
+                <div class="row " style="padding-top: 0em">
+                    Confirm registration on
+                    <span th:text="${': ' + conference.name + '.'}"></span>
+                </div>
+                    <button type="submit" class="btn btn-sm btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+        <div class="row justify-content-center m-3">
+            <div>After successful registration, you will receive an e-ticket in the mail.</div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/bootstrap/js/jquery.slim.min.js"></script>
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+</section>
+</body>
+</html>

@@ -25,8 +25,10 @@ $(document).ready(function () {
         show();
     });
 
-    var isPresent = $("#isPresentUser").val();
-    if (isPresent === 'true') {
+    var isRegisteredOnConf = $("#isRegisteredOnConf").val();
+    var isActiveTopic = $("#isActiveTopic").val();
+    var isActive = $("#isActive").val();
+    if (isRegisteredOnConf === 'true' && (isActiveTopic === 'true' || isActive === 'true')) {
         show();
     }
 

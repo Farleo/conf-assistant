@@ -14,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -71,18 +68,19 @@ public class PageController {
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         model.addAttribute("confId", conferenceService.getConfIdByTopicId(topicDTO.getTopicId()));
-        if (currentUser == null || !currentUser.isEnabled()) {
-            model.addAttribute("isPresentUser", false);
-        } else {
+        model.addAttribute("user", currentUser);
+        if (currentUser == null || !currentUser.isEnabled() || !conferenceService.isCurrentUserPresentAtTopicConference(currentUser.getId(), topicDTO.getTopicId())) {
+            model.addAttribute("isRegisteredOnConf", false);
+            return "topic";
+        }
+        model.addAttribute("isRegisteredOnConf", true);
+
 /*            Stream stream = streamRepository.findByName(topicDTO.getStream());
             Conference currentConference = conferenceService.findById(stream.getConference().getConferenceId());
             List<Participants> confUserList = currentConference.getParticipants();
             if (confUserList.stream().anyMatch(u -> u.getParticipantsKey().getUser().getUserId() == currentUser.getId())) {
 
             }*/
-            model.addAttribute("isPresentUser", true);
-            model.addAttribute("user", currentUser);
-        }
         return "topic";
     }
 
@@ -133,4 +131,22 @@ public class PageController {
         }
         return "schedule";
     }
+
+    @GetMapping("/register/conference/{conferenceId}")
+    public String getConfRegistration(Model model, @PathVariable("conferenceId") Long conferenceId) {
+        ConferenceDTO conferenceDTO = conferenceService.getConferenceDTOById(conferenceId);
+        model.addAttribute("conference", conferenceDTO);
+        return "register-conference";
+    }
+
+    @PostMapping("/register/conference")
+    public String saveConfRegistration(Model model, @RequestParam("confId") Long confId, @AuthenticationPrincipal CurrentUser currentUser) {
+        boolean isRegistered = conferenceService.registerCurrentUserForConference(confId, currentUser.getId());
+        if (isRegistered) {
+            return "redirect:/conf/" + confId;
+        }
+        model.addAttribute("message", "You already registered on this conference");
+        return "message";
+    }
+
 }

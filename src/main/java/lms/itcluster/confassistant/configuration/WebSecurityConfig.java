@@ -26,6 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers( "/like/**", "/save-question/**").hasAnyRole("ADMIN", "CONFOWNER", "USER")
+                .antMatchers( "/register/conference/**").authenticated()
 /*                .antMatchers( "/moderator/**").hasRole("USER")
                 .antMatchers( "/moderator/**").hasAuthority("moder")*/
                 .antMatchers( "/edit/speaker/**").hasAuthority("speaker")
