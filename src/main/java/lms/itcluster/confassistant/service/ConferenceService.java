@@ -3,7 +3,6 @@ package lms.itcluster.confassistant.service;
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
 import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.data.domain.Page;

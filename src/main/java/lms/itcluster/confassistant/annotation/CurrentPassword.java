@@ -1,6 +1,5 @@
 package lms.itcluster.confassistant.annotation;
 
-import lms.itcluster.confassistant.validator.ConfirmPasswordValidator;
 import lms.itcluster.confassistant.validator.CurrentPasswordValidator;
 
 import javax.validation.Constraint;

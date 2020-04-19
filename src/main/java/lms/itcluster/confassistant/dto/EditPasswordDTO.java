@@ -2,8 +2,6 @@ package lms.itcluster.confassistant.dto;
 
 import lms.itcluster.confassistant.annotation.*;
 
-import javax.validation.constraints.NotBlank;
-
 @ConfirmPassword(password = "password", userId = "userId")
 @FieldMatch(first = "newPassword", second = "verifyPassword", message = "The password fields must match")
 @CurrentPassword(password = "newPassword", userId = "userId")

@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class CurrentUser extends User {
     private Long id;

@@ -1,6 +1,5 @@
 package lms.itcluster.confassistant.validator;
 
-import lms.itcluster.confassistant.annotation.ConfirmPassword;
 import lms.itcluster.confassistant.annotation.CurrentPassword;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.repository.UserRepository;

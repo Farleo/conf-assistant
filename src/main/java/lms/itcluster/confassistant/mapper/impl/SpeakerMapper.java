@@ -3,7 +3,6 @@ package lms.itcluster.confassistant.mapper.impl;
 import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
-import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

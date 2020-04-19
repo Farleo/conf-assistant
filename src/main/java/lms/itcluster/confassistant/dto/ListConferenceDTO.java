@@ -1,7 +1,5 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.entity.Conference;
-
 import java.io.Serializable;
 import java.util.List;
 

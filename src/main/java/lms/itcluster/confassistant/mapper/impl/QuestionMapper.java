@@ -5,7 +5,6 @@ import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.repository.QuestionRepository;
-import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Time;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

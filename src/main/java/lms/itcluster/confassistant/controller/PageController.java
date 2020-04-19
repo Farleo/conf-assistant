@@ -1,12 +1,15 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.*;
+import lms.itcluster.confassistant.dto.ConferenceDTO;
+import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
+import lms.itcluster.confassistant.dto.TopicDTO;
+import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
-import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,14 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PageController {

@@ -2,7 +2,9 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.service.*;
+import lms.itcluster.confassistant.service.ParticipantService;
+import lms.itcluster.confassistant.service.SecurityService;
+import lms.itcluster.confassistant.service.StreamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

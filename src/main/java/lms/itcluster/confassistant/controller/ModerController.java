@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
-import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;

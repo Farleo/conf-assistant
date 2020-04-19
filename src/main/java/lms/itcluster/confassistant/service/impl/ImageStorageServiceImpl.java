@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.service.ImageStorageService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.validator;
 
 import lms.itcluster.confassistant.annotation.UniqueEmail;
-import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 

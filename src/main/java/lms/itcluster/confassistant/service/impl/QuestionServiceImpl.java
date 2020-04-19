@@ -12,7 +12,6 @@ import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

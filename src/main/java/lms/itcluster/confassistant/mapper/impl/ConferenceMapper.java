@@ -2,20 +2,25 @@ package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.StreamDTO;
-import lms.itcluster.confassistant.entity.*;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Participants;
+import lms.itcluster.confassistant.entity.Stream;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.mapper.Mapper;
-import lms.itcluster.confassistant.repository.*;
+import lms.itcluster.confassistant.repository.ConferenceRepository;
+import lms.itcluster.confassistant.repository.ParticipantRepository;
+import lms.itcluster.confassistant.repository.StreamRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class ConferenceMapper extends AbstractMapper<Conference, ConferenceDTO> {

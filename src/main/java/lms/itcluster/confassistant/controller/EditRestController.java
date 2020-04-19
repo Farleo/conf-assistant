@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;

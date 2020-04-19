@@ -1,10 +1,8 @@
 package lms.itcluster.confassistant.validator;
 
 import lms.itcluster.confassistant.annotation.ConfirmPassword;
-import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.repository.UserRepository;
-import lms.itcluster.confassistant.service.UserService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

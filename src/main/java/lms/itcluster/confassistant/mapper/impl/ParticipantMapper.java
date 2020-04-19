@@ -1,15 +1,15 @@
 package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.ParticipantDTO;
-import lms.itcluster.confassistant.dto.QuestionDTO;
-import lms.itcluster.confassistant.entity.*;
-import lms.itcluster.confassistant.mapper.AbstractMapper;
-import lms.itcluster.confassistant.mapper.Mapper;
-import lms.itcluster.confassistant.repository.*;
-import org.modelmapper.ModelMapper;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Participants;
+import lms.itcluster.confassistant.entity.ParticipantsKey;
+import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.repository.ConferenceRepository;
+import lms.itcluster.confassistant.repository.ParticipantsTypeRepository;
+import lms.itcluster.confassistant.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 import java.util.ArrayList;
 import java.util.List;

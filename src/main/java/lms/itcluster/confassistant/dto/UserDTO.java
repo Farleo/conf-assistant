@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.dto;
 
+import lms.itcluster.confassistant.annotation.UniqueEmail;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
@@ -12,6 +14,7 @@ public class UserDTO extends AbstractDTO {
     private String lastName;
     private String password;
     @NotEmpty(message = "Email must by not empty")
+    @UniqueEmail(message = "Email must by unique")
     @Email(message = "Incorrectly formed email address")
     private String email;
     private String info;

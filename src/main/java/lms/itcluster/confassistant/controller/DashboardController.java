@@ -1,8 +1,11 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.*;
+import lms.itcluster.confassistant.dto.ConferenceDTO;
+import lms.itcluster.confassistant.dto.ListConferenceDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.service.*;
+import lms.itcluster.confassistant.service.ConferenceService;
+import lms.itcluster.confassistant.service.ParticipantService;
+import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

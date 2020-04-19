@@ -44,8 +44,7 @@
                     <div class="col-md-8">
                         <input id="userId" th:for="userId" th:field="*{userId}" class="form-control" type="hidden"/>
                         <label th:for="email">Email *</label>
-                        <div th:if="${badEmail}" class="text-danger">This email is already exist</div>
-                        <div th:errors="*{email}" class="text-danger"></div>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name Error</div>
                         <input type="email" th:field="*{email}" class="form-control"/>
 
                         <br>
@@ -73,7 +72,8 @@
                 </div>
             </div>
             <div style="text-align: left">
-                <div class="mb-3">Roles *<span th:errors="*{roles}" class="text-danger"></span></div>
+                <div class="mb-3">Roles *</div>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Name Error</div>
                 <div style="font-style: italic" th:each="currentRole : ${availableRoles}">
                     <input type="checkbox" id="roles" name="roles" th:field="*{roles}" th:value="${currentRole}" th:text="${currentRole.substring(5)}"/>
                 </div>

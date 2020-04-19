@@ -1,6 +1,5 @@
 package lms.itcluster.confassistant.form;
 
-import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.User;
 
 import java.io.Serializable;

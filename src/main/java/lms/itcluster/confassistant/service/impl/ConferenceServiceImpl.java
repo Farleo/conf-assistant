@@ -1,7 +1,10 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.*;
+import lms.itcluster.confassistant.entity.Conference;
+import lms.itcluster.confassistant.entity.Participants;
+import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ConferenceRepository;

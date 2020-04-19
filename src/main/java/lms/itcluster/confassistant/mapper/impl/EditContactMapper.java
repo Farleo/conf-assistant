@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.EditContactsDTO;
-import lms.itcluster.confassistant.dto.EditProfileDTO;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.repository.UserRepository;

@@ -1,13 +1,10 @@
 package lms.itcluster.confassistant.mapper.impl;
 
-import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SignUpDTO;
-import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.repository.RolesRepository;
-import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.UUID;

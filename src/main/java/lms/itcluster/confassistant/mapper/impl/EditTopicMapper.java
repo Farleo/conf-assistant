@@ -1,29 +1,16 @@
 package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.EditTopicDTO;
-import lms.itcluster.confassistant.dto.QuestionDTO;
-import lms.itcluster.confassistant.dto.SpeakerDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
-import lms.itcluster.confassistant.mapper.Mapper;
-import lms.itcluster.confassistant.repository.QuestionRepository;
-import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
-import lms.itcluster.confassistant.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {

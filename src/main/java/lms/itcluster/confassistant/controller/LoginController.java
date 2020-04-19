@@ -1,9 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.EditProfileDTO;
 import lms.itcluster.confassistant.dto.SignUpDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
-import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 
 import javax.validation.Valid;
 

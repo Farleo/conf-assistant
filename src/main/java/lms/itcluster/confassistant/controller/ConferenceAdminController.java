@@ -4,14 +4,16 @@ import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ParticipantDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.service.*;
+import lms.itcluster.confassistant.service.ConferenceService;
+import lms.itcluster.confassistant.service.ParticipantService;
+import lms.itcluster.confassistant.service.ParticipantTypeService;
+import lms.itcluster.confassistant.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import javax.validation.Valid;
 import java.io.IOException;
