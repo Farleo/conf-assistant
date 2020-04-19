@@ -176,16 +176,11 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException  {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
-        String oldCoverPhotoPath = null;
         if (!photo.isEmpty()) {
             String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = topic.getCoverPhoto();
             topic.setCoverPhoto(newCoverPhotoPath);
         }
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
     }
 }

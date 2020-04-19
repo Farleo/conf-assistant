@@ -132,7 +132,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUser(UserDTO userDTO) {
+    @Transactional
+    public void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException {
         Optional<User> optionalUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
         if (optionalUser.isPresent()) {
             User dbUser = optionalUser.get();
@@ -143,8 +144,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (dbUser != null && userDTO.getUserId() != dbUser.getUserId()) {
                 throw new UserAlreadyExistException("User with this email is already exist: " + realUser.getEmail());
             }
-            
+            String oldCoverPhotoPath = null;
+            if (!photo.isEmpty()) {
+                String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+                oldCoverPhotoPath = realUser.getPhoto();
+                realUser.setPhoto(newCoverPhotoPath);
+            }
             userRepository.save(realUser);
+            if (oldCoverPhotoPath != null) {
+                removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+            }
         }
     }
 
@@ -170,13 +179,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addNewUserByAdmin(UserDTO userDTO) {
+    @Transactional
+    public void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException {
         User existingUserFromDb = userRepository.findByEmail(userDTO.getEmail());
         if (existingUserFromDb != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
         }
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = mapper.toEntity(userDTO);
+        String oldCoverPhotoPath = null;
+        if (!photo.isEmpty()) {
+            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+            oldCoverPhotoPath = user.getPhoto();
+            user.setPhoto(newCoverPhotoPath);
+        }
+        user.setActive(true);
         userRepository.save(user);
+        if (oldCoverPhotoPath != null) {
+                removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+            }
     }
 
     @Override
@@ -283,5 +304,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         LOGGER.info("Removed all non active user");
     }
-
 }

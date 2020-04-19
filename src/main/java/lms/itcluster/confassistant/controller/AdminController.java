@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.io.IOException;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -43,14 +46,15 @@ public class AdminController {
 
 	@PostMapping(value = "/admin/users/create")
 	private String addNewUserByAdminPost (@ModelAttribute @Valid UserDTO userDTO,
+	                                      @RequestParam("inpFile") MultipartFile photo,
 	                                      Errors errors, Model model) {
 		if(errors.hasErrors()){
 			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
 			return "admin/add-user";
 		}
 		try {
-			userService.addNewUserByAdmin(userDTO);
-		} catch (UserAlreadyExistException e) {
+			userService.addNewUserByAdmin(userDTO, photo);
+		} catch (UserAlreadyExistException | IOException e) {
 			model.addAttribute("isExistEmail", true);
 			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
 			return "admin/add-user";
@@ -75,6 +79,7 @@ public class AdminController {
 	@PostMapping(value="admin/users/edit/{id}")
 	public String editSave(@PathVariable("id") long id,
 	                       @ModelAttribute @Valid UserDTO userDTO,
+	                       @RequestParam("inpFile") MultipartFile photo,
 	                       Errors errors, Model model) {
 		model.addAttribute("userDTO", userDTO);
 		if(errors.hasErrors()){
@@ -82,9 +87,9 @@ public class AdminController {
 			return "admin/edit-user";
 		}
 		try {
-			userService.updateUser(userDTO);
+			userService.updateUser(userDTO, photo);
 		}
-		catch (UserAlreadyExistException e) {
+		catch (UserAlreadyExistException | IOException e) {
 			model.addAttribute("badEmail", true);
 			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toList()));
 			return "admin/edit-user";

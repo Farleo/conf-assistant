@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Time;
+import java.time.LocalTime;
 
 @Component
 public class SimpleTopicMapper extends AbstractMapper<Topic, SimpleTopicDTO> {
@@ -54,8 +55,8 @@ public class SimpleTopicMapper extends AbstractMapper<Topic, SimpleTopicDTO> {
 	
 	@Override
 	protected void mapSpecificFieldsInEntity(Topic source, SimpleTopicDTO destination) {
-		destination.setBeginTime(source.getBeginTime());
-		destination.setFinishTime(source.getFinishTime());
+		destination.setBeginTime(Time.valueOf(source.getBeginTime()));
+		destination.setFinishTime(Time.valueOf(source.getFinishTime()));
 		destination.setSpeakerId(source.getSpeaker().getUserId());
 		destination.setStream(source.getStream().getName());
 	}
@@ -63,8 +64,8 @@ public class SimpleTopicMapper extends AbstractMapper<Topic, SimpleTopicDTO> {
 	@Override
 	protected void mapSpecificFieldsInDto(SimpleTopicDTO source, Topic destination) {
 		destination.setSpeaker(userRepository.findById(source.getSpeakerId()).get());
-		destination.setBeginTime(new Time(source.getBeginHour(), source.getBeginMinutes(), 0));
-		destination.setFinishTime(new Time(source.getFinishHour(), source.getFinishMinutes(), 0));
+		destination.setBeginTime(LocalTime.of(source.getBeginHour(), source.getBeginMinutes(), 0));
+		destination.setFinishTime(LocalTime.of(source.getFinishHour(), source.getFinishMinutes(), 0));
 		destination.setStream(streamRepository.findByName(source.getStream()));
 	}
 

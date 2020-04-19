@@ -19,13 +19,13 @@ public interface UserService {
     
     List<UserDTO> getAllUsers();
 
-    void updateUser(UserDTO userDTO);
+    void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException;
 
     void completeGuestRegistration (EditProfileDTO editProfileDTO);
 
     EditProfileDTO getGuestProfileDTOById(long id);
 
-    void addNewUserByAdmin(UserDTO userDTO);
+    void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException;
 
     SpeakerDTO getSpeakerById(Long id);
 
