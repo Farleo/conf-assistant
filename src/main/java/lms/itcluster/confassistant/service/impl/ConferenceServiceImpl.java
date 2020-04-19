@@ -8,9 +8,7 @@ import lms.itcluster.confassistant.repository.ConferenceRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
-import lms.itcluster.confassistant.service.ConferenceService;
-import lms.itcluster.confassistant.service.ImageStorageService;
-import lms.itcluster.confassistant.service.StreamService;
+import lms.itcluster.confassistant.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -35,6 +33,15 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class ConferenceServiceImpl implements ConferenceService {
 
     @Autowired
+    private StreamRepository streamRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private StreamService streamService;
 
     @Autowired
@@ -50,6 +57,9 @@ public class ConferenceServiceImpl implements ConferenceService {
     private ImageStorageService imageStorageService;
 
     @Autowired
+    private ParticipantService participantService;
+
+    @Autowired
     @Qualifier("simpleConferenceMapper")
     private Mapper<Conference, ConferenceDTO> simpleMapper;
 
@@ -60,6 +70,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Autowired
     @Qualifier("topicMapper")
     private Mapper<Topic, TopicDTO> topicMapper;
+
 
     @Override
     public List<Conference> getAllConferences() {
@@ -247,6 +258,8 @@ public class ConferenceServiceImpl implements ConferenceService {
         return conference.getConferenceId();
     }
 
+
+
     private void completeTopic(List<ScheduleConferenceDTO> conferenceDTOS) {
         for (ScheduleConferenceDTO schedule : conferenceDTOS) {
             for (Map.Entry<LocalDate, List<StreamDTO>> entry : schedule.getSchedule().entrySet()) {
@@ -268,6 +281,32 @@ public class ConferenceServiceImpl implements ConferenceService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isCurrentUserPresentAtTopicConference(Long userId, Long topicId) {
+        Topic topic = topicRepository.findById(topicId).get();
+        Conference conference = topic.getStream().getConference();
+        for (Participants participants : conference.getParticipants()) {
+            if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean registerCurrentUserForConference(Long confId, Long userId) {
+        Conference conference = conferenceRepository.findById(confId).get();
+        for (Participants participants : conference.getParticipants()) {
+            if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
+                return false;
+            }
+        }
+        UserDTO user = userService.findById(userId);
+        participantService.addParticipant(user, conference);
+        emailService.sendMessage(user.getEmail(), "Registration on Conference: " + conference.getName(), "You have been successfully registered on Conference: " + conference.getName());
+        return true;
     }
 
 }
