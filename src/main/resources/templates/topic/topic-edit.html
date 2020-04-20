@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
 
-    <title th:text="'Edit ' + ${topic.name} + ' topic'"/>
+    <title th:text="'Edit topic'"/>
     <style>
         .image-preview {
             width: auto;
@@ -36,16 +36,16 @@
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
     <div class="col-md-8 order-md-1">
-        <h4 class="mb-3"  th:text="'Edit ' + ${topic.name} + ' topic'"></h4>
-        <form th:action="@{'/dashboard/conferences/' + ${confId} + '/stream/' + ${streamId} + '/edit/' + ${topic.id} + '/save/'}" enctype="multipart/form-data" th:object="${topic}" method="POST" class="needs-validation" novalidate="" >
-            <input id="id" name="topicId" th:field="*{id}" class="form-control" type="hidden"/>
+        <h4 class="mb-3"  th:text="'Edit topic'"></h4>
+        <form th:action="@{'/dashboard/conferences/' + ${confId} + '/stream/' + ${streamId} + '/edit/' + ${simpleTopicDTO.id} + '/save/'}" enctype="multipart/form-data" th:object="${simpleTopicDTO}" method="post" class="needs-validation" novalidate="" >
+            <input id="id" name="topicId" th:field="${simpleTopicDTO.id}" class="form-control" type="hidden"/>
                         <input id="stream_id" name="streamId" th:field="*{stream}" class="form-control" type="hidden"/>
             <div class="col-6" style="padding-top: 25px">
-                <label>Change cover photo</label>
+                <label>Photo</label>
                 <div class="form-row">
-                    <input id="originPhoto" type="text" hidden="hidden" th:value="${topic.coverPhoto}"/>
+                    <input id="originPhoto" type="text" hidden="hidden" th:value="*{coverPhoto}"/>
                     <div class="image-preview" id="imagePreview">
-                        <img src="" th:src="${topic.coverPhoto}" alt="Image Preview"
+                        <img src="" th:src="*{coverPhoto}" alt="Image Preview"
                              class="image-preview__image">
                     </div>
                 </div>
@@ -56,43 +56,30 @@
             </div>
             <div class="mb-3">
                 <label for="name">Name</label>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
                 <input type="text" name="topic"  th:field="*{name}" class="form-control" id="name"/>
             </div>
             <div class="mb-3">
                 <label for="info">Info</label>
-                <textarea class="form-control" id="info" th:field="${topic.info}" name="info" rows="5"></textarea>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('info')}" th:errors="*{info}">Name Error</div>
+                <textarea class="form-control" id="info" th:field="*{info}" name="info" rows="5"></textarea>
             </div>
             <div class="container">
                 <div class="row">
                     <div class="col-sm">
                         <label for="date">Date </label>
-                        <input id="date" name="date" th:value="${topic.date}?${#temporals.format(topic.date, 'dd-MM-yyyy')}:''"  th:field="*{date}" type="text" placeholder="dd-mm-yyyy"/>
+                        <input id="date" name="date" th:value="*{date}?${#temporals.format(simpleTopicDTO.date, 'dd:MM:yyyy')}:''"  th:field="*{date}" type="date"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Date Error</div>
                     </div>
-
                     <div class="col-sm">
-                        <label for="date">Begin Time </label>
-                        <select id="beginHour" name="beginHour">
-                            <option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}" th:text="${i}"
-                                    th:selected="${i==topic.beginTime.hours}"></option>
-                        </select>
-                    <label for="date"> : </label>
-                        <select id="beginMinutes" name="beginMinutes">
-                            <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
-                                    th:selected="${i==topic.beginTime.minutes}"></option>
-                        </select>
+                        <label for="date">Begin time </label>
+                        <input id="beginTime" name="beginTime" th:value="*{beginTime}?${#temporals.format(simpleTopicDTO.beginTime, 'HH:mm:ss')}:''"  th:field="*{beginTime}" type="time"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('beginTime')}" th:errors="*{beginTime}">Begin time Error</div>
                     </div>
-
                     <div class="col-sm">
-                        <label for="date">Finish Time </label>
-                            <select id="finishHour" name="finishHour">
-                                <option th:each="i : ${#numbers.sequence(0, 23)}" th:value="${i}" th:text="${i}"
-                                        th:selected="${i==topic.finishTime.hours}"></option>
-                            </select>
-                        <label for="date"> : </label>
-                            <select id="finishMinutes" name="finishMinutes">
-                                <option th:each="i : ${#numbers.sequence(0, 59)}" th:value="${i}" th:text="${i}"
-                                        th:selected="${i==topic.finishTime.minutes}"></option>
-                            </select>
+                        <label for="date">Finish time </label>
+                        <input id="finishTime" name="finishTime" th:value="*{finishTime}?${#temporals.format(simpleTopicDTO.finishTime, 'HH:mm')}:''"  th:field="*{finishTime}" type="time"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('finishTime')}" th:errors="*{finishTime}">Finish time </div>
                     </div>
                 </div>
                 </div>
@@ -138,67 +125,6 @@
             previewImage.setAttribute("src", originPhoto);
         }
     });
-
-    var years = document.getElementById("year");
-    var months = document.getElementById("months");
-    var days = document.getElementById("days");
-
-    var selectedDay = getSelectedElement(days);
-    var year = getSelectedElement(years);
-    var month = getSelectedElement(months);
-
-    function getSelectedElement(select) {
-        for (var i = 0; i < select.options.length; i++) {
-            if (select.options[i].selected) {
-                return select.options[i].value;
-            }
-        }
-    }
-
-    years.addEventListener("change", function () {
-        year = getSelectedElement(years);
-        getDays();
-    });
-
-    months.addEventListener("change", function () {
-        month = getSelectedElement(months);
-        getDays()
-    });
-
-    days.addEventListener("change", function () {
-        console.log(selectedDay);
-        selectedDay = getSelectedElement(days);
-        console.log(selectedDay);
-    });
-
-    function getDays(i, question) {
-        var formData = {
-            year: year,
-            month: month
-        };
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "http://localhost:8080/getDays",
-            data: JSON.stringify(formData),
-            dataType: 'json',
-            success: function (data) {
-                $('#days').empty();
-                $.each(data, function (i, day) {
-                    var variable =
-                        "<option value=" + day + ">" + day + "</option>";
-                    if (day == selectedDay) {
-                        variable =
-                            "<option value=" + day + " selected='selected'>" + day + "</option>";
-                    }
-                    $('#days').append(variable);
-                });
-                console.log(days);
-            }
-        });
-    }
-
 </script>
 </body>
 </html>

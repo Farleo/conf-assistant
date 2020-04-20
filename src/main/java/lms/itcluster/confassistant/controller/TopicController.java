@@ -7,13 +7,16 @@ import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.SecurityService;
 import lms.itcluster.confassistant.service.StreamService;
 import lms.itcluster.confassistant.service.TopicService;
+import lms.itcluster.confassistant.validator.TopicValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 
@@ -31,6 +34,9 @@ public class TopicController {
 	
 	@Autowired
 	private StreamService streamService;
+	
+	@Autowired
+	private TopicValidator topicValidator;
 
 	@RequestMapping(value = "dashboard/conferences/{confId}/stream/{streamId}/topics")
 	public String getTopicList (@AuthenticationPrincipal CurrentUser currentUser,
@@ -61,8 +67,7 @@ public class TopicController {
 	                          @PathVariable Long topicId,
 	                          Model model) throws TopicNotFoundException {
 		if(securityService.canManageConference(currentUser,confId)){
-			SimpleTopicDTO simpleTopicDTO = topicService.getSimpleTopicDTOById(topicId);
-			model.addAttribute("topic", simpleTopicDTO);
+			model.addAttribute("simpleTopicDTO", topicService.getSimpleTopicDTOById(topicId));
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
 			model.addAttribute("currentUser", currentUser.getId());
 			return "topic/topic-edit";
@@ -71,13 +76,20 @@ public class TopicController {
 	}
 	
 	@PostMapping(value = "dashboard/conferences/{confId}/stream/{streamId}/edit/{topicId}/save")
-	public String editTopicSave(@AuthenticationPrincipal CurrentUser currentUser,
+	public String editTopicSave(@ModelAttribute @Valid SimpleTopicDTO simpleTopicDTO,
+	                            BindingResult bindingResult,
 	                            @PathVariable Long confId,
 	                            @PathVariable Long streamId,
 	                            @PathVariable Long topicId,
+	                            @AuthenticationPrincipal CurrentUser currentUser,
 	                            @RequestParam("inpFile") MultipartFile photo,
-	                            @ModelAttribute SimpleTopicDTO simpleTopicDTO,
 	                            Model model) throws TopicNotFoundException, IOException {
+		model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
+		model.addAttribute("currentUser", currentUser.getId());
+		topicValidator.validate(simpleTopicDTO,bindingResult);
+		if(bindingResult.hasErrors()){
+			return "topic/topic-edit";
+		}
 		topicService.updateTopic(simpleTopicDTO,photo);
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}
@@ -95,11 +107,20 @@ public class TopicController {
 	}
 	
 	@PostMapping(value = "/dashboard/conferences/{confId}/stream/{streamId}/topics/newTopic/save")
-	public String createTopicSave (@AuthenticationPrincipal CurrentUser currentUser,
+	public String createTopicSave (@ModelAttribute SimpleTopicDTO simpleTopicDTO,
+	                               BindingResult bindingResult,
+	                               Model model,
                                    @PathVariable Long confId,
                                    @PathVariable Long streamId,
                                    @RequestParam("inpFile") MultipartFile photo,
-                                   @ModelAttribute SimpleTopicDTO simpleTopicDTO) throws IOException, TopicNotFoundException {
+                                   @AuthenticationPrincipal CurrentUser currentUser) throws IOException, TopicNotFoundException {
+		topicValidator.validate(simpleTopicDTO,bindingResult);
+		if(bindingResult.hasErrors()){
+			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
+			model.addAttribute("currentUser", currentUser.getId());
+			model.addAttribute("stream", streamService.getStreamDTOById(streamId).getName());
+			return "topic/topic-add";
+		}
 		topicService.createTopic(simpleTopicDTO,photo);
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}

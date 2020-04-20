@@ -2,21 +2,25 @@ package lms.itcluster.confassistant.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class SimpleTopicDTO extends AbstractDTO {
 
 	private Long topicId;
+	@Size(min=1)
 	private String name;
-	@DateTimeFormat (pattern="dd-MM-yyyy")
+	@DateTimeFormat (pattern="yyyy-MM-dd")
 	private LocalDate date;
-	private Time beginTime;
-	private Time finishTime;
-	private int beginHour;
-	private int beginMinutes;
-	private int finishHour;
-	private int finishMinutes;
+	@DateTimeFormat (pattern="HH:mm")
+	private LocalTime beginTime;
+	@DateTimeFormat (pattern="HH:mm")
+	private LocalTime finishTime;
+	@Size(max = 2000, message = "The value must be between 0 and 2000")
 	private String info;
 	private String coverPhoto;
 	private String stream;
@@ -47,38 +51,6 @@ public class SimpleTopicDTO extends AbstractDTO {
 	
 	public void setDate(LocalDate date) {
 		this.date = date;
-	}
-	
-	public int getBeginHour() {
-		return beginHour;
-	}
-	
-	public void setBeginHour(int beginHour) {
-		this.beginHour = beginHour;
-	}
-	
-	public int getBeginMinutes() {
-		return beginMinutes;
-	}
-	
-	public void setBeginMinutes (int beginMinutes) {
-		this.beginMinutes = beginMinutes;
-	}
-	
-	public int getFinishHour() {
-		return finishHour;
-	}
-	
-	public void setFinishHour(int finishHour) {
-		this.finishHour = finishHour;
-	}
-	
-	public int getFinishMinutes() {
-		return finishMinutes;
-	}
-	
-	public void setFinishMinutes(int finishMinutes) {
-		this.finishMinutes = finishMinutes;
 	}
 	
 	public String getInfo() {
@@ -113,19 +85,19 @@ public class SimpleTopicDTO extends AbstractDTO {
 		this.speakerId = speakerId;
 	}
 	
-	public Time getBeginTime() {
+	public LocalTime getBeginTime() {
 		return beginTime;
 	}
 	
-	public void setBeginTime(Time beginTime) {
+	public void setBeginTime(LocalTime beginTime) {
 		this.beginTime = beginTime;
 	}
 	
-	public Time getFinishTime() {
+	public LocalTime getFinishTime() {
 		return finishTime;
 	}
 	
-	public void setFinishTime(Time finishTime) {
+	public void setFinishTime(LocalTime finishTime) {
 		this.finishTime = finishTime;
 	}
 

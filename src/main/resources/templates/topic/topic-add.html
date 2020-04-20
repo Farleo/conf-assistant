@@ -56,39 +56,31 @@
             </div>
             <div class="mb-3">
                 <label for="name">Name</label>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
                 <input type="text" name="topic"  th:field="*{name}" class="form-control" id="name"/>
             </div>
             <div class="mb-3">
                 <label for="info">Info</label>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('info')}" th:errors="*{info}">Name Error</div>
                 <textarea class="form-control" id="info" th:field="${simpleTopicDTO.info}" name="info" rows="5"></textarea>
             </div>
+
             <div class="container">
                 <div class="row">
                     <div class="col-sm">
                         <label for="date">Date </label>
-                        <input id="date" name="date" th:value="${simpleTopicDTO.date}?${#temporals.format(simpleTopicDTO.date, 'dd-MM-yyyy')}:''" type="text" placeholder="dd-mm-yyyy"/>
+                        <input id="date" name="date" th:value="*{date}?${#temporals.format(simpleTopicDTO.date, 'dd:MM:yyyy')}:''"  type="date"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Date Error</div>
                     </div>
-
                     <div class="col-sm">
-                        <label for="date">Begin Time </label>
-                        <select id="beginHour" name="beginHour">
-                            <option th:each="i : ${#numbers.sequence(0, 23)}" name="i==topic.beginTime.minutes" th:text="${i}"></option>
-                        </select>
-                        <label for="date"> : </label>
-                        <select id="beginMinutes" name="beginMinutes">
-                            <option th:each="i : ${#numbers.sequence(0, 59)}" name="i" th:text="${i}"></option>
-                        </select>
+                        <label for="date">Begin time </label>
+                        <input id="beginTime" name="beginTime" th:value="*{beginTime}?${#temporals.format(simpleTopicDTO.beginTime, 'HH:mm:ss')}:''"  type="time"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('beginTime')}" th:errors="*{beginTime}">Begin time Error</div>
                     </div>
-
                     <div class="col-sm">
-                        <label for="date">Finish Time </label>
-                        <select id="finishHour" name="finishHour">
-                            <option th:each="i : ${#numbers.sequence(0, 23)}" name="i" th:text="${i}"></option>
-                        </select>
-                        <label for="date"> : </label>
-                        <select id="finishMinutes" name="finishMinutes">
-                            <option th:each="i : ${#numbers.sequence(0, 59)}" name="i" th:text="${i}"></option>
-                        </select>
+                        <label for="date">Finish time </label>
+                        <input id="finishTime" name="finishTime" th:value="*{finishTime}?${#temporals.format(simpleTopicDTO.finishTime, 'HH:mm')}:''"  type="time"/>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('finishTime')}" th:errors="*{finishTime}">Finish time </div>
                     </div>
                 </div>
             </div>
@@ -134,66 +126,6 @@
             previewImage.setAttribute("src", originPhoto);
         }
     });
-
-    var years = document.getElementById("year");
-    var months = document.getElementById("months");
-    var days = document.getElementById("days");
-
-    var selectedDay = getSelectedElement(days);
-    var year = getSelectedElement(years);
-    var month = getSelectedElement(months);
-
-    function getSelectedElement(select) {
-        for (var i = 0; i < select.options.length; i++) {
-            if (select.options[i].selected) {
-                return select.options[i].value;
-            }
-        }
-    }
-
-    years.addEventListener("change", function () {
-        year = getSelectedElement(years);
-        getDays();
-    });
-
-    months.addEventListener("change", function () {
-        month = getSelectedElement(months);
-        getDays()
-    });
-
-    days.addEventListener("change", function () {
-        console.log(selectedDay);
-        selectedDay = getSelectedElement(days);
-        console.log(selectedDay);
-    });
-
-    function getDays(i, question) {
-        var formData = {
-            year: year,
-            month: month
-        };
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "http://localhost:8080/getDays",
-            data: JSON.stringify(formData),
-            dataType: 'json',
-            success: function (data) {
-                $('#days').empty();
-                $.each(data, function (i, day) {
-                    var variable =
-                        "<option value=" + day + ">" + day + "</option>";
-                    if (day == selectedDay) {
-                        variable =
-                            "<option value=" + day + " selected='selected'>" + day + "</option>";
-                    }
-                    $('#days').append(variable);
-                });
-                console.log(days);
-            }
-        });
-    }
 
 </script>
 </body>
