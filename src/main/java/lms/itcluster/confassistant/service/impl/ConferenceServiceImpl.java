@@ -196,13 +196,7 @@ public class ConferenceServiceImpl implements ConferenceService {
                         List<StreamDTO> streamDTOS = schedule.get(topic.getDate());
                         for (StreamDTO streamDTO : streamDTOS) {
                             if (streamDTO.getStreamId().equals(topic.getStream().getStreamId())) {
-                                TopicDTO topicDTO = new TopicDTO();
-                                topicDTO.setDate(topic.getDate());
-                                topicDTO.setActive(topic.isActive());
-                                topicDTO.setTopicId(topic.getTopicId());
-                                topicDTO.setName(topic.getName());
-                                topicDTO.setBeginTime(topic.getBeginTime());
-                                topicDTO.setFinishTime(topic.getFinishTime());
+                                TopicDTO topicDTO = topicMapper.toDto(topic);
                                 streamDTO.getTopicList().add(topicDTO);
                             }
                         }
@@ -216,13 +210,7 @@ public class ConferenceServiceImpl implements ConferenceService {
                             streamDTO.setStreamId(dto.getStreamId());
                             streamDTO.setTopicList(new ArrayList<>());
                             if (dto.getStreamId().equals(topic.getStream().getStreamId())) {
-                                TopicDTO topicDTO = new TopicDTO();
-                                topicDTO.setDate(topic.getDate());
-                                topicDTO.setActive(topic.isActive());
-                                topicDTO.setTopicId(topic.getTopicId());
-                                topicDTO.setName(topic.getName());
-                                topicDTO.setBeginTime(topic.getBeginTime());
-                                topicDTO.setFinishTime(topic.getFinishTime());
+                                TopicDTO topicDTO = topicMapper.toDto(topic);
                                 streamDTO.getTopicList().add(topicDTO);
                             }
                             dtoList.add(streamDTO);
@@ -274,7 +262,7 @@ public class ConferenceServiceImpl implements ConferenceService {
                         double finish;
                         begin = (MINUTES.between(startTime, beginTime)) / 5.0 * 0.5;
                         finish = (MINUTES.between(beginTime, finishTime)) / 5.0 * 0.5;
-                        topicDTO.setBackdown(begin);
+                        topicDTO.setBackDown(begin);
                         topicDTO.setBodySize(finish);
                         startTime = finishTime;
                     }

@@ -8,54 +8,37 @@ import java.util.List;
 
 public class TopicDTO extends AbstractDTO {
 
-    private long topicId;
+    private Long topicId;
     private String name;
     private LocalDate date;
     private LocalTime beginTime;
     private LocalTime finishTime;
     private String info;
-    private boolean isActive;
+    private Boolean isAllowedQuestion;
     private String coverPhoto;
     private String stream;
     private SpeakerDTO speakerDTO;
     private List<QuestionDTO> questionListDTO;
-    private Double backdown;
+    private Double backDown;
     private Double bodySize;
-    private Boolean finished;
+    private Boolean isBegin;
+    private Boolean isActive;
 
-    public Boolean getFinished() {
-        finished = LocalTime.now().isAfter(finishTime);
-        return finished;
+
+
+    public Boolean isAllowedQuestion() {
+        return isAllowedQuestion;
     }
 
-    public void setFinished(Boolean finished) {
-        this.finished = finished;
+    public void setAllowedQuestion(Boolean allowedQuestion) {
+        isAllowedQuestion = allowedQuestion;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public boolean isActiveTopic() {
-        return LocalTime.now().isBefore(finishTime) && LocalTime.now().isAfter(beginTime);
-    }
-
-    public TopicDTO() {
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public long getTopicId() {
+    public Long getTopicId() {
         return topicId;
     }
 
-    public void setTopicId(long topicId) {
+    public void setTopicId(Long topicId) {
         this.topicId = topicId;
     }
 
@@ -65,6 +48,14 @@ public class TopicDTO extends AbstractDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public LocalTime getBeginTime() {
@@ -91,7 +82,11 @@ public class TopicDTO extends AbstractDTO {
         this.info = info;
     }
 
-    public void setActive(boolean active) {
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
         isActive = active;
     }
 
@@ -127,12 +122,12 @@ public class TopicDTO extends AbstractDTO {
         this.questionListDTO = questionListDTO;
     }
 
-    public Double getBackdown() {
-        return backdown;
+    public Double getBackDown() {
+        return backDown;
     }
 
-    public void setBackdown(Double backdown) {
-        this.backdown = backdown;
+    public void setBackDown(Double backDown) {
+        this.backDown = backDown;
     }
 
     public Double getBodySize() {
@@ -141,6 +136,14 @@ public class TopicDTO extends AbstractDTO {
 
     public void setBodySize(Double bodySize) {
         this.bodySize = bodySize;
+    }
+
+    public Boolean getBegin() {
+        return isBegin;
+    }
+
+    public void setBegin(Boolean begin) {
+        isBegin = begin;
     }
 
     @Override

@@ -23,4 +23,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Transactional
     @Query("select t from Topic t where t.stream.streamId=:streamId")
     List<Topic> findAllByStreamId(@Param("streamId")Long streamId);
+
+    List<Topic> findAllByIsAllowedQuestion(boolean allowedQuestion);
 }

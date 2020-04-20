@@ -35,7 +35,7 @@ VALUES ('Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111y
         'Moreover, this solution has an additional feature we didn''t mention yet. The simple many-to-many solution creates a relationship between two entities. Therefore, we cannot expand the relationship to more entities. However, in this solution we don''t have this limit: we can model relationships between any number of entity types.',
         '/picture/img/user/3.jpg', 'hovard@gmail.com', 1, 0);
 
-insert into topic(name, date, begin_time, finish_time, info, is_active, stream_id, speaker_id, cover_photo)
+insert into topic(name, date, begin_time, finish_time, info, is_allowed_question, stream_id, speaker_id, cover_photo)
 VALUES ('New in Spring', '2020-02-09', '17:00:00', '19:00:00', 'Why were we able to do this? If we inspect the tables closely in the previous case, we can see, that it contained two many-to-one relationships. In other words, there isn''t any many-to-many relationship in an RDBMS. We call the structures we create with join tables many-to-many relationships because that''s what we model.
 Besides, it''s more clear if we talk about many-to-many relationships, because that''s our intention. Meanwhile, a join table is just an implementation detail; we don''t really care about it.',
         1, 2, 4, '/picture/img/topic/2.jpg'),

@@ -63,7 +63,7 @@
             <i class="fa fa-chevron-left  text-secondary"></i>
             <span style="margin-left: 5px">Go back</span>
         </a>
-        <th:block th:each="conference, index : ${page.content}">
+        <th:block th:each="conference, index : ${page.toList()}">
             <div class="row justify-content-center ">
                 <div class="card col-7 border-0">
                     <div class="d-flex justify-content-between" style="margin-top: 20px">
@@ -152,11 +152,11 @@
                                     <div class="col border " th:each="stream, index : ${entry.value}">
                                         <th:block th:each="topic, index : ${stream.topicList}">
                                             <div style=""
-                                                 th:styleappend="${'height: ' + topic.backdown + '%'}"></div>
+                                                 th:styleappend="${'height: ' + topic.backDown + '%'}"></div>
                                             <a th:href="${'/topic/' + topic.topicId}"
                                                class="btn d-inline-block text-muted"
                                                style=" width: 100%; background-color: rgba(0,01,255,0.1); border-color: #a8a8a8"
-                                               th:if="${topic.isActiveTopic()}"
+                                               th:if="${topic.getActive()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
                                                 <div class="d-flex justify-content-between">
                                                 <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
@@ -164,11 +164,11 @@
                                                     <i class="fa fa-hourglass-half text-warning" aria-hidden="true"></i>
                                                 </div>
                                             </a>
-                                            <th:block th:unless="${topic.isActiveTopic()}">
+                                            <th:block th:unless="${topic.getActive()}">
                                             <a th:href="${'/topic/' + topic.topicId}"
                                                class="btn d-inline-block text-muted"
                                                style=" width: 100%;  border-color: #a8a8a8"
-                                               th:if="${topic.finished}"
+                                               th:if="${!topic.getBegin()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
                                                 <div class="d-flex justify-content-between">
                                                 <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
@@ -180,7 +180,7 @@
                                             <a th:href="${'/topic/' + topic.topicId}"
                                                class="btn d-inline-block text-muted"
                                                style=" width: 100%;  border-color: #a8a8a8"
-                                               th:if="${!topic.finished}"
+                                               th:if="${topic.getBegin()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
                                                 <div class="d-flex justify-content-between">
                                                 <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">

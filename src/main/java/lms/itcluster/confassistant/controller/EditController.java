@@ -154,24 +154,4 @@ public class EditController {
         return "redirect:/topic/" + topicId;
     }
 
-    @GetMapping("/edit/topic/info/{topicId}")
-    public String getInfo (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
-        TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
-        Stream stream = streamRepository.findByName(topicDTO.getStream());
-        if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
-            model.addAttribute("message", "You can't edit this topic!");
-            return "message";
-        }
-        model.addAttribute("topic", topicDTO);
-        return "edit/topic/info";
-    }
-
-    @PostMapping("/edit/topic/info")
-    public String saveInfo (TopicDTO topicDTO) throws TopicNotFoundException {
-        topicService.updateTopicInfo(topicDTO);
-        return "redirect:/topic/" + topicDTO.getTopicId();
-    }
-
-
-
 }

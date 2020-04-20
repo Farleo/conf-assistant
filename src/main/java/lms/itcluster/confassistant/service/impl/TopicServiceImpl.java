@@ -13,6 +13,7 @@ import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -20,8 +21,10 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -133,11 +136,11 @@ public class TopicServiceImpl implements TopicService {
     public boolean enableOrDisableQuestion(Long topicID) {
         Topic topic = topicRepository.findById(topicID).get();
         boolean result;
-        if (topic.isActive()) {
-            topic.setActive(false);
+        if (topic.isAllowedQuestion()) {
+            topic.setAllowedQuestion(false);
             result = false;
         } else {
-            topic.setActive(true);
+            topic.setAllowedQuestion(true);
             result = true;
         }
         topicRepository.save(topic);
@@ -187,5 +190,15 @@ public class TopicServiceImpl implements TopicService {
         }
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
+    }
+
+    @Scheduled(cron = "0 01 00 * * *")
+    @Transactional
+    public void removeDisableAllowedQuestion() {
+       List<Topic> topics = topicRepository.findAllByIsAllowedQuestion(true);
+        for (Topic topic : topics) {
+            topic.setAllowedQuestion(false);
+        }
+        topicRepository.saveAll(topics);
     }
 }
