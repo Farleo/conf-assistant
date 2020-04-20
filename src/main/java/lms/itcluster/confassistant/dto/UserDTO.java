@@ -17,6 +17,7 @@ public class UserDTO extends AbstractDTO {
     private String info;
     @NotEmpty(message = "Must be not empty")
     private Set<String> roles = new HashSet<>();
+    private String photo;
 
     public UserDTO() {
     }
@@ -77,7 +78,17 @@ public class UserDTO extends AbstractDTO {
         this.roles = roles;
     }
 
-    @Override
+
+    public String getPhoto() {
+        return photo;
+    }
+    
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+
+@Override
     public Long getId() {
         return userId;
     }

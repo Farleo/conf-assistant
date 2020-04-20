@@ -55,8 +55,8 @@ public class SimpleTopicMapper extends AbstractMapper<Topic, SimpleTopicDTO> {
 	
 	@Override
 	protected void mapSpecificFieldsInEntity(Topic source, SimpleTopicDTO destination) {
-		destination.setBeginTime(source.getBeginTime());
-		destination.setFinishTime(source.getFinishTime());
+		destination.setBeginTime(Time.valueOf(source.getBeginTime()));
+		destination.setFinishTime(Time.valueOf(source.getFinishTime()));
 		destination.setSpeakerId(source.getSpeaker().getUserId());
 		destination.setStream(source.getStream().getName());
 	}
