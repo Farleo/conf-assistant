@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class SimpleTopicDTO extends AbstractDTO {
 
@@ -12,8 +13,8 @@ public class SimpleTopicDTO extends AbstractDTO {
 	private String name;
 	@DateTimeFormat (pattern="dd-MM-yyyy")
 	private LocalDate date;
-	private Time beginTime;
-	private Time finishTime;
+	private LocalTime beginTime;
+	private LocalTime finishTime;
 	private int beginHour;
 	private int beginMinutes;
 	private int finishHour;
@@ -113,20 +114,20 @@ public class SimpleTopicDTO extends AbstractDTO {
 	public void setSpeakerId(Long speakerId) {
 		this.speakerId = speakerId;
 	}
-	
-	public Time getBeginTime() {
+
+	public LocalTime getBeginTime() {
 		return beginTime;
 	}
-	
-	public void setBeginTime(Time beginTime) {
+
+	public void setBeginTime(LocalTime beginTime) {
 		this.beginTime = beginTime;
 	}
-	
-	public Time getFinishTime() {
+
+	public LocalTime getFinishTime() {
 		return finishTime;
 	}
-	
-	public void setFinishTime(Time finishTime) {
+
+	public void setFinishTime(LocalTime finishTime) {
 		this.finishTime = finishTime;
 	}
 

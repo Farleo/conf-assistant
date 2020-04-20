@@ -29,3 +29,20 @@
     outline: 0;
     opacity: .9
 }
+
+.image-preview {
+    width: 550px;
+    min-height: 300px;
+    border: 2px solid #dddddd;
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #cccccc;
+}
+
+.image-preview__image {
+    width: 100%;
+}

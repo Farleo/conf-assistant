@@ -39,7 +39,7 @@ public interface ConferenceService {
 
     Long getConfIdByTopicId(Long topicId);
 
-    boolean isCurrentUserPresentAtTopicConference(Long userId, Long topicId);
+    boolean isCurrentUserPresentAtConference(Long userId, Long confId);
 
     boolean registerCurrentUserForConference(Long confId, Long userId);
 }

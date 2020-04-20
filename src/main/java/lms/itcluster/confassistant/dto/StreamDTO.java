@@ -1,7 +1,10 @@
 package lms.itcluster.confassistant.dto;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class StreamDTO extends AbstractDTO {
 
@@ -10,10 +13,18 @@ public class StreamDTO extends AbstractDTO {
     private Long conference;
     private List<TopicDTO> topicList = new ArrayList<>();
     private Long moderator;
+    private String random = RandomStringUtils.randomAlphabetic(10);
 
     public StreamDTO() {
     }
-    
+
+    public String getRandom() {
+        return random;
+    }
+
+    public void setRandom(String random) {
+        this.random = random;
+    }
 
     public Long getStreamId() {
         return streamId;

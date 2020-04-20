@@ -57,6 +57,7 @@ public class PageController {
         ConferenceDTO conferenceDTO = conferenceService.getConferenceDTOById(id);
         model.addAttribute("conference", conferenceDTO);
         if (currentUser != null) {
+            model.addAttribute("isRegisteredOnConf", conferenceService.isCurrentUserPresentAtConference(currentUser.getId(), id));
             model.addAttribute("canEdit", SecurityUtil.canEditConference(currentUser, conferenceDTO));
         }
         return "conference";
@@ -69,7 +70,7 @@ public class PageController {
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         model.addAttribute("confId", conferenceService.getConfIdByTopicId(topicDTO.getTopicId()));
         model.addAttribute("user", currentUser);
-        if (currentUser == null || !currentUser.isEnabled() || !conferenceService.isCurrentUserPresentAtTopicConference(currentUser.getId(), topicDTO.getTopicId())) {
+        if (currentUser == null || !currentUser.isEnabled() || !conferenceService.isCurrentUserPresentAtConference(currentUser.getId(), conferenceService.getConfIdByTopicId(topicDTO.getTopicId()))) {
             model.addAttribute("isRegisteredOnConf", false);
             return "topic";
         }

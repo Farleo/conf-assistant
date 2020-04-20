@@ -22,7 +22,7 @@ VALUES ('Conference Hall №1', 1, 38),
        ('Conference Hall №2', 2, 37),
        ('Conference Hall №3', 3, 39),
        ('Conference Hall №4', 3, 39),
-       ('Conference Hall №5', 3, 39);
+       ('Conference Hall №5', 2, 37);
 
 insert into user(first_name, last_name, password, info, photo, email, is_active, is_deleted)
 VALUES ('Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111ykpI1O1T.',

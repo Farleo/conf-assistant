@@ -284,9 +284,8 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
-    public boolean isCurrentUserPresentAtTopicConference(Long userId, Long topicId) {
-        Topic topic = topicRepository.findById(topicId).get();
-        Conference conference = topic.getStream().getConference();
+    public boolean isCurrentUserPresentAtConference(Long userId, Long confId) {
+        Conference conference = conferenceRepository.findById(confId).get();
         for (Participants participants : conference.getParticipants()) {
             if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
                 return true;

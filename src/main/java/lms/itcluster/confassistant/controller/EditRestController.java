@@ -77,11 +77,6 @@ public class EditRestController {
         return questionService.selectNextQuestion(topicDTO.getQuestionListDTO(), questionId);
     }
 
-    @PostMapping(value = "/getDays")
-    public List<Integer> getDays(@RequestBody DateDTO dateDTO) {
-        return staticDataService.getDays(dateDTO.getYear(), dateDTO.getMonth());
-    }
-
     @PostMapping("/edit/speaker/valid/contacts")
     public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
         userService.updateUserEmail(contactsDTO);

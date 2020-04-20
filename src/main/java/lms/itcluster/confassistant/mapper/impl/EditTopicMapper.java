@@ -13,6 +13,7 @@ import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
+import lms.itcluster.confassistant.service.StreamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,7 +22,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
     private TopicRepository topicRepository;
 
     @Autowired
+    private StreamRepository streamRepository;
+
+    @Autowired
     public EditTopicMapper(ModelMapper modelMapper, TopicRepository topicRepository) {
         super(EditTopicDTO.class, Topic.class, topicRepository);
         this.modelMapper = modelMapper;
@@ -41,7 +47,9 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
 
     @PostConstruct
     public void setupMapper() {
-        modelMapper.createTypeMap(Topic.class, EditTopicDTO.class);
+        modelMapper.createTypeMap(Topic.class, EditTopicDTO.class)
+                .addMappings(mapping -> mapping.skip(EditTopicDTO::setBeginDateTime))
+                .setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(EditTopicDTO.class, Topic.class)
                 .addMappings(mapping -> mapping.skip(Topic::setDate))
                 .addMappings(mapping -> mapping.skip(Topic::setBeginTime))
@@ -51,13 +59,15 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
 
     @Override
     protected void mapSpecificFieldsInEntity(Topic source, EditTopicDTO destination) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        destination.setBeginDateTime(LocalDateTime.of(source.getDate(), source.getBeginTime()).format(dateTimeFormatter));
     }
 
     @Override
     protected void mapSpecificFieldsInDto(EditTopicDTO source, Topic destination) {
-        destination.setDate(LocalDate.of(source.getYear(), source.getMonth(), source.getDay()));
-        destination.setBeginTime(LocalTime.of(source.getBeginHour(), source.getBeginMinuets(), 0));
-        destination.setFinishTime(LocalTime.of(source.getFinishHour(), source.getFinishHour(), 0));
+        destination.setDate(LocalDateTime.parse(source.getBeginDateTime()).toLocalDate());
+        destination.setBeginTime(LocalDateTime.parse(source.getBeginDateTime()).toLocalTime());
+        destination.setFinishTime(LocalTime.parse(source.getFinishTime()));
     }
 
 }

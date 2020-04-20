@@ -65,6 +65,11 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public EditTopicDTO getEditTopicDTOById(Long id) throws TopicNotFoundException {
+        return editTopicMapper.toDto(findTopicById(id));
+    }
+
+    @Override
     public SimpleTopicDTO getSimpleTopicDTOById(Long id) throws TopicNotFoundException {
         return simpleTopicMapper.toDto(findTopicById(id));
     }

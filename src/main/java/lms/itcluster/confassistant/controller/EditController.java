@@ -116,23 +116,23 @@ public class EditController {
 
     @GetMapping("/edit/topic/main/{topicId}")
     public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
-        TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
-        Stream stream = streamRepository.findByName(topicDTO.getStream());
+        EditTopicDTO topic = topicService.getEditTopicDTOById(topicId);
+/*        Stream stream = streamRepository.findById(topicDTO.getStreamId()).get();
         if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
             model.addAttribute("message", "You can't edit this topic!");
             return "message";
-        }
-        model.addAttribute("topic", topicDTO);
-        model.addAttribute("month", staticDataService.getMonthMap());
-        model.addAttribute("years", staticDataService.getYears());
-        model.addAttribute("days", staticDataService.getDays(topicDTO.getDate().getYear(), topicDTO.getDate().getMonthValue()));
+        }*/
+        model.addAttribute("topic", topic);
         return "edit/topic/main";
     }
 
     @PostMapping("/edit/topic/main")
-    public String saveMain (EditTopicDTO editTopicDTO, @RequestParam("inpFile") MultipartFile photo) throws IOException, TopicNotFoundException {
-        topicService.updateMainTopicData(editTopicDTO, photo);
-        return "redirect:/topic/" + editTopicDTO.getTopicId();
+    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException, TopicNotFoundException {
+        if (bindingResult.hasErrors()) {
+            return "edit/topic/main";
+        }
+        topicService.updateMainTopicData(topic, photo);
+        return "redirect:/topic/" + topic.getTopicId();
     }
 
     @GetMapping("/edit/topic/speaker/{topicId}")

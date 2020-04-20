@@ -17,6 +17,8 @@ public interface TopicService {
     Topic findById (Long id) throws TopicNotFoundException;
 
     TopicDTO getTopicDTOById(Long id) throws TopicNotFoundException;
+
+    EditTopicDTO getEditTopicDTOById(Long id) throws TopicNotFoundException;
     
     SimpleTopicDTO getSimpleTopicDTOById(Long id) throws TopicNotFoundException;
 
