@@ -8,10 +8,12 @@ import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.ParticipantTypeService;
 import lms.itcluster.confassistant.service.SecurityService;
+import lms.itcluster.confassistant.validator.ConferenceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +37,9 @@ public class ConferenceAdminController {
 	
 	@Autowired
 	private SecurityService securityService;
+	
+	@Autowired
+	private ConferenceValidator conferenceValidator;
 
 	@RequestMapping(value = "conf/owner/{confId}")
 	public String confOwnerManageUser (@AuthenticationPrincipal CurrentUser currentUser,
@@ -99,27 +104,40 @@ public class ConferenceAdminController {
 	}
 
 	@PostMapping(value = "/conf/owner/newConf")
-	private String confOwnerCreateNewConfSave (@AuthenticationPrincipal CurrentUser currentUser,
-	                                           @RequestParam("inpFile") MultipartFile photo,
-	                                           @ModelAttribute @Valid ConferenceDTO conferenceDTO) throws IOException {
+	private String confOwnerCreateNewConfSave (@ModelAttribute @Valid ConferenceDTO conferenceDTO,
+	                                           BindingResult bindingResult,
+	                                           @AuthenticationPrincipal CurrentUser currentUser,
+	                                           @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException {
+		model.addAttribute("conferenceDTO", conferenceDTO);
 		conferenceDTO.setOwner(currentUser.getId());
+		conferenceValidator.validate(conferenceDTO,bindingResult);
+		if(bindingResult.hasErrors()){
+			return "conferenceAdmin/add-conf";
+		}
 		conferenceService.addNewConference(conferenceDTO, photo);
 		return "redirect:/dashboard/conferences";
 	}
 
 	@GetMapping(value = "/conf/owner/edit/{id}")
-	public String editConferenceGet (@AuthenticationPrincipal CurrentUser currentUser,
-	                                 @PathVariable Long id,
+	public String editConferenceGet (@PathVariable("id") Long id,
+	                                 @AuthenticationPrincipal CurrentUser currentUser,
+	                                 ConferenceDTO conferenceDTO,
 	                                 Model model) {
-		model.addAttribute("confDTO", conferenceService.getConferenceDTOById(id));
+		model.addAttribute("conferenceDTO", conferenceService.getConferenceDTOById(id));
 		return "conferenceAdmin/edit-conf";
 	}
 
 	@PostMapping(value = "/conf/owner/edit/{id}")
-	public String editConferenceSave (@AuthenticationPrincipal CurrentUser currentUser,
-	                                  @PathVariable Long id,
-	                                  @RequestParam("inpFile") MultipartFile photo,
-	                                  @ModelAttribute @Valid ConferenceDTO conferenceDTO) throws IOException  {
+	public String editConferenceSave (@PathVariable("id") Long id,
+	                                  @ModelAttribute @Valid ConferenceDTO conferenceDTO,
+	                                  BindingResult bindingResult,
+	                                  @AuthenticationPrincipal CurrentUser currentUser,
+	                                  @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException  {
+		model.addAttribute("conferenceDTO", conferenceDTO);
+		conferenceValidator.validate(conferenceDTO,bindingResult);
+		if(bindingResult.hasErrors()){
+			return "conferenceAdmin/edit-conf";
+		}
 		conferenceService.updateConference(conferenceDTO, photo);
 		return "redirect:/dashboard/conferences";
 	}

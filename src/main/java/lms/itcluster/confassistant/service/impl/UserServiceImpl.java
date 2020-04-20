@@ -131,20 +131,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         List<UserDTO> userDTOS = modelMapper.map(users, listType);
         return userDTOS;
     }
+    
 
     @Override
     @Transactional
     public void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException {
-        Optional<User> optionalUser = Optional.of(userRepository.findById(userDTO.getUserId()).get());
+        Optional<User> optionalUser = Optional.of(userRepository.findByEmail(userDTO.getEmail()));
         if (optionalUser.isPresent()) {
             User dbUser = optionalUser.get();
             if(dbUser.getPassword()!=userDTO.getPassword()){
                 userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
-            User realUser = mapper.toEntity(userDTO);
-            if (dbUser != null && userDTO.getUserId() != dbUser.getUserId()) {
-                throw new UserAlreadyExistException("User with this email is already exist: " + realUser.getEmail());
+            if ((dbUser != null) && (userDTO.getUserId() != dbUser.getUserId())) {
+                throw new UserAlreadyExistException("User with this email is already exist: ");
             }
+            User realUser = mapper.toEntity(userDTO);
+
             String oldCoverPhotoPath = null;
             if (!photo.isEmpty()) {
                 String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);

@@ -47,12 +47,18 @@ public class AdminController {
 	private String addNewUserByAdminPost (@ModelAttribute @Valid UserDTO userDTO,
 	                                      BindingResult bindingResult,
 	                                      @RequestParam("inpFile") MultipartFile photo,
-	                                      Model model) throws IOException {
+	                                      Model model) {
 		if(bindingResult.hasErrors()){
 			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
 			return "admin/add-user";
 		}
-		userService.addNewUserByAdmin(userDTO, photo);
+		try {
+			userService.addNewUserByAdmin(userDTO, photo);
+		} catch (UserAlreadyExistException | IOException e) {
+			model.addAttribute("isExistEmail", true);
+			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toSet()));
+			return "admin/add-user";
+		}
 		return "redirect:/admin/users";
 	}
 
@@ -75,15 +81,23 @@ public class AdminController {
 	                       @ModelAttribute @Valid UserDTO userDTO,
 	                       BindingResult bindingResult,
 	                       @RequestParam("inpFile") MultipartFile photo,
-	                       Model model) throws IOException {
+	                       Model model) {
+		model.addAttribute("userDTO", userDTO);
 		if(bindingResult.hasErrors()){
 			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toList()));
 			return "admin/edit-user";
 		}
-		model.addAttribute("userDTO", userDTO);
-		userService.updateUser(userDTO, photo);
+		try {
+			userService.updateUser(userDTO, photo);
+		}
+		catch (UserAlreadyExistException | IOException e) {
+			model.addAttribute("badEmail", true);
+			model.addAttribute("availableRoles", roleService.getAll().stream().map(r->r.getRole()).collect(toList()));
+			return "admin/edit-user";
+		}
 		return "redirect:/admin/users";
 	}
+	
 	//TODO
 	@GetMapping("admin/")
 	public String adminMainPage (Model model) {

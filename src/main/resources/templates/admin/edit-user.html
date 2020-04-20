@@ -45,6 +45,7 @@
                         <input id="userId" th:for="userId" th:field="*{userId}" class="form-control" type="hidden"/>
                         <label th:for="email">Email *</label>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name Error</div>
+                        <div th:if="${badEmail}" class="alert alert-danger">Email is already exist</div>
                         <input type="email" th:field="*{email}" class="form-control"/>
 
                         <br>
