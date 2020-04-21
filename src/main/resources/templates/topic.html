@@ -86,7 +86,7 @@
                     <div class="d-flex justify-content-between">
                         <h2 style="font-family: Calibri,serif;" th:text="${topic.getName()}"></h2>
                         <div>
-                        <a th:href="@{/schedule(page=${confId})}" class="btn btn-sm btn-danger">Schedule
+                        <a th:href="@{/schedule(confId=${confId})}" class="btn btn-sm btn-danger">Schedule
                             conference</a>
                             </div>
                     </div>
@@ -119,10 +119,6 @@
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
                         <h4 class="text-muted">Speaker</h4>
-                        <a th:if="${canEditSpeaker}"
-                           th:href="${'/edit/topic/speaker/' + topic.getTopicId()}">
-                            <button class="btn btn-outline-light text-secondary">Edit</button>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -143,7 +139,7 @@
 
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <input id="isRegisteredOnConf" hidden="hidden" th:attr="value=${isRegisteredOnConf}"/>
-        <input id="isActiveTopic" hidden="hidden" th:attr="value=${topic.isActiveTopic()}"/>
+        <input id="isActiveTopic" hidden="hidden" th:attr="value=${topic.isAllowedQuestion()}"/>
         <input id="isActive" hidden="hidden" th:attr="value=${topic.active}"/>
         <div class="card border-0 col-7">
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
@@ -163,7 +159,7 @@
 
 
             <div th:if="${isRegisteredOnConf}">
-                <th:block th:if="${topic.isActiveTopic() || topic.active}">
+                <th:block th:if="${topic.isAllowedQuestion() || topic.active}">
                     <div class="card border-0 col-12">
                         <form id="QuestionForm" class="form-inline " style="margin-top: 20px">
                             <!--                        <button style="background-color: rgba(255,103,55,0.94); max-width: max-content" id="refresh" type="button" class="btn btn-danger col text-white">Refresh list</button>-->
@@ -216,15 +212,15 @@
 
                     </div>
                 </th:block>
-                <th:block th:unless="${topic.isActiveTopic() || topic.active}">
-                    <th:block th:if="${topic.getFinished()}">
+                <th:block th:unless="${topic.isAllowedQuestion() || topic.active}">
+                    <th:block th:if="${topic.getBegin()}">
                         <div id="QuestionBlock3" class="card border-0">
-                            <p>This topic has already ended</p>
+                            <p>This topic is not begin yet</p>
                         </div>
                     </th:block>
-                    <th:block th:unless="${topic.getFinished()}">
+                    <th:block th:unless="${topic.getBegin()}">
                         <div id="QuestionBlock4" class="card border-0">
-                            <p>This topic is not begin yet</p>
+                            <p>This topic has already ended</p>
                         </div>
                     </th:block>
 

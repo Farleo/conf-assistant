@@ -29,3 +29,43 @@
     outline: 0;
     opacity: .9
 }
+
+.image-preview {
+    width: 550px;
+    min-height: 300px;
+    border: 2px solid #dddddd;
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #cccccc;
+}
+
+.image-preview__image {
+    width: 100%;
+}
+
+
+.tab {
+    /* элемент тени */
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+    -o-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+    /* элемент тени конец */
+}
+
+.tab:hover {
+    /* элемент тени если наведен курсор */
+    -webkit-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+    box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+    -o-box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+    /* элемент тени если наведен курсор конец */
+}
+
+a:hover {
+    text-decoration: none;
+}

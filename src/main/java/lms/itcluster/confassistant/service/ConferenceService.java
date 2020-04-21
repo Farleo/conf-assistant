@@ -16,7 +16,7 @@ public interface ConferenceService {
 
     List<Conference> getAllConferences();
 
-    Conference findById(long id);
+    Conference findById(Long id);
 
     List<ConferenceDTO> getAllConferencesDTO();
 
@@ -34,11 +34,11 @@ public interface ConferenceService {
 
     void deleteConference(Long confId);
 
-    Page<ScheduleConferenceDTO> getConferencesForSchedule(Pageable pageable);
+    ScheduleConferenceDTO getConferenceForSchedule(Long confId);
 
     Long getConfIdByTopicId(Long topicId);
 
-    boolean isCurrentUserPresentAtTopicConference(Long userId, Long topicId);
+    boolean isCurrentUserPresentAtConference(Long userId, Long confId);
 
     boolean registerCurrentUserForConference(Long confId, Long userId);
 }

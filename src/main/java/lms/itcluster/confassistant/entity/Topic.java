@@ -32,8 +32,8 @@ public class Topic {
     @Column(name = "info", nullable = false, length = 2000)
     private String info;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "is_allowed_question", nullable = false)
+    private boolean isAllowedQuestion;
 
     @Column(name = "cover_photo")
     private String coverPhoto;
@@ -110,12 +110,12 @@ public class Topic {
         this.info = info;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isAllowedQuestion() {
+        return isAllowedQuestion;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setAllowedQuestion(boolean allowedQuestion) {
+        isAllowedQuestion = allowedQuestion;
     }
 
     public Stream getStream() {
@@ -148,14 +148,13 @@ public class Topic {
         if (o == null || getClass() != o.getClass()) return false;
         Topic topic = (Topic) o;
         return topicId == topic.topicId &&
-                isActive == topic.isActive &&
                 Objects.equals(name, topic.name) &&
                 Objects.equals(info, topic.info);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(topicId, name, info, isActive);
+        return Objects.hash(topicId, name, info);
     }
 
     @Override
@@ -163,7 +162,6 @@ public class Topic {
         return "Topic{" +
                 "topicId=" + topicId +
                 ", name='" + name + '\'' +
-                ", isActive=" + isActive +
                 '}';
     }
 }

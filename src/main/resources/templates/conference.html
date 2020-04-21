@@ -70,8 +70,8 @@
                         th:text="${conference.getVenue() + ', since ' + conference.getBeginDate() + ' to ' + conference.getFinishDate()}"></h6>
                 </div>
                 <div>
-                <a th:href="@{/schedule(page=${conference.conferenceId})}" class="btn btn-sm btn-danger m-3">Schedule
-                    conference</a>
+                    <a th:href="@{/schedule(confId=${conference.conferenceId})}" class="btn btn-sm btn-danger m-3">Schedule
+                        conference</a>
                 </div>
             </div>
             <div class="row-12 border-bottom border-warning" style="margin-top: 20px">
@@ -95,22 +95,57 @@
                     </div>
                 </div>
             </div>
-            <div th:each="stream : ${conference.getStreamList()}">
-                <div class="card border-0" style="margin-top: 20px">
-                    <h6 aria-describedby="name" th:text="${stream.getName()}"></h6>
-                </div>
-                <div class="row " style="padding-top: 0em">
-                    <div class="card col-3 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}"
-                         style="margin-top: 20px">
-                        <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
-                            <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
-                            <div class="card-body border-0">
-                                <h6 class="card-title text-dark" th:text="${topic.name}"></h6>
+
+
+            <div class="accordion" id="accordionExample" style="background-color: #ffe8a1">
+
+                <div class="card" th:each="stream, index: ${conference.getStreamList()}">
+                    <a class="card-header small p-0 m-0 btn text-muted text-left tab" th:attr="id=${stream.streamId}"
+                       style="background-color: rgba(255,255,255,0.79)">
+
+                            <span class="d-flex m-1 p-2" type="button" data-toggle="collapse"
+                                  th:attr="data-target='#' + ${stream.random}, aria-controls=${stream.random}"
+                                  aria-expanded="true" th:text="${stream.name}">
+                            </span>
+
+                    </a>
+                    <div id="collapseThree" class="collapse show"
+                         th:attr="id=${stream.random}, aria-labelledby=${stream.streamId}"
+                         data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="row " style="padding-top: 0em">
+                                <div class="card col-3 border-0 p-2" th:each="topic, index : ${stream.getTopicList()}"
+                                >
+                                    <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
+                                        <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                                        <div class="card-body border-0">
+                                            <small class="card-title text-dark" th:text="${topic.name}"></small>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <!--            <div th:each="stream : ${conference.getStreamList()}">
+                            <div class="card border-0" style="margin-top: 20px">
+                                <h6 aria-describedby="name" th:text="${stream.getName()}"></h6>
+                            </div>
+                            <div class="row " style="padding-top: 0em">
+                                <div class="card col-3 border-0 p-3" th:each="topic, index : ${stream.getTopicList()}"
+                                     style="margin-top: 20px">
+                                    <a th:href="${'/topic/' + topic.getTopicId()}" class="tab">
+                                        <img th:src="@{${topic.coverPhoto}}" class="card-img-top bottom-0" alt="...">
+                                        <div class="card-body border-0">
+                                            <h6 class="card-title text-dark" th:text="${topic.name}"></h6>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>-->
         </div>
     </div>
     <div class="row justify-content-center">
@@ -122,10 +157,19 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body d-flex justify-content-between">
-                <span>You must be logged in to be able to register for the conference. After successful registration, you will receive an e-ticket in the mail.</span>
-                <a th:href="${'/register/conference/' + conference.conferenceId}"
-                   class="btn btn-sm btn-danger text-white">Register</a>
+            <div th:if="${isRegisteredOnConf}">
+                <div class="card-body d-flex justify-content-between">
+                    <span>You are already registered for this conference. Please check your email, an e-ticket was sent to her.</span>
+                </div>
+            </div>
+            <div th:unless="${isRegisteredOnConf}">
+                <div class="card-body d-flex justify-content-between">
+                    <span>You must be logged in to be able to register for the conference. After successful registration, you will receive an e-ticket in the mail.</span>
+                    <a th:href="${'/register/conference/' + conference.conferenceId}"
+                       class="btn btn-sm btn-danger text-white">Register</a>
+<!--                    <a th:href="${'/register/conference/' + conference.conferenceId}"
+                       class="btn btn-sm btn-danger text-white">Register</a>-->
+                </div>
             </div>
         </div>
     </div>

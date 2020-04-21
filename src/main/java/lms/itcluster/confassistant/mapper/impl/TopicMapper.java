@@ -20,6 +20,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @Component
 public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
@@ -54,6 +59,8 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
                 .addMappings(mapping -> mapping.skip(TopicDTO::setStream))
                 .addMappings(mapping -> mapping.skip(TopicDTO::setSpeakerDTO))
                 .addMappings(mapping -> mapping.skip(TopicDTO::setQuestionListDTO))
+                .addMappings(mapping -> mapping.skip(TopicDTO::setBegin))
+                .addMappings(mapping -> mapping.skip(TopicDTO::setActive))
                 .setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(TopicDTO.class, Topic.class)
                 .addMappings(mapping -> mapping.skip(Topic::setStream))
@@ -67,6 +74,9 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
         destination.setSpeakerDTO(speakerMapper.toDto(source.getSpeaker()));
         destination.setStream(source.getStream().getName());
         destination.setQuestionListDTO(getQuestions(source));
+        destination.setBegin(LocalDateTime.now().isBefore(LocalDateTime.of(source.getDate(), source.getBeginTime())));
+        destination.setActive(LocalDateTime.now().isBefore(LocalDateTime.of(source.getDate(), source.getFinishTime()))
+                && LocalDateTime.now().isAfter(LocalDateTime.of(source.getDate(), source.getBeginTime())));
     }
 
     private List<QuestionDTO> getQuestions(Topic topic) {
