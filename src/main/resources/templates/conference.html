@@ -70,7 +70,7 @@
                         th:text="${conference.getVenue() + ', since ' + conference.getBeginDate() + ' to ' + conference.getFinishDate()}"></h6>
                 </div>
                 <div>
-                    <a th:href="@{/schedule(page=${conference.conferenceId})}" class="btn btn-sm btn-danger m-3">Schedule
+                    <a th:href="@{/schedule(confId=${conference.conferenceId})}" class="btn btn-sm btn-danger m-3">Schedule
                         conference</a>
                 </div>
             </div>

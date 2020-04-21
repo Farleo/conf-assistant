@@ -17,7 +17,7 @@ public interface ConferenceService {
 
     List<Conference> getAllConferences();
 
-    Conference findById(long id);
+    Conference findById(Long id);
 
     List<ConferenceDTO> getAllConferencesDTO();
 
@@ -35,7 +35,7 @@ public interface ConferenceService {
 
     void deleteConference(Long confId);
 
-    Page<ScheduleConferenceDTO> getConferencesForSchedule(Pageable pageable);
+    ScheduleConferenceDTO getConferenceForSchedule(Long confId);
 
     Long getConfIdByTopicId(Long topicId);
 

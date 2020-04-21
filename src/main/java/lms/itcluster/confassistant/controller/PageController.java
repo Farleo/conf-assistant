@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.*;
+import lms.itcluster.confassistant.exception.NoSuchConferenceException;
 import lms.itcluster.confassistant.exception.TopicNotFoundException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
@@ -115,21 +118,11 @@ public class PageController {
     }
 
     @GetMapping("/schedule")
-    public String getSchedule(Model model,
-                              @RequestParam("page") Optional<Integer> page) {
-        int currentPage = page.orElse(1);
-        Page<ScheduleConferenceDTO> conferenceDTOS = conferenceService.getConferencesForSchedule(PageRequest.of(currentPage - 1, 1));
-        model.addAttribute("page", conferenceDTOS);
-
-        int totalPages = conferenceDTOS.getTotalPages();
-        if (totalPages > 0) {
-            List<ConferenceDTO> dtos = conferenceService.getAllConferencesDTO();
-            List<String> pageNumbers = new ArrayList<>();
-            for (ConferenceDTO conferenceDTO : dtos) {
-                pageNumbers.add(conferenceDTO.getName());
-            }
-            model.addAttribute("conferences", pageNumbers);
-        }
+    public String getSchedule(Model model, @RequestParam("confId") Optional<Long> confId) {
+        long currentConfId = confId.orElse(1L);
+        ScheduleConferenceDTO conferenceDTOS = conferenceService.getConferenceForSchedule(currentConfId);
+        model.addAttribute("conference", conferenceDTOS);
+        model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
         return "schedule";
     }
 
@@ -147,6 +140,18 @@ public class PageController {
             return "redirect:/conf/" + confId;
         }
         model.addAttribute("message", "You already registered on this conference");
+        return "message";
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public String handleNullPointerExceptions(NullPointerException ex, Model model) {
+        model.addAttribute("message", "Oops, something goes wrong. Please try again later");
+        return "message";
+    }
+
+    @ExceptionHandler(NoSuchConferenceException.class)
+    public String handleNoSuchConferenceExceptions(NoSuchConferenceException ex, Model model) {
+        model.addAttribute("message", "The links you link to may be damaged or deleted on this page.");
         return "message";
     }
 
