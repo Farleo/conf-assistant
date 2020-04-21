@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ParticipantDTO;
-import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.ParticipantService;
@@ -44,7 +43,7 @@ public class ConferenceAdminController {
 	@RequestMapping(value = "conf/owner/{confId}")
 	public String confOwnerManageUser (@AuthenticationPrincipal CurrentUser currentUser,
 	                                   @PathVariable Long confId, Model model) {
-		Conference conference = conferenceService.findById(confId);
+		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
 		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
 			model.addAttribute("confName", conference.getName());
 			model.addAttribute("usersOfCurrentConf", participantService.findAllParticipant(confId));
@@ -60,7 +59,7 @@ public class ConferenceAdminController {
 	                         @PathVariable Long confId,
 	                         @PathVariable Long userId,
 	                         Model model) {
-		Conference conference = conferenceService.findById(confId);
+		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
 		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
 			model.addAttribute("confName", conferenceService.findById(confId).getName());
 			model.addAttribute("user", participantService.findParticipantById(userId, confId));
@@ -74,7 +73,7 @@ public class ConferenceAdminController {
 	@PostMapping(value="/conf/owner/saveChangeRole/")
 	public String saveChangeRole(@AuthenticationPrincipal CurrentUser currentUser,
 	                             ParticipantDTO participantDTO) {
-		Conference conference = conferenceService.findById(participantDTO.getConferenceId());
+		ConferenceDTO conference = conferenceService.getConferenceDTOById(participantDTO.getConferenceId());
 		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
 			participantService.updateParticipantByConfOwner(participantDTO);
 			Long confId = participantDTO.getConferenceId();
@@ -88,7 +87,7 @@ public class ConferenceAdminController {
 	public String confOwnerKickUser (@AuthenticationPrincipal CurrentUser currentUser,
 	                                 @PathVariable Long confId,
 	                                 @PathVariable Long userId) {
-		Conference conference = conferenceService.findById(confId);
+		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
 		if (securityService.canManageConference(currentUser, conference.getConferenceId())) {
 			participantService.blockParticipant(userId, confId);
 			return "redirect:/conf/owner/{confId}";

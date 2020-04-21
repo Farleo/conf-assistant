@@ -77,7 +77,7 @@ CREATE TABLE `conference` (
    `date` date NOT NULL,
    `finish_time` time NOT NULL,
    `info` varchar(2000) COLLATE utf8mb4_unicode_ci NOT NULL,
-   `is_active` bit(1) NOT NULL,
+   `is_allowed_question` bit(1) NOT NULL,
    `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
    `speaker_id` bigint(20) NOT NULL,
    `stream_id` bigint(20) NOT NULL,
