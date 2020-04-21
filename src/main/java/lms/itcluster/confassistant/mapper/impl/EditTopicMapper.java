@@ -24,9 +24,7 @@ public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
     private final ModelMapper modelMapper;
 
     private TopicRepository topicRepository;
-
-    @Autowired
-    private StreamRepository streamRepository;
+    
 
     @Autowired
     public EditTopicMapper(ModelMapper modelMapper, TopicRepository topicRepository) {
