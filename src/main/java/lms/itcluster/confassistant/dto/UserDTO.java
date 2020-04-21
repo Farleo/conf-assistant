@@ -1,7 +1,5 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.annotation.UniqueEmail;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;

@@ -15,8 +15,14 @@ public class EditTopicDTO extends AbstractDTO {
     @NotBlank
     @Size(min = 1, max = 255)
     private String name;
+    @NotNull
+    @NotBlank
     private String beginDateTime;
+    @NotNull
+    @NotBlank
     private String finishTime;
+    @NotNull
+    @NotBlank
     private String info;
 
     public EditTopicDTO() {

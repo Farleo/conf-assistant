@@ -1,7 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.UserRepository;
@@ -65,7 +65,7 @@ public class EditRestController {
     }
 
     @GetMapping("/select/{questionId}/{topicId}")
-    public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+    public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
         if (!Objects.equals(streamDTO.getModerator(), currentUser.getId())) {

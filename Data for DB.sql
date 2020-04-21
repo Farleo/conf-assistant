@@ -36,11 +36,11 @@ VALUES ('Carla', 'Walton', '$2a$10$jbI6s.FAIGRzurrzf9p4Ief/QfWAhzrcMIh.VHbwN111y
         '/picture/img/user/3.jpg', 'hovard@gmail.com', 1, 0);
 
 insert into topic(name, date, begin_time, finish_time, info, is_allowed_question, stream_id, speaker_id, cover_photo)
-VALUES ('New in Spring', '2020-02-09', '17:00:00', '19:00:00', 'Why were we able to do this? If we inspect the tables closely in the previous case, we can see, that it contained two many-to-one relationships. In other words, there isn''t any many-to-many relationship in an RDBMS. We call the structures we create with join tables many-to-many relationships because that''s what we model.
+VALUES ('New in Spring', '2020-05-09', '17:00:00', '19:00:00', 'Why were we able to do this? If we inspect the tables closely in the previous case, we can see, that it contained two many-to-one relationships. In other words, there isn''t any many-to-many relationship in an RDBMS. We call the structures we create with join tables many-to-many relationships because that''s what we model.
 Besides, it''s more clear if we talk about many-to-many relationships, because that''s our intention. Meanwhile, a join table is just an implementation detail; we don''t really care about it.',
         1, 2, 4, '/picture/img/topic/2.jpg'),
 
-       ('New in Gradel', '2020-02-09', '20:00:00', '21:00:00', 'Let''s say we want to let students register to courses. Also, we need to store the point when a student registered for a specific course. On top of that, we also want to store what grade she received in the course.
+       ('New in Gradel', '2020-05-09', '20:00:00', '21:00:00', 'Let''s say we want to let students register to courses. Also, we need to store the point when a student registered for a specific course. On top of that, we also want to store what grade she received in the course.
 In an ideal world, we could solve this with the previous solution, when we had an entity with a composite key. However, our world is far from ideal and students don''t always accomplish a course on the first try.',
         1, 2, 5, '/picture/img/topic/5.jpg'),
 

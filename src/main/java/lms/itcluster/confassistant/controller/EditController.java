@@ -1,8 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.Stream;
-import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ParticipantsTypeRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
@@ -21,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class EditController {
@@ -114,7 +114,7 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/main/{topicId}")
-    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
         EditTopicDTO topic = topicService.getEditTopicDTOById(topicId);
 /*        Stream stream = streamRepository.findById(topicDTO.getStreamId()).get();
         if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
@@ -126,16 +126,22 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/main")
-    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException, TopicNotFoundException {
+    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException, NoSuchTopicException {
         if (bindingResult.hasErrors()) {
             return "edit/topic/main";
         }
+        int value = 5;
+
+        Integer integer = Optional.ofNullable(value)
+                .filter(i -> 0 < i && i < 3)
+                .orElseThrow(RuntimeException::new);
+
         topicService.updateMainTopicData(topic, photo);
         return "redirect:/topic/" + topic.getTopicId();
     }
 
     @GetMapping("/edit/topic/speaker/{topicId}")
-    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
         if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
             return "redirect:/edit/speaker/main";
         }

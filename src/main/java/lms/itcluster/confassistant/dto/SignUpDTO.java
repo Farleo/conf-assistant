@@ -1,10 +1,14 @@
 package lms.itcluster.confassistant.dto;
 
-import lms.itcluster.confassistant.annotation.UniqueEmail;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class SignUpDTO extends AbstractDTO {
 
-    @UniqueEmail
+    @NotNull
+    @NotBlank
+    @Email
     private String email;
 
     public String getEmail() {

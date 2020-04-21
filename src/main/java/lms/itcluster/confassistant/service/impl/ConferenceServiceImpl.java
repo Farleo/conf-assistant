@@ -8,6 +8,7 @@ import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ConferenceRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
@@ -88,17 +89,13 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public Conference findById(Long id) {
-        Optional<Long> optionalId = Optional.ofNullable(id);
+        return conferenceRepository.findById(id).orElseThrow(() ->
+                new NoSuchConferenceException(String.format("Conference with id - %d not found", id)));
+    }
 
-        return conferenceRepository.findById(
-                optionalId.orElseThrow(() -> {
-                    LOGGER.error("ConfId is null");
-                    return new NullPointerException("Conf id is null");
-                }))
-                .orElseThrow(() -> {
-                    LOGGER.error("Conference with id {} not found", id);
-                    return new NoSuchConferenceException(String.format("Conference with id %d not found", id));
-                });
+    @Override
+    public ConferenceDTO getConferenceDTOById(Long id) {
+        return mapper.toDto(findById(id));
     }
 
     @Override
@@ -111,7 +108,7 @@ public class ConferenceServiceImpl implements ConferenceService {
         List<ConferenceDTO> list = new ArrayList<>();
         User user = userRepository.findById(currentUser.getId()).get();
         for (Participants participants : user.getParticipants()) {
-            if (participants.getParticipantsKey().getParticipantType().getName().equals("moder")) {
+            if (participants.getParticipantsKey().getParticipantType().getName().equals(Constant.MODERATOR)) {
                 list.add(simpleMapper.toDto(participants.getParticipantsKey().getConference()));
             }
         }
@@ -125,10 +122,6 @@ public class ConferenceServiceImpl implements ConferenceService {
         }
     }
 
-    @Override
-    public ConferenceDTO getConferenceDTOById(Long id) {
-        return mapper.toDto(conferenceRepository.findById(id).get());
-    }
 
     @Override
     public ListConferenceDTO getConferencesDTOByOwnerId(Long id) {
@@ -272,13 +265,13 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public boolean registerCurrentUserForConference(Long confId, Long userId) {
-        Conference conference = conferenceRepository.findById(confId).get();
+        Conference conference = conferenceRepository.findByConferenceId(confId);
         for (Participants participants : conference.getParticipants()) {
             if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
                 return false;
             }
         }
-        UserDTO user = userService.findById(userId);
+        UserDTO user = userService.getUserDtoById(userId);
         participantService.addParticipant(user, conference);
         emailService.sendMessage(user.getEmail(), "Registration on Conference: " + conference.getName(), "You have been successfully registered on Conference: " + conference.getName());
         return true;
@@ -287,7 +280,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public Long getConfIdByTopicId(Long topicId) {
         Topic topic = topicRepository.findById(topicId).get();
-        Conference conference = conferenceRepository.findById(topic.getStream().getConference().getConferenceId()).get();
+        Conference conference = conferenceRepository.findByConferenceId(topic.getStream().getConference().getConferenceId());
         return conference.getConferenceId();
     }
 

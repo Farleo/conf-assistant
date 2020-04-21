@@ -1,7 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
-import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.SecurityService;
@@ -65,7 +65,7 @@ public class TopicController {
 	                          @PathVariable Long confId,
 	                          @PathVariable Long streamId,
 	                          @PathVariable Long topicId,
-	                          Model model) throws TopicNotFoundException {
+	                          Model model) throws NoSuchTopicException {
 		if(securityService.canManageConference(currentUser,confId)){
 			model.addAttribute("simpleTopicDTO", topicService.getSimpleTopicDTOById(topicId));
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
@@ -83,7 +83,7 @@ public class TopicController {
 	                            @PathVariable Long topicId,
 	                            @AuthenticationPrincipal CurrentUser currentUser,
 	                            @RequestParam("inpFile") MultipartFile photo,
-	                            Model model) throws TopicNotFoundException, IOException {
+	                            Model model) throws NoSuchTopicException, IOException {
 		model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
 		model.addAttribute("currentUser", currentUser.getId());
 		topicValidator.validate(simpleTopicDTO,bindingResult);
@@ -113,7 +113,7 @@ public class TopicController {
                                    @PathVariable Long confId,
                                    @PathVariable Long streamId,
                                    @RequestParam("inpFile") MultipartFile photo,
-                                   @AuthenticationPrincipal CurrentUser currentUser) throws IOException, TopicNotFoundException {
+                                   @AuthenticationPrincipal CurrentUser currentUser) throws IOException, NoSuchTopicException {
 		topicValidator.validate(simpleTopicDTO,bindingResult);
 		if(bindingResult.hasErrors()){
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));

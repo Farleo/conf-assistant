@@ -1,34 +1,31 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.*;
-import lms.itcluster.confassistant.exception.NoSuchConferenceException;
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 public class PageController {
 
@@ -68,7 +65,7 @@ public class PageController {
     }
 
     @GetMapping("/topic/{id}")
-    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException, TopicNotFoundException {
+    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException, NoSuchTopicException {
         TopicDTO topicDTO = topicService.getTopicDTOById(id);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
@@ -90,10 +87,10 @@ public class PageController {
     }
 
     @GetMapping("/topic/join/{id}")
-    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) throws TopicNotFoundException {
+    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
         Topic topic = topicService.findById(id);
         Conference conference = topic.getStream().getConference();
-        UserDTO user = userService.findById(currentUser.getId());
+        UserDTO user = userService.getUserDtoById(currentUser.getId());
         participantService.addParticipant(user, conference);
         return "redirect:/topic/{id}";
     }
@@ -120,8 +117,7 @@ public class PageController {
 
     @GetMapping("/schedule")
     public String getSchedule(Model model, @RequestParam("confId") Optional<Long> confId) {
-        long currentConfId = confId.orElse(1L);
-        ScheduleConferenceDTO conferenceDTOS = conferenceService.getConferenceForSchedule(currentConfId);
+        ScheduleConferenceDTO conferenceDTOS = conferenceService.getConferenceForSchedule(confId.orElse(1L));
         model.addAttribute("conference", conferenceDTOS);
         model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
         return "schedule";
@@ -144,16 +140,12 @@ public class PageController {
         return "message";
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public String handleNullPointerExceptions(NullPointerException ex, Model model) {
-        model.addAttribute("message", "Oops, something goes wrong. Please try again later");
-        return "message";
+    @GetMapping("/speaker")
+    public String getCabinet(@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        List<TopicDTO> dtoList = topicService.getAllTopicForCurrentSpeaker(currentUser.getId());
+        model.addAttribute("topics", dtoList);
+        return "speaker/topic";
     }
 
-    @ExceptionHandler(NoSuchConferenceException.class)
-    public String handleNoSuchConferenceExceptions(NoSuchConferenceException ex, Model model) {
-        model.addAttribute("message", "The links you link to may be damaged or deleted on this page.");
-        return "message";
-    }
 
 }

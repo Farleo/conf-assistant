@@ -16,13 +16,13 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">
-            <form style="margin-top: 15px" action="#" th:action="@{/sign-up-guest}" method="post">
+            <form style="margin-top: 15px" action="#" th:action="@{/sign-up-guest}" th:object="${signForm}" method="post">
                 <div class="form-group text-center">
                     <h4>Sign up</h4>
                 </div>
                 <div class="form-group">
-                    <input style="border-style: outset; margin-top: 20px" th:field="${signForm.email}" type="text" class="form-control" placeholder="Enter email to sign up">
-                    <div class="alert alert-danger" th:if="${#fields.hasErrors('signForm.email')}" th:errors="${signForm.email}">Name Error</div>
+                    <input style="border-style: outset; margin-top: 20px" th:field="*{email}" type="text" class="form-control" placeholder="Enter email to sign up">
+                    <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="${signForm.email}">Name Error</div>
                     <small id="emailHelp" class="form-text text-muted text-center" style="margin-top: 15px">By sign up, you are agreeing to our
                         Privacy Policy and acknowledge to receive communication from conf-assistant & the event organizer</small>
                     <button style="margin-top: 15px; background-color: rgba(255,103,55,0.94)" type="submit" class="btn text-white btn-block">Sign up</button>

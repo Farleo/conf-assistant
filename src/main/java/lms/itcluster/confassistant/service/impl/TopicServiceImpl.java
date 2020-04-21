@@ -5,7 +5,7 @@ import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.exception.TopicNotFoundException;
+import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
@@ -21,10 +21,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,42 +51,33 @@ public class TopicServiceImpl implements TopicService {
     private UserRepository userRepository;
 
     @Override
+    public Topic findById(Long id) {
+        return topicRepository.findById(id).orElseThrow(() -> new NoSuchTopicException("Topic with id - %d not found." + id));
+    }
+
+    @Override
     public Topic findByName(String name) {
         return topicRepository.findByName(name);
     }
 
     @Override
-    public Topic findById(Long id) throws TopicNotFoundException {
-        return findTopicById(id);
+    public TopicDTO getTopicDTOById(Long id) {
+        return mapper.toDto(findById(id));
     }
 
     @Override
-    public TopicDTO getTopicDTOById(Long id) throws TopicNotFoundException {
-        return mapper.toDto(findTopicById(id));
+    public EditTopicDTO getEditTopicDTOById(Long id) {
+        return editTopicMapper.toDto(findById(id));
     }
 
     @Override
-    public EditTopicDTO getEditTopicDTOById(Long id) throws TopicNotFoundException {
-        return editTopicMapper.toDto(findTopicById(id));
-    }
-
-    @Override
-    public SimpleTopicDTO getSimpleTopicDTOById(Long id) throws TopicNotFoundException {
-        return simpleTopicMapper.toDto(findTopicById(id));
-    }
-
-    private Topic findTopicById (Long id) throws TopicNotFoundException {
-        if (id != null) {
-            return topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException("Topic not found: id = " + id));
-        }
-        else {
-            throw new NullPointerException("Can't find Topic. TopicId is null");
-        }
+    public SimpleTopicDTO getSimpleTopicDTOById(Long id) {
+        return simpleTopicMapper.toDto(findById(id));
     }
 
     @Override
     @Transactional
-    public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, TopicNotFoundException {
+    public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, NoSuchTopicException {
         Topic updatedData = editTopicMapper.toEntity(editTopicDTO);
 
         String oldCoverPhotoPath = null;
@@ -116,8 +105,8 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void updateTopicInfo(TopicDTO topicDTO) throws TopicNotFoundException {
-        Topic topic = findTopicById(topicDTO.getTopicId());
+    public void updateTopicInfo(TopicDTO topicDTO) {
+        Topic topic = findById(topicDTO.getTopicId());
         topic.setInfo(topicDTO.getInfo());
         topicRepository.save(topic);
     }
@@ -150,18 +139,18 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public List<TopicDTO> findAllTopicByStreamId(Long streamId) {
         List<Topic> topicList = topicRepository.findAllByStreamId(streamId);
-        return topicList.stream().map(t->mapper.toDto(t)).collect(Collectors.toList());
+        return topicList.stream().map(t -> mapper.toDto(t)).collect(Collectors.toList());
     }
 
     @Override
     public void deleteTopic(Long topicId) {
         Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-        if(optionalTopic.isPresent()){
-        Topic topic = optionalTopic.get();
-        topicRepository.delete(topic);
+        if (optionalTopic.isPresent()) {
+            Topic topic = optionalTopic.get();
+            topicRepository.delete(topic);
         }
     }
-    
+
 
     @Override
     @Transactional
@@ -182,7 +171,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException  {
+    public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
         if (!photo.isEmpty()) {
             String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
@@ -195,7 +184,7 @@ public class TopicServiceImpl implements TopicService {
     @Scheduled(cron = "0 01 00 * * *")
     @Transactional
     public void removeDisableAllowedQuestion() {
-       List<Topic> topics = topicRepository.findAllByIsAllowedQuestion(true);
+        List<Topic> topics = topicRepository.findAllByIsAllowedQuestion(true);
         for (Topic topic : topics) {
             topic.setAllowedQuestion(false);
         }

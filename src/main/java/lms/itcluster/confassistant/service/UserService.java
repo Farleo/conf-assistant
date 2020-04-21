@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface UserService {
 
-    UserDTO findById(long id);
+    User findById(Long id);
+
+    UserDTO getUserDtoById(Long id);
 
     User findByEmail(String email);
 
@@ -23,7 +25,7 @@ public interface UserService {
 
     void completeGuestRegistration (EditProfileDTO editProfileDTO);
 
-    EditProfileDTO getGuestProfileDTOById(long id);
+    EditProfileDTO getGuestProfileDTOById(Long id);
 
     void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException;
 

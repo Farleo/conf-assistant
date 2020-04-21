@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.NoSuchUserException;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -11,6 +12,7 @@ import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,6 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLNonTransientException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -82,15 +88,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public UserDTO findById(long id) {
-        User user = userRepository.findById(id).get();
-        UserDTO userDTO = mapper.toDto(user);
-        return userDTO;
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(()
+                -> new NoSuchUserException(String.format("User with id - %d not found.", id)));
+    }
+
+    @Override
+    public UserDTO getUserDtoById(Long id) {
+        return mapper.toDto(findById(id));
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()
+                -> new NoSuchUserException(String.format("User with email - %s not found.", email)));
     }
 
     @Override
@@ -115,7 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if(optionalUser.isPresent()) {
+        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setDeleted(true);
             userRepository.save(user);
@@ -124,14 +135,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll().stream().filter(f->!f.getDeleted()).collect(Collectors.toList());
+        List<User> users = userRepository.findAll().stream().filter(f -> !f.getDeleted()).collect(Collectors.toList());
         Type listType = new TypeToken<List<UserDTO>>() {
         }.getType();
         ModelMapper modelMapper = new ModelMapper();
         List<UserDTO> userDTOS = modelMapper.map(users, listType);
         return userDTOS;
     }
-    
+
 
     @Override
     @Transactional
@@ -139,7 +150,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> optionalUser = Optional.of(userRepository.findByEmail(userDTO.getEmail()));
         if (optionalUser.isPresent()) {
             User dbUser = optionalUser.get();
-            if(dbUser.getPassword()!=userDTO.getPassword()){
+            if (dbUser.getPassword() != userDTO.getPassword()) {
                 userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
             if ((dbUser != null) && (userDTO.getUserId() != dbUser.getUserId())) {
@@ -177,8 +188,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public EditProfileDTO getGuestProfileDTOById(long id) {
-        return editProfileMapper.toDto(userRepository.findById(id).orElse(null));
+    public EditProfileDTO getGuestProfileDTOById(Long id) {
+        return editProfileMapper.toDto(findById(id));
     }
 
     @Override
@@ -199,13 +210,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setActive(true);
         userRepository.save(user);
         if (oldCoverPhotoPath != null) {
-                removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-            }
+            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
+        }
     }
 
     @Override
     public SpeakerDTO getSpeakerById(Long id) {
-        return speakerMapper.toDto(userRepository.findById(id).get());
+        return speakerMapper.toDto(findById(id));
     }
 
     @Override
@@ -226,7 +237,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             removeCoverPhotoIfTransactionSuccess(oldProfilePhotoPath);
         }
     }
-
 
 
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
@@ -257,7 +267,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean updateUserEmail(EditContactsDTO editContactsDTO) {
-        User user = userRepository.findById(editContactsDTO.getId()).get();
+        User user = findById(editContactsDTO.getId());
         String activationCode = UUID.randomUUID().toString();
         user.setActiveCode(activationCode);
         String link = "Please follow the link - http://localhost:8080/change/" + user.getActiveCode();
@@ -269,7 +279,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateEmail(UserDTO userDTO) {
-        User user = userRepository.findById(userDTO.getUserId()).get();
+        User user = findById(userDTO.getUserId());
         user.setEmail(userDTO.getEmail());
         user.setActiveCode(null);
         userRepository.save(user);
@@ -289,7 +299,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean updatePassword(EditPasswordDTO editPasswordDTO) {
-        User user = userRepository.findById(editPasswordDTO.getId()).get();
+        User user = findById(editPasswordDTO.getId());
         user.setPassword(passwordEncoder.encode(editPasswordDTO.getPassword()));
         userRepository.save(user);
         return true;
