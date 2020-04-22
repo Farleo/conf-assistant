@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +10,9 @@ import java.util.Objects;
 
 public class ConferenceDTO extends AbstractDTO {
     private Long conferenceId;
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+    @NotBlank(message = "Alias cannot be empty")
     private String alias;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date beginDate;

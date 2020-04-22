@@ -199,19 +199,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (existingUserFromDb != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
         }
+        String pass = userDTO.getPassword();
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = mapper.toEntity(userDTO);
-        String oldCoverPhotoPath = null;
         if (!photo.isEmpty()) {
             String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = user.getPhoto();
             user.setPhoto(newCoverPhotoPath);
         }
         user.setActive(true);
         userRepository.save(user);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
+        emailService.sendMessage(user.getEmail(),"Administrator has created account for you on Conference Assistant",
+                                                    "You have been successfully registered on Conference Assistant. \n" +
+                                                            "Login: " + user.getEmail() + "\n" +
+                                                            "Password: " + pass);
     }
 
     @Override

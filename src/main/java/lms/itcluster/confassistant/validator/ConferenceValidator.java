@@ -25,8 +25,12 @@ public class ConferenceValidator implements Validator {
 		ConferenceDTO conferenceDTO = (ConferenceDTO) object;
 		Conference byName = conferenceRepository.findByName(conferenceDTO.getName());
 		Conference byAlias = conferenceRepository.findByAlias(conferenceDTO.getAlias());
+		LocalDate localDate = LocalDate.now();
 		if(conferenceDTO.getBeginDate()==null||conferenceDTO.getFinishDate()==null||conferenceDTO.getBeginDate().after(conferenceDTO.getFinishDate())){
 			errors.rejectValue("finishDate", "beginDate.after.finishDate", "Invalid date");
+		}
+		if (conferenceDTO.getBeginDate().before(java.sql.Date.valueOf(localDate))){
+			errors.rejectValue("finishDate", "beginDate.after.localDate", "invalid date to current date");
 		}
 		if(byName!=null && conferenceDTO.getConferenceId() != byName.getConferenceId()){
 			errors.rejectValue("name", "name.unique", "This conference name already exist");
