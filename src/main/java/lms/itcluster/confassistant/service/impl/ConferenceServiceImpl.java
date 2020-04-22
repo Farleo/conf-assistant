@@ -2,21 +2,15 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.*;
-import lms.itcluster.confassistant.exception.NoSuchConferenceException;
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Participants;
-import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ConferenceRepository;
-import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,21 +28,15 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+@Log4j
 @Service
 public class ConferenceServiceImpl implements ConferenceService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConferenceServiceImpl.class);
-
-    @Autowired
-    private StreamRepository streamRepository;
 
     @Autowired
     private EmailService emailService;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private StreamService streamService;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -82,15 +70,15 @@ public class ConferenceServiceImpl implements ConferenceService {
     private Mapper<Stream, StreamDTO> streamMapper;
 
 
-    @Override
-    public List<Conference> getAllConferences() {
+    private List<Conference> getAllConferences() {
         return conferenceRepository.findAll();
     }
 
-    @Override
-    public Conference findById(Long id) {
-        return conferenceRepository.findById(id).orElseThrow(() ->
-                new NoSuchConferenceException(String.format("Conference with id - %d not found", id)));
+    private Conference findById(Long id) {
+        return conferenceRepository.findById(id).orElseThrow(() -> {
+            log.error(String.format("Conference with id - %d not found", id));
+            return new NoSuchEntityException(String.format("Conference with id - %d not found", id));
+        });
     }
 
     @Override
@@ -105,8 +93,11 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public ListConferenceDTO getAllConferenceDTOForCurrentModerator(CurrentUser currentUser) {
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> {
+            log.error(String.format("User with id - %d not found", currentUser.getId()));
+            return new NoSuchEntityException(String.format("User with id - %d not found", currentUser.getId()));
+        });
         List<ConferenceDTO> list = new ArrayList<>();
-        User user = userRepository.findById(currentUser.getId()).get();
         for (Participants participants : user.getParticipants()) {
             if (participants.getParticipantsKey().getParticipantType().getName().equals(Constant.MODERATOR)) {
                 list.add(simpleMapper.toDto(participants.getParticipantsKey().getConference()));
@@ -134,33 +125,26 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public void addNewConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
-        String oldCoverPhotoPath = null;
-        if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = conference.getCoverPhoto();
-            conference.setCoverPhoto(newCoverPhotoPath);
-        }
+
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        String oldCoverPhoto = conference.getCoverPhoto();
+        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+
         conferenceRepository.save(conference);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
+        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Transactional
     @Override
     public void updateConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
-        String oldCoverPhotoPath = null;
-        if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = conference.getCoverPhoto();
-            conference.setCoverPhoto(newCoverPhotoPath);
-        }
-        conferenceRepository.save(conference);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
 
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        String oldCoverPhoto = conference.getCoverPhoto();
+        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+
+        conferenceRepository.save(conference);
+        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Override
@@ -254,7 +238,7 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public boolean isCurrentUserPresentAtConference(Long userId, Long confId) {
-        Conference conference = conferenceRepository.findById(confId).get();
+        Conference conference = findById(confId);
         for (Participants participants : conference.getParticipants()) {
             if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
                 return true;
@@ -265,7 +249,7 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public boolean registerCurrentUserForConference(Long confId, Long userId) {
-        Conference conference = conferenceRepository.findByConferenceId(confId);
+        Conference conference = findById(confId);
         for (Participants participants : conference.getParticipants()) {
             if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
                 return false;
@@ -278,10 +262,12 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
-    public Long getConfIdByTopicId(Long topicId) {
-        Topic topic = topicRepository.findById(topicId).get();
-        Conference conference = conferenceRepository.findByConferenceId(topic.getStream().getConference().getConferenceId());
-        return conference.getConferenceId();
+    public ConferenceDTO getConferenceDTOByTopicId(Long topicId) {
+        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> {
+            log.error(String.format("Conference with id - %d not found", topicId));
+            return new NoSuchEntityException(String.format("Topic with id - %d not found", topicId));
+        });
+        return getConferenceDTOById(topic.getStream().getConference().getConferenceId());
     }
 
 }

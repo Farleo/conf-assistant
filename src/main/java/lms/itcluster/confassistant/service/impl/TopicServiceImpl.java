@@ -5,7 +5,7 @@ import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.exception.NoSuchTopicException;
+import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
@@ -52,7 +52,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic findById(Long id) {
-        return topicRepository.findById(id).orElseThrow(() -> new NoSuchTopicException("Topic with id - %d not found." + id));
+        return topicRepository.findById(id).orElseThrow(() -> new NoSuchEntityException("Topic with id - %d not found." + id));
     }
 
     @Override
@@ -77,21 +77,15 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException, NoSuchTopicException {
+    public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException {
         Topic updatedData = editTopicMapper.toEntity(editTopicDTO);
 
-        String oldCoverPhotoPath = null;
-
-        if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = updatedData.getCoverPhoto();
-            updatedData.setCoverPhoto(newCoverPhotoPath);
-        }
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        String oldCoverPhoto = updatedData.getCoverPhoto();
+        updatedData.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
 
         topicRepository.save(updatedData);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
+        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
@@ -156,17 +150,14 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
-        String oldCoverPhotoPath = null;
-        if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldCoverPhotoPath = topic.getCoverPhoto();
-            topic.setCoverPhoto(newCoverPhotoPath);
-        }
+
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        String oldCoverPhoto = topic.getCoverPhoto();
+        topic.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
-        if (oldCoverPhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-        }
+        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Override
@@ -174,8 +165,8 @@ public class TopicServiceImpl implements TopicService {
     public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
         if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            topic.setCoverPhoto(newCoverPhotoPath);
+            Optional<String> newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
+            topic.setCoverPhoto(newCoverPhotoPath.orElse(null));
         }
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);

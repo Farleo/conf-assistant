@@ -18,9 +18,5 @@ public interface ConferenceRepository extends JpaRepository<Conference, Long> {
 
 	Conference findByName (String name);
 
-	@Transactional
-	@Query("select c from Conference c where c.conferenceId=:conferenceId")
-	Conference findByConferenceId(Long conferenceId);
-
 	Conference findByAlias(String alias);
 }

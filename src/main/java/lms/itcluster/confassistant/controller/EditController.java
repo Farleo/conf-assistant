@@ -1,7 +1,7 @@
 package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.exception.NoSuchTopicException;
+import lms.itcluster.confassistant.exception.CantCompleteClientRequestException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.ParticipantsTypeRepository;
 import lms.itcluster.confassistant.repository.StreamRepository;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -68,13 +69,21 @@ public class EditController {
 
     @GetMapping("/edit/speaker/main")
     public String getSpeaker (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
-        model.addAttribute("speaker", userService.getSpeakerById(currentUser.getId()));
+        model.addAttribute("speaker", userService.getEditProfileDto(currentUser.getId()));
         return "edit/speaker/main";
     }
 
     @PostMapping("/edit/speaker/main")
-    public String saveSpeaker (EditProfileDTO editProfileDTO, @RequestParam("inpFile") MultipartFile photo) throws IOException {
-        userService.updateSpeaker(editProfileDTO, photo);
+    public String saveSpeaker (@Valid EditProfileDTO editProfileDTO, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+        if (bindingResult.hasErrors()) {
+            return "edit/speaker/main";
+        }
+        try {
+            userService.updateSpeaker(editProfileDTO, photo);
+        } catch (CantCompleteClientRequestException e) {
+            bindingResult.rejectValue("photo", "wrong.photo.format", "Use file with jpg, jpeg or png");
+            return "edit/speaker/main";
+        }
         return "redirect:/";
     }
 
@@ -114,7 +123,7 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/main/{topicId}")
-    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
+    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         EditTopicDTO topic = topicService.getEditTopicDTOById(topicId);
 /*        Stream stream = streamRepository.findById(topicDTO.getStreamId()).get();
         if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
@@ -126,22 +135,21 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/main")
-    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException, NoSuchTopicException {
+    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             return "edit/topic/main";
         }
-        int value = 5;
-
-        Integer integer = Optional.ofNullable(value)
-                .filter(i -> 0 < i && i < 3)
-                .orElseThrow(RuntimeException::new);
-
-        topicService.updateMainTopicData(topic, photo);
+        try {
+            topicService.updateMainTopicData(topic, photo);
+        } catch (CantCompleteClientRequestException | MaxUploadSizeExceededException e) {
+            bindingResult.rejectValue("coverPhoto", "wrong.photo.format", "Use file with jpg, jpeg or png");
+            return "edit/topic/main";
+        }
         return "redirect:/topic/" + topic.getTopicId();
     }
 
     @GetMapping("/edit/topic/speaker/{topicId}")
-    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
+    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
             return "redirect:/edit/speaker/main";
         }

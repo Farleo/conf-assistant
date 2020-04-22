@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -21,8 +22,8 @@ public class GlobalControllerExceptionHandler {
         return "message";
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public String handleNullPointerExceptions(NoSuchElementException ex, Model model, HttpServletResponse response) {
+    @ExceptionHandler(NoSuchEntityException.class)
+    public String handleNullPointerExceptions(NoSuchEntityException ex, Model model, HttpServletResponse response) {
         model.addAttribute("message", "Not found");
         response.setStatus(HttpStatus.NOT_FOUND.value());
         log.error(ex.getMessage(), ex);

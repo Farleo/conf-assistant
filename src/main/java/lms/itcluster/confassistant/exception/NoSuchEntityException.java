@@ -4,9 +4,9 @@ import javassist.NotFoundException;
 
 import java.util.NoSuchElementException;
 
-public class NoSuchTopicException extends NoSuchElementException {
+public class NoSuchEntityException extends NoSuchElementException {
 
-    public NoSuchTopicException(String msg) {
+    public NoSuchEntityException(String msg) {
         super(msg);
     }
 }

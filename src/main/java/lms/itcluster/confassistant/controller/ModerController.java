@@ -3,7 +3,6 @@ package lms.itcluster.confassistant.controller;
 import lms.itcluster.confassistant.dto.ListConferenceDTO;
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.QuestionService;
@@ -39,7 +38,7 @@ public class ModerController {
     }
 
     @GetMapping("/moderator/questions/{topicId}")
-    public String getQuestions(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
+    public String getQuestions(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
         model.addAttribute("isEnable", topicDTO.isAllowedQuestion());
@@ -48,7 +47,7 @@ public class ModerController {
     }
 
     @GetMapping("/moderator/questions/send/{topicId}")
-    public String sendQuestionToSpeaker(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
+    public String sendQuestionToSpeaker(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         questionService.sendQuestionToSpeaker(topicId);
         model.addAttribute("topic", topicService.getTopicDTOById(topicId));
         model.addAttribute("isEnable", topicService.getTopicDTOById(topicId).isAllowedQuestion());

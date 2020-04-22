@@ -61,7 +61,7 @@ public class ConferenceAdminController {
 	                         Model model) {
 		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
 		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
-			model.addAttribute("confName", conferenceService.findById(confId).getName());
+			model.addAttribute("confName", conference.getName());
 			model.addAttribute("user", participantService.findParticipantById(userId, confId));
 			Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r -> r.getName()).collect(Collectors.toSet());
 			model.addAttribute("availableRoles", availableRoles);

@@ -2,7 +2,7 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.exception.NoSuchUserException;
+import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,9 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLNonTransientException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(()
-                -> new NoSuchUserException(String.format("User with id - %d not found.", id)));
+                -> new NoSuchEntityException(String.format("User with id - %d not found.", id)));
     }
 
     @Override
@@ -101,7 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()
-                -> new NoSuchUserException(String.format("User with email - %s not found.", email)));
+                -> new NoSuchEntityException(String.format("User with email - %s not found.", email)));
     }
 
     @Override
@@ -158,16 +154,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
             User realUser = mapper.toEntity(userDTO);
 
-            String oldCoverPhotoPath = null;
-            if (!photo.isEmpty()) {
-                String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-                oldCoverPhotoPath = realUser.getPhoto();
-                realUser.setPhoto(newCoverPhotoPath);
-            }
+            Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+            String oldCoverPhoto = realUser.getPhoto();
+            realUser.setPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+
             userRepository.save(realUser);
-            if (oldCoverPhotoPath != null) {
-                removeCoverPhotoIfTransactionSuccess(oldCoverPhotoPath);
-            }
+            newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
         }
     }
 
@@ -202,10 +194,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String pass = userDTO.getPassword();
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = mapper.toEntity(userDTO);
-        if (!photo.isEmpty()) {
-            String newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            user.setPhoto(newCoverPhotoPath);
-        }
+
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        user.setPhoto(newCoverPhoto.orElse(null));
+
         user.setActive(true);
         userRepository.save(user);
         emailService.sendMessage(user.getEmail(),"Administrator has created account for you on Conference Assistant",
@@ -224,26 +216,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException {
         User speaker = editProfileMapper.toEntity(editProfileDTO);
 
-        String oldProfilePhotoPath = null;
-
-        if (!photo.isEmpty()) {
-            String newProfilePhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            oldProfilePhotoPath = speaker.getPhoto();
-            speaker.setPhoto(newProfilePhotoPath);
-        }
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        String oldCoverPhoto = speaker.getPhoto();
+        speaker.setPhoto(newCoverPhoto.orElse(oldCoverPhoto));
 
         userRepository.save(speaker);
-        if (oldProfilePhotoPath != null) {
-            removeCoverPhotoIfTransactionSuccess(oldProfilePhotoPath);
-        }
+        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
 
-    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
+    private void removeCoverPhotoIfTransactionSuccess(final String photo) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                imageStorageService.removeOldImage(oldCoverPhoto);
+                imageStorageService.removeOldImage(photo);
             }
         });
     }
@@ -303,6 +289,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(passwordEncoder.encode(editPasswordDTO.getPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public EditProfileDTO getEditProfileDto(Long userId) {
+        return editProfileMapper.toDto(findById(userId));
     }
 
     @Scheduled(cron = "0 01 00 * * *")

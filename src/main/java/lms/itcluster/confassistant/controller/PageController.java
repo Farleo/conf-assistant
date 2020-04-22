@@ -6,23 +6,17 @@ import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.service.*;
-import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -40,9 +34,6 @@ public class PageController {
 
     @Autowired
     private ParticipantService participantService;
-
-    @Autowired
-    private StreamRepository streamRepository;
 
     @Autowired
     private StaticDataService staticDataService;
@@ -65,13 +56,13 @@ public class PageController {
     }
 
     @GetMapping("/topic/{id}")
-    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException, NoSuchTopicException {
+    public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(id);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
-        model.addAttribute("confId", conferenceService.getConfIdByTopicId(topicDTO.getTopicId()));
+        model.addAttribute("confId", conferenceService.getConferenceDTOByTopicId(topicDTO.getTopicId()).getConferenceId());
         model.addAttribute("user", currentUser);
-        if (currentUser == null || !currentUser.isEnabled() || !conferenceService.isCurrentUserPresentAtConference(currentUser.getId(), conferenceService.getConfIdByTopicId(topicDTO.getTopicId()))) {
+        if (currentUser == null || !currentUser.isEnabled() || !conferenceService.isCurrentUserPresentAtConference(currentUser.getId(), conferenceService.getConferenceDTOByTopicId(topicDTO.getTopicId()).getConferenceId())) {
             model.addAttribute("isRegisteredOnConf", false);
             return "topic";
         }
@@ -87,7 +78,7 @@ public class PageController {
     }
 
     @GetMapping("/topic/join/{id}")
-    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) throws NoSuchTopicException {
+    public String joinConference(@PathVariable("id") long id, @AuthenticationPrincipal CurrentUser currentUser) {
         Topic topic = topicService.findById(id);
         Conference conference = topic.getStream().getConference();
         UserDTO user = userService.getUserDtoById(currentUser.getId());
@@ -146,6 +137,5 @@ public class PageController {
         model.addAttribute("topics", dtoList);
         return "speaker/topic";
     }
-
 
 }

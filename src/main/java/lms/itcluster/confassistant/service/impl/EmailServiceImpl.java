@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.service.EmailService;
+import lombok.extern.log4j.Log4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 
+@Log4j
 @Component
 public class EmailServiceImpl implements EmailService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Autowired
     @Qualifier("defaultExecutorService")
@@ -25,7 +26,11 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendMessage(String to, String subject, String text) {
-        executorService.submit(new EmailItem(to, subject, text));
+        try {
+            executorService.submit(new EmailItem(to, subject, text));
+        } catch (Exception e) {
+            log.error(String.format("Can't send email to %s: ", to), e);
+        }
     }
 
     protected class EmailItem implements Runnable {
@@ -46,15 +51,15 @@ public class EmailServiceImpl implements EmailService {
             try {
                 SimpleMailMessage msg = buildMessage();
                 emailSender.send(msg);
-                LOGGER.info("Email to {} successful sent", to);
+                log.info(String.format("Email to %s successful sent", to));
             } catch (Exception e) {
-                LOGGER.error("Can't send email to " + to + ": " + text, e);
+                log.error(String.format("Can't send email to %s: ", to), e);
                 tryCount--;
                 if (tryCount > 0) {
-                    LOGGER.debug("Decrement tryCount and try again to send email: tryCount={}, destinationEmail={}", tryCount, to);
+                    log.debug(String.format("Decrement tryCount and try again to send email: tryCount=%d, destinationEmail=%s", tryCount, to));
                     executorService.submit(this);
                 } else {
-                    LOGGER.error("Email not sent to " + to);
+                    log.error(String.format("Email not sent to %s", to));
                 }
             }
         }

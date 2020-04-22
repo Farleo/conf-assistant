@@ -14,10 +14,6 @@ import java.util.List;
 
 public interface ConferenceService {
 
-    List<Conference> getAllConferences();
-
-    Conference findById(Long id);
-
     List<ConferenceDTO> getAllConferencesDTO();
 
     ListConferenceDTO getListConferencesDTO();
@@ -36,7 +32,7 @@ public interface ConferenceService {
 
     ScheduleConferenceDTO getConferenceForSchedule(Long confId);
 
-    Long getConfIdByTopicId(Long topicId);
+    ConferenceDTO getConferenceDTOByTopicId(Long topicId);
 
     boolean isCurrentUserPresentAtConference(Long userId, Long confId);
 

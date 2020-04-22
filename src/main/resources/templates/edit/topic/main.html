@@ -37,6 +37,9 @@
                                 <img src="" th:src="${topic.coverPhoto}" alt="Image Preview"
                                      class="image-preview__image">
                             </div>
+                            <div class="alert alert-danger form-row" th:if="${#fields.hasErrors('coverPhoto')}"
+                                 th:errors="${topic.coverPhoto}">Name Error
+                            </div>
                         </div>
 
                         <div class="form-row" style="margin-bottom: 20px">

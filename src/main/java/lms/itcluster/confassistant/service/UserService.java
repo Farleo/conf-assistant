@@ -42,4 +42,6 @@ public interface UserService {
     UserDTO findByCode(String code, Long currentUserId);
 
     boolean updatePassword(EditPasswordDTO editPasswordDTO);
+
+    EditProfileDTO getEditProfileDto (Long userId);
 }

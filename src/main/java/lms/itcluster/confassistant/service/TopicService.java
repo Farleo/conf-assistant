@@ -4,7 +4,6 @@ import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.exception.NoSuchTopicException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

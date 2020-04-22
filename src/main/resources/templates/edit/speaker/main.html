@@ -46,10 +46,13 @@
                     <div class="col-3" style="padding-top: 25px">
                         <h5 style="margin-bottom: 15px">Change photo</h5>
                         <div class="form-row">
-                            <input id="originPhoto" type="text" hidden="hidden" th:value="${speaker.photo}"/>
+                            <input id="originPhoto" type="text" hidden="hidden" th:value="${speaker.photo}" name="photo"/>
                             <div class="image-preview" id="imagePreview">
                                 <img th:src="${speaker.getPhoto()}" alt="Image Preview"
                                      class="image-preview__image">
+                            </div>
+                            <div class="alert alert-danger" th:if="${#fields.hasErrors('speaker.photo')}"
+                                 th:errors="${speaker.photo}">Name Error
                             </div>
                         </div>
 

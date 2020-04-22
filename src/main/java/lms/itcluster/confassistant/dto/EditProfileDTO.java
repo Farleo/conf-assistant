@@ -18,6 +18,16 @@ public class EditProfileDTO extends AbstractDTO {
     @NotBlank
     private String info;
 
+    private String photo;
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public Long getUserId() {
         return userId;
     }
