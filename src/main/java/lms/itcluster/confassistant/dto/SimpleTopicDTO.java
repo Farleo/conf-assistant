@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +13,6 @@ import java.time.LocalTime;
 public class SimpleTopicDTO extends AbstractDTO {
 
 	private Long topicId;
-	@Size(min=1)
 	private String name;
 	@DateTimeFormat (pattern="yyyy-MM-dd")
 	private LocalDate date;
