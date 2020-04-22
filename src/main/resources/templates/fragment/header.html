@@ -25,49 +25,60 @@
                 <a href="/" class="navbar-brand"><img style="max-height: 30px" src="/picture/img/logo/logo.jpg"
                                                       alt="logo"></a>
                 <form class="form-inline">
-                    <th:block sec:authorize="hasRole ('ROLE_USER') || hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFOWNER')">
-                        <a th:href="${'/edit/profile'}" class="btn btn-sm my-2 my-sm-0 text-white"
-                           style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
-                           type="submit">My profile
+                    <a th:href="${'/schedule'}" class="btn btn-sm my-2 my-sm-0 text-white btn-secondary"
+                       style="margin-left: 5px">
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                        <span class="text-white" type="submit">Schedule</span>
+                    </a>
+                    <div class="dropdown" style="margin-left: 5px">
+                        <a class="btn btn-secondary dropdown-toggle btn-sm" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            My cab
                         </a>
-                    </th:block>
-                    <th:block sec:authorize="hasRole ('ROLE_USER') && hasAuthority('speaker')">
-                        <div class="btn btn-sm my-2 my-sm-0 text-white btn-secondary" style="margin-left: 5px">
-                        <i class="fa fa-user" aria-hidden="true"></i>
-                        <a th:href="${'/speaker'}" class="text-white"
-                           style="background-color: rgba(255,103,55,0.94)"
-                           type="submit">My cab
-                        </a>
-                        </div>
-                    </th:block>
-                    <th:block sec:authorize="hasRole ('ROLE_USER') && hasAuthority('moder')">
-                        <div class="btn btn-sm my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px">
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                            <a th:href="${'/moderator'}" class="text-white"
-                               type="submit">My cab
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                            <th:block sec:authorize="(hasRole ('ROLE_USER') || hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFOWNER')) && !hasAuthority('speaker')">
+                                <a th:href="${'/edit/profile'}" class="dropdown-item small">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <span>My profile</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole ('ROLE_USER') && hasAuthority('speaker')">
+                                <a th:href="${'/edit/speaker/main'}" class="dropdown-item small">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    <span>My profile</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole ('ROLE_USER') && hasAuthority('moder')">
+                                <a th:href="${'/moderator'}" class="dropdown-item small">
+                                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                    <span>My Topics</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole ('ROLE_USER') && hasAuthority('speaker')">
+                                <a th:href="${'/speaker'}" class="dropdown-item small">
+                                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                    <span>My Topics</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole ('ROLE_CONFOWNER') || hasRole ('ROLE_ADMIN') || hasAuthority('admin')">
+                                <a th:href="${'/dashboard/conferences'}" class="dropdown-item small">
+                                    <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                    <span>Manage conference</span>
+                                </a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole ('ROLE_ADMIN')">
+                                <a th:href="${'/admin/users'}" class="dropdown-item small">
+                                    <i class="fa fa-users" aria-hidden="true"></i>
+                                    <span>Manage users</span>
+                                </a>
+                            </th:block>
+                            <div class="dropdown-divider"></div>
+                            <a th:href="${'/log-out'}" class="dropdown-item small">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                <span type="submit">Log out</span>
                             </a>
                         </div>
-                    </th:block>
-                    <th:block sec:authorize="hasRole ('ROLE_ADMIN')">
-                        <i class="fa fa-user" aria-hidden="true"></i>
-                        <a th:href="${'/admin/users'}" class="btn btn-sm my-2 my-sm-0 text-white"
-                           style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
-                           type="submit">Manage users
-                        </a>
-                    </th:block>
-                    <th:block sec:authorize="hasRole ('ROLE_CONFOWNER') || hasRole ('ROLE_ADMIN') || hasAuthority('admin')">
-                        <a th:href="${'/dashboard/conferences'}" class="btn btn-sm my-2 my-sm-0 text-white"
-                           style="background-color: rgba(255,103,55,0.94);  margin-left: 5px"
-                           type="submit">Manage conference
-                        </a>
-                    </th:block>
-                    <div class="btn btn-sm my-2 my-sm-0 text-white btn-secondary" style="margin-left: 5px">
-                        <i class="fa fa-list" aria-hidden="true"></i>
-                        <a th:href="${'/schedule'}" class="text-white" type="submit">Schedule</a>
-                    </div>
-                    <div class="btn btn-sm my-2 my-sm-0 text-white btn-secondary" style="margin-left: 5px">
-                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                        <a th:href="${'/log-out'}" class="text-white" type="submit">Log out</a>
                     </div>
                 </form>
             </nav>
