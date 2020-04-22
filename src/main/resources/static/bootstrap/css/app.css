@@ -69,3 +69,10 @@
 a:hover {
     text-decoration: none;
 }
+
+.dropdown-item:hover {
+    /* элемент тени если наведен курсор */
+    background-color: #0056b3;
+    color: #ffffff;
+    /* элемент тени если наведен курсор конец */
+}

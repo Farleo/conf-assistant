@@ -45,21 +45,17 @@ public class EditController {
     private StreamRepository streamRepository;
 
     @GetMapping("/edit/profile")
-    public String getCompleteSignUp (@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+    public String getCompleteSignUp(@AuthenticationPrincipal CurrentUser currentUser, Model model) {
         if (currentUser == null) {
             return "redirect:/login";
         }
-        if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
-            return "redirect:/edit/speaker/main";
-        }
-        else {
-            model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
-            return "edit/profile";
-        }
+        model.addAttribute("user", userService.getGuestProfileDTOById(currentUser.getId()));
+        return "edit/profile";
+
     }
 
     @PostMapping("/edit/profile")
-    public String saveCompleteSignUp (@Valid @ModelAttribute("user") EditProfileDTO editProfileDTO, BindingResult bindingResult) {
+    public String saveCompleteSignUp(@Valid @ModelAttribute("user") EditProfileDTO editProfileDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "edit/profile";
         }
@@ -68,13 +64,13 @@ public class EditController {
     }
 
     @GetMapping("/edit/speaker/main")
-    public String getSpeaker (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+    public String getSpeaker(Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
         model.addAttribute("speaker", userService.getEditProfileDto(currentUser.getId()));
         return "edit/speaker/main";
     }
 
     @PostMapping("/edit/speaker/main")
-    public String saveSpeaker (@Valid EditProfileDTO editProfileDTO, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+    public String saveSpeaker(@Valid EditProfileDTO editProfileDTO, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo) throws IOException {
         if (bindingResult.hasErrors()) {
             return "edit/speaker/main";
         }
@@ -88,13 +84,13 @@ public class EditController {
     }
 
     @GetMapping("/edit/speaker/contacts")
-    public String getContacts (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+    public String getContacts(Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
         model.addAttribute("speaker", userService.getSpeakerById(currentUser.getId()));
         return "edit/speaker/contacts";
     }
 
     @PostMapping("/edit/speaker/contacts")
-    public String saveContacts (@Valid @ModelAttribute("speaker") EditContactsDTO contactsDTO, BindingResult bindingResult, Model model) {
+    public String saveContacts(@Valid @ModelAttribute("speaker") EditContactsDTO contactsDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "edit/speaker/contacts";
         }
@@ -103,13 +99,15 @@ public class EditController {
     }
 
     @GetMapping("/edit/speaker/password")
-    public String getPassword (Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
-        model.addAttribute("speaker", new EditPasswordDTO(){{setUserId(currentUser.getId());}});
+    public String getPassword(Model model, @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
+        model.addAttribute("speaker", new EditPasswordDTO() {{
+            setUserId(currentUser.getId());
+        }});
         return "edit/speaker/password";
     }
 
     @PostMapping("/edit/speaker/password")
-    public String savePassword (@Valid @ModelAttribute("speaker") EditPasswordDTO passwordDTO, BindingResult bindingResult, Model model) throws IOException {
+    public String savePassword(@Valid @ModelAttribute("speaker") EditPasswordDTO passwordDTO, BindingResult bindingResult, Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             return "edit/speaker/password";
         }
@@ -123,7 +121,7 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/main/{topicId}")
-    public String getMain (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+    public String getMain(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         EditTopicDTO topic = topicService.getEditTopicDTOById(topicId);
 /*        Stream stream = streamRepository.findById(topicDTO.getStreamId()).get();
         if (!SecurityUtil.canCurrentUserEditTopic(currentUser, stream, topicDTO)) {
@@ -135,7 +133,7 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/main")
-    public String saveMain (@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException {
+    public String saveMain(@ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             return "edit/topic/main";
         }
@@ -149,10 +147,7 @@ public class EditController {
     }
 
     @GetMapping("/edit/topic/speaker/{topicId}")
-    public String getSpeaker (@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        if (SecurityUtil.userHasConfSpeakerRole(currentUser)) {
-            return "redirect:/edit/speaker/main";
-        }
+    public String getSpeaker(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
         SpeakerDTO speakerDTO = topicDTO.getSpeakerDTO();
         if (SecurityUtil.userHasAdminRole(currentUser)) {
@@ -162,7 +157,7 @@ public class EditController {
     }
 
     @PostMapping("/edit/topic/speaker")
-    public String saveSpeaker (EditProfileDTO editProfileDTO, Integer topicId, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+    public String saveSpeaker(EditProfileDTO editProfileDTO, Integer topicId, @RequestParam("inpFile") MultipartFile photo) throws IOException {
         userService.updateSpeaker(editProfileDTO, photo);
         return "redirect:/topic/" + topicId;
     }
