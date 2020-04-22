@@ -1,9 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.ConferenceDTO;
-import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.dto.UserDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -133,9 +130,9 @@ public class PageController {
 
     @GetMapping("/speaker")
     public String getCabinet(@AuthenticationPrincipal CurrentUser currentUser, Model model) {
-        List<TopicDTO> dtoList = topicService.getAllTopicForCurrentSpeaker(currentUser.getId());
-        model.addAttribute("topics", dtoList);
-        return "speaker/topic";
+        ListConferenceDTO conferenceDTO = conferenceService.getAllConferenceDTOForCurrentSpeaker(currentUser);
+        model.addAttribute("conferences", conferenceDTO);
+        return "speaker/conferences";
     }
 
 }

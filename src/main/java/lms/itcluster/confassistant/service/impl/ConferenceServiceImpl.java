@@ -92,11 +92,30 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    public ListConferenceDTO getAllConferenceDTOForCurrentSpeaker(CurrentUser currentUser) {
+        User user = userService.findById(currentUser.getId());
+        List<ConferenceDTO> list = new ArrayList<>();
+        for (Participants participants : user.getParticipants()) {
+            if (participants.getParticipantsKey().getParticipantType().getName().equals(Constant.SPEAKER)) {
+                list.add(simpleMapper.toDto(participants.getParticipantsKey().getConference()));
+            }
+        }
+        deleteAllUnnecessaryTopicDTO(list, currentUser);
+        return new ListConferenceDTO(list);
+    }
+
+    private void deleteAllUnnecessaryTopicDTO(List<ConferenceDTO> list, CurrentUser currentUser) {
+        for (ConferenceDTO conferenceDTO : list) {
+            conferenceDTO.getStreamList().removeIf(streamDTO -> {
+                streamDTO.getTopicList().removeIf(topicDTO -> !topicDTO.getSpeakerDTO().getUserId().equals(currentUser.getId()));
+                return streamDTO.getTopicList().isEmpty();
+            });
+        }
+    }
+
+    @Override
     public ListConferenceDTO getAllConferenceDTOForCurrentModerator(CurrentUser currentUser) {
-        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> {
-            log.error(String.format("User with id - %d not found", currentUser.getId()));
-            return new NoSuchEntityException(String.format("User with id - %d not found", currentUser.getId()));
-        });
+        User user = userService.findById(currentUser.getId());
         List<ConferenceDTO> list = new ArrayList<>();
         for (Participants participants : user.getParticipants()) {
             if (participants.getParticipantsKey().getParticipantType().getName().equals(Constant.MODERATOR)) {

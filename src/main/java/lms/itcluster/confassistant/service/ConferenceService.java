@@ -20,6 +20,8 @@ public interface ConferenceService {
 
     ListConferenceDTO getAllConferenceDTOForCurrentModerator(CurrentUser currentUser);
 
+    ListConferenceDTO getAllConferenceDTOForCurrentSpeaker(CurrentUser currentUser);
+
     ConferenceDTO getConferenceDTOById(Long id);
 
     ListConferenceDTO getConferencesDTOByOwnerId(Long id);
