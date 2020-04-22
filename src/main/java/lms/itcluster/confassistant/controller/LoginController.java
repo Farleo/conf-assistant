@@ -65,7 +65,7 @@ public class LoginController {
     public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser) {
         UserDTO userDTO = userService.findByActivationCode(code, currentUser.getId());
         if (userDTO != null) {
-            return "redirect:/edit/profile";
+            return "redirect:/edit/profile/main";
         } else {
             return "not-found";
         }

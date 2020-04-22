@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -40,10 +40,10 @@
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">
             <div th:replace="fragment/edit :: speaker"></div>
-            <form method="POST" enctype="multipart/form-data" action="/edit/speaker/main">
+            <form method="POST" enctype="multipart/form-data" action="/edit/profile/main">
                 <input type="text" hidden="hidden" name="userId" th:value="${speaker.getUserId()}"/>
-                <div class="row no-gutters">
-                    <div class="col-3" style="padding-top: 25px">
+                <div class="row no-gutters d-flex justify-content-center">
+                    <div sec:authorize="hasRole ('ROLE_USER') && hasAuthority('speaker')" class="col-3" style="padding-top: 25px">
                         <h5 style="margin-bottom: 15px">Change photo</h5>
                         <div class="form-row">
                             <input id="originPhoto" type="text" hidden="hidden" th:value="${speaker.photo}" name="photo"/>
@@ -60,7 +60,7 @@
                             <input type="file" name="inpFile" id="inpFile"/>
                         </div>
                     </div>
-                    <div class="col-9" style="padding-top: 25px; padding-left: 30px">
+                    <div class="col" style="padding-top: 25px; padding-left: 30px">
                         <h5 style="margin-bottom: 15px">Change speaker name</h5>
                         <div class="form-row">
                             <div class="form-group col-6">
@@ -92,11 +92,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-row float-right">
+                            <input type="submit" class="btn btn-success" value="Save"/>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <input type="submit" class="btn btn-success" value="Save"/>
-                </div>
+
             </form>
         </div>
     </div>

@@ -18,39 +18,6 @@ public final class SecurityUtil {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    public static boolean canCurrentUserEditTopic(CurrentUser currentUser, Stream stream, TopicDTO topicDTO) {
-        if (userHasConfOwnerRole(currentUser)) {
-            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
-        }
-        if (userHasConfModerRole(currentUser)) {
-            return stream.getModerator().getUserId().equals(currentUser.getId());
-        }
-        if (userHasConfSpeakerRole(currentUser)) {
-            return topicDTO.getSpeakerDTO().getUserId().equals(currentUser.getId());
-        }
-        return userHasAdminRole(currentUser);
-    }
-
-    public static boolean canCurrentUserEditSpeaker(CurrentUser currentUser, Stream stream, TopicDTO topicDTO) {
-        if (userHasConfOwnerRole(currentUser)) {
-            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
-        }
-        if (userHasConfSpeakerRole(currentUser)) {
-            return topicDTO.getSpeakerDTO().getUserId().equals(currentUser.getId());
-        }
-        return userHasAdminRole(currentUser);
-    }
-
-    public static boolean canManageQuestion(CurrentUser currentUser, Stream stream) {
-        if (userHasConfOwnerRole(currentUser)) {
-            return stream.getConference().getOwner().getUserId().equals(currentUser.getId());
-        }
-        if (userHasConfModerRole(currentUser)) {
-            return stream.getModerator().getUserId().equals(currentUser.getId());
-        }
-        return userHasAdminRole(currentUser);
-    }
-
     public static boolean canEditConference(CurrentUser currentUser, ConferenceDTO conferenceDTO) {
         if (userHasConfOwnerRole(currentUser)) {
             return conferenceDTO.getOwner().equals(currentUser.getId());

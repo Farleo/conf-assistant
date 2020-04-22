@@ -39,18 +39,15 @@ public class ModerController {
 
     @GetMapping("/moderator/questions/{topicId}")
     public String getQuestions(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
-        StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
-        model.addAttribute("isEnable", topicDTO.isAllowedQuestion());
+        TopicDTO topicDTO = topicService.getTopicDTOWithQuestionManageAccess(topicId, currentUser);
         model.addAttribute("topic", topicDTO);
         return "moderator/question";
     }
 
     @GetMapping("/moderator/questions/send/{topicId}")
     public String sendQuestionToSpeaker(@PathVariable("topicId") Long topicId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        questionService.sendQuestionToSpeaker(topicId);
-        model.addAttribute("topic", topicService.getTopicDTOById(topicId));
-        model.addAttribute("isEnable", topicService.getTopicDTOById(topicId).isAllowedQuestion());
+        questionService.sendQuestionToSpeaker(topicId, currentUser);
+        model.addAttribute("topic", topicService.getTopicDTOById(topicId, currentUser));
         return "moderator/question";
     }
 }

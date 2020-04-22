@@ -1,16 +1,22 @@
 package lms.itcluster.confassistant.service.impl;
 
+import lms.itcluster.confassistant.component.CheckEditAccess;
 import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
+import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.TopicService;
+import lms.itcluster.confassistant.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class TopicServiceImpl implements TopicService {
 
@@ -33,7 +40,13 @@ public class TopicServiceImpl implements TopicService {
     private TopicRepository topicRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ImageStorageService imageStorageService;
+
+    @Autowired
+    private CheckEditAccess checkEditAccess;
 
     @Autowired
     @Qualifier("topicMapper")
@@ -61,13 +74,26 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public TopicDTO getTopicDTOById(Long id) {
+    public TopicDTO getTopicDTOById(Long id, CurrentUser currentUser) {
         return mapper.toDto(findById(id));
     }
 
     @Override
-    public EditTopicDTO getEditTopicDTOById(Long id) {
-        return editTopicMapper.toDto(findById(id));
+    public TopicDTO getTopicDTOWithQuestionManageAccess(Long id, CurrentUser currentUser) {
+        Topic topic = findById(id);
+        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
+            throw new ForbiddenTargetException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), id));
+        }
+        return mapper.toDto(findById(id));
+    }
+
+    @Override
+    public EditTopicDTO getEditTopicDTOById(Long id, CurrentUser currentUser) {
+        Topic topic = findById(id);
+        if (!checkEditAccess.canCurrentUserEditTopic(currentUser, topic)) {
+            throw new ForbiddenTargetException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), id));
+        }
+        return editTopicMapper.toDto(topic);
     }
 
     @Override
@@ -95,24 +121,6 @@ public class TopicServiceImpl implements TopicService {
                 imageStorageService.removeOldImage(oldCoverPhoto);
             }
         });
-    }
-
-    @Override
-    @Transactional
-    public void updateTopicInfo(TopicDTO topicDTO) {
-        Topic topic = findById(topicDTO.getTopicId());
-        topic.setInfo(topicDTO.getInfo());
-        topicRepository.save(topic);
-    }
-
-    @Override
-    public List<TopicDTO> getAllTopicForCurrentSpeaker(Long userId) {
-        List<TopicDTO> list = new ArrayList<>();
-        User user = userRepository.findById(userId).get();
-        for (Topic topic : topicRepository.findAllBySpeaker(user)) {
-            list.add(mapper.toDto(topic));
-        }
-        return list;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/register/conference/**").authenticated()
 /*                .antMatchers( "/moderator/**").hasRole("USER")
                 .antMatchers( "/moderator/**").hasAuthority("moder")*/
-                .antMatchers( "/edit/speaker/**").hasAuthority("speaker")
+/*                .antMatchers( "/edit/speaker/**").hasAuthority("speaker")*/
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/conf/owner/**").hasAnyRole("ADMIN", "CONFOWNER")
                 .anyRequest().permitAll();

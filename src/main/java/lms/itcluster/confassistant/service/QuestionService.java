@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
+import lms.itcluster.confassistant.model.CurrentUser;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface QuestionService {
 
     boolean like(Long questionId, Long userId);
 
-    boolean sendQuestionToSpeaker(Long topicId);
+    boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser);
 }

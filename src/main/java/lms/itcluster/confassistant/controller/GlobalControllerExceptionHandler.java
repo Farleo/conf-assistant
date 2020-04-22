@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lombok.extern.slf4j.Slf4j;
+import netscape.security.ForbiddenTargetException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,6 +27,14 @@ public class GlobalControllerExceptionHandler {
     public String handleNullPointerExceptions(NoSuchEntityException ex, Model model, HttpServletResponse response) {
         model.addAttribute("message", "Not found");
         response.setStatus(HttpStatus.NOT_FOUND.value());
+        log.error(ex.getMessage(), ex);
+        return "message";
+    }
+
+    @ExceptionHandler(ForbiddenTargetException.class)
+    public String handleNullPointerExceptions(ForbiddenTargetException ex, Model model, HttpServletResponse response) {
+        model.addAttribute("message", "Forbidden");
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         log.error(ex.getMessage(), ex);
         return "message";
     }

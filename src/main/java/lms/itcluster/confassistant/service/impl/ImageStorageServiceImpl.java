@@ -22,7 +22,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
     @Override
     public Optional<String> saveAndReturnImageLink(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             return Optional.empty();
         }
 

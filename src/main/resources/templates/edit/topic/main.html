@@ -24,7 +24,7 @@
     <div class="row justify-content-center border-0" style="margin-top: 25px">
         <div class="card col-7 border-0">
 
-            <form method="POST" enctype="multipart/form-data" th:object="${topic}" action="/edit/topic/main">
+            <form method="POST" enctype="multipart/form-data" th:object="${topic}" th:action="${'/edit/topic/main/' + topic.topicId}">
                 <input type="text" hidden="hidden" name="topicId" th:value="${topic.topicId}"/>
                 <div class="row no-gutters">
 

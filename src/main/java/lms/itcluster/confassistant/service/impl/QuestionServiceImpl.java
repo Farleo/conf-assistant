@@ -1,15 +1,20 @@
 package lms.itcluster.confassistant.service.impl;
 
+import lms.itcluster.confassistant.component.CheckEditAccess;
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.EmailService;
 import lms.itcluster.confassistant.service.QuestionService;
+import lms.itcluster.confassistant.service.TopicService;
+import lms.itcluster.confassistant.service.UserService;
+import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,6 +37,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TopicService topicService;
+
+    @Autowired
+    private CheckEditAccess checkEditAccess;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     @Qualifier("questionMapper")
@@ -111,9 +125,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public boolean sendQuestionToSpeaker(Long topicId) {
-        Topic topic = topicRepository.findById(topicId).get();
-        User speaker = userRepository.findById(topic.getSpeaker().getUserId()).get();
+    public boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser) {
+        Topic topic = topicService.findById(topicId);
+        if (!checkEditAccess.canCurrentUserEditTopic(currentUser, topic)) {
+            throw new ForbiddenTargetException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
+        }
+        User speaker = userService.findById(topic.getSpeaker().getUserId());
         List<Question> questions = topic.getQuestionList();
         questions.sort(Comparator.comparingInt(Question::getRating));
         StringBuilder letter = new StringBuilder("Here is all your question from topic: " + topic.getName() + "\n");

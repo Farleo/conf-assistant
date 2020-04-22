@@ -65,7 +65,7 @@ public class EditRestController {
 
     @GetMapping("/select/{questionId}/{topicId}")
     public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) {
-        TopicDTO topicDTO = topicService.getTopicDTOById(topicId);
+        TopicDTO topicDTO = topicService.getTopicDTOById(topicId, currentUser);
         StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
         if (!Objects.equals(streamDTO.getModerator(), currentUser.getId())) {
             return false;

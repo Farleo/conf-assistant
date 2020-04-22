@@ -1,6 +1,7 @@
 package lms.itcluster.confassistant.mapper.impl;
 
 import lms.itcluster.confassistant.dto.SignUpDTO;
+import lms.itcluster.confassistant.entity.Roles;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.model.Constant;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -50,6 +53,8 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
 
     @Override
     protected void mapSpecificFieldsInDto(SignUpDTO source, User destination) {
+        Set<Roles> roles = new HashSet<>();
+        roles.add(rolesRepository.findByRole(Constant.USER_ROLE));
         destination.setRoles(Collections.singleton(rolesRepository.findByRole(Constant.USER_ROLE)));
         destination.setPassword(passwordEncoder.encode(Constant.USER_PASSWORD));
         destination.setActiveCode(UUID.randomUUID().toString());

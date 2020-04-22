@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -26,13 +26,13 @@
 <div th:fragment="speaker">
     <ul class="nav nav-tabs  nav-fill"  >
         <li class="nav-item" >
-            <a th:href="${'/edit/speaker/main'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('main') ? 'active':''}">Main</a>
+            <a th:href="${'/edit/profile/main'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('main') ? 'active':''}">Main</a>
         </li>
         <li class="nav-item">
-            <a  th:href="${'/edit/speaker/contacts'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('contacts') ? 'active':''}">Contacts</a>
+            <a  th:href="${'/edit/profile/contacts'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('contacts') ? 'active':''}">Contacts</a>
         </li>
-        <li class="nav-item" >
-            <a  th:href="${'/edit/speaker/password'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('password') ? 'active':''}">Change password</a>
+        <li class="nav-item" sec:authorize="hasAuthority('admin') || hasAuthority('speaker') || hasAuthority('moder')">
+            <a  th:href="${'/edit/profile/password'}" class="text-dark nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('password') ? 'active':''}">Change password</a>
         </li>
     </ul>
 </div>

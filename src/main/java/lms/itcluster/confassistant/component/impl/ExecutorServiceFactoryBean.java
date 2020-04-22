@@ -1,4 +1,4 @@
-package lms.itcluster.confassistant.component;
+package lms.itcluster.confassistant.component.impl;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Value;

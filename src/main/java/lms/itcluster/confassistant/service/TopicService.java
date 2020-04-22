@@ -4,6 +4,7 @@ import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
+import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,17 +16,15 @@ public interface TopicService {
 
     Topic findByName (String id);
 
-    TopicDTO getTopicDTOById(Long id);
+    TopicDTO getTopicDTOById(Long id, CurrentUser currentUser);
 
-    EditTopicDTO getEditTopicDTOById(Long id);
+    TopicDTO getTopicDTOWithQuestionManageAccess(Long id, CurrentUser currentUser);
+
+    EditTopicDTO getEditTopicDTOById(Long id, CurrentUser currentUser);
     
     SimpleTopicDTO getSimpleTopicDTOById(Long id);
 
     void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException;
-
-    void updateTopicInfo(TopicDTO topicDTO);
-
-    List<TopicDTO> getAllTopicForCurrentSpeaker(Long userId);
 
     boolean enableOrDisableQuestion(Long topicID);
     

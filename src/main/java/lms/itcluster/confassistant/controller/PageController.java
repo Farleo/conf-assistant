@@ -54,7 +54,7 @@ public class PageController {
 
     @GetMapping("/topic/{id}")
     public String getTopic(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        TopicDTO topicDTO = topicService.getTopicDTOById(id);
+        TopicDTO topicDTO = topicService.getTopicDTOById(id, currentUser);
         model.addAttribute("topic", topicDTO);
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         model.addAttribute("confId", conferenceService.getConferenceDTOByTopicId(topicDTO.getTopicId()).getConferenceId());
