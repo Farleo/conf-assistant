@@ -5,8 +5,6 @@ import lms.itcluster.confassistant.dto.ListConferenceDTO;
 import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,6 +23,8 @@ public interface ConferenceService {
     ListConferenceDTO getAllConferenceDTOForCurrentSpeaker(CurrentUser currentUser);
 
     ConferenceDTO getConferenceDTOById(Long id);
+    
+    ConferenceDTO getConferenceDTObyAlias(String alias);
 
     ListConferenceDTO getConferencesDTOByOwnerId(Long id);
 
