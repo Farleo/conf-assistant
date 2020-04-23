@@ -12,6 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -21,11 +25,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers( "/like/**", "/save-question/**").hasAnyRole("ADMIN", "CONFOWNER", "USER")
-                .antMatchers( "/register/conference/**").authenticated()
+                .antMatchers("/like/**", "/save-question/**").hasAnyRole("ADMIN", "CONFOWNER", "USER")
+                .antMatchers("/register/conference/**").authenticated()
 /*                .antMatchers( "/moderator/**").hasRole("USER")
                 .antMatchers( "/moderator/**").hasAuthority("moder")*/
 /*                .antMatchers( "/edit/speaker/**").hasAuthority("speaker")*/
@@ -44,8 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     if (request.getParameter("password").equals("")) {
                         response.sendError(HttpStatus.UNAUTHORIZED.value(),
                                 HttpStatus.UNAUTHORIZED.getReasonPhrase());
-                    }
-                    else {
+                    } else {
                         response.sendError(HttpStatus.BAD_REQUEST.value(),
                                 HttpStatus.BAD_REQUEST.getReasonPhrase());
                     }
@@ -56,6 +62,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
         http.csrf().disable();
+        http.rememberMe()
+                .rememberMeParameter("remember-me")
+                .key("uniqueAndSecret")
+                .tokenRepository(persistentTokenRepository());
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
+        db.setDataSource(dataSource);
+        return db;
     }
 
     @Override
@@ -66,17 +83,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    public static void main(String[] args) {
-        /*PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode("123qweasd");
-        assert passwordEncoder.matches("$2a$10$6beagrBPfIHPRfYzVPQw.OFQ6AiBlW9oab3vE0u8D7BZh9JwyVoMi", password);
-        System.out.println(password);*/
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode("");
-        System.out.println(passwordEncoder.matches("", password));
-        System.out.println(password);
     }
 
 }

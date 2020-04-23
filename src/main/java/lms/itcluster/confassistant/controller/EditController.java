@@ -6,6 +6,7 @@ import lms.itcluster.confassistant.dto.EditProfileDTO;
 import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.exception.CantCompleteClientRequestException;
 import lms.itcluster.confassistant.model.CurrentUser;
+import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class EditController {
 
     @Autowired
     private TopicService topicService;
+
+    @Autowired
+    private ParticipantService participantService;
 
     @GetMapping("/edit/profile/main")
     public String getSpeaker(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
@@ -104,6 +108,6 @@ public class EditController {
             bindingResult.rejectValue("coverPhoto", "wrong.photo.format", "Use file with jpg, jpeg or png");
             return "edit/topic/main";
         }
-        return "redirect:/topic/" + topic.getTopicId();
+        return "redirect:/topic/" + topicId;
     }
 }

@@ -11,6 +11,12 @@ function sendCredential(){
     var formData = new FormData();
     formData.append('email', $("#email").val());
     formData.append('password', $("#password").val());
+    var chbox;
+    chbox = document.getElementById('remember-me');
+    if (chbox.checked) {
+        formData.append('remember-me', $("#remember-me").val());
+    }
+
 
     // DO POST
     $.ajax({
