@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                SecurityUtil.authenticate(user);
+                SecurityUtil.authentificateWithRememberMe(user);
             }
         });
     }

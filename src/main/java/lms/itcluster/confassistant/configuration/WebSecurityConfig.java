@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 /*        http.csrf().disable();*/
         http.rememberMe()
                 .rememberMeParameter("remember-me")
-                .key("uniqueAndSecret")
+                .key("conf-assistant")
                 .tokenRepository(persistentTokenRepository());
     }
 
