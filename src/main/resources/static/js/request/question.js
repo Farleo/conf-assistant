@@ -1,14 +1,17 @@
 $(document).ready(function () {
 
 
+
     $("#QuestionForm").submit(function (event) {
         // Prevent the form from submitting via the browser.
         event.preventDefault();
         askQuestion();
     });
 
+
     $("#refresh").click(function () {
         show();
+        isQuestionAllowed($("#topicId").val());
     });
 
 
@@ -27,15 +30,13 @@ $(document).ready(function () {
     });
 
     var isRegisteredOnConf = $("#isRegisteredOnConf").val();
-    var isActiveTopic = $("#isActiveTopic").val();
-    var isActive = $("#isActive").val();
-    if (isRegisteredOnConf === 'true' && (isActiveTopic === 'true' || isActive === 'true')) {
+    if (isRegisteredOnConf === 'true') {
         show();
     }
 
 })
 ;
-
+var isAllowedQuestion;
 var orderBy = "Rating";
 var intervalID;
 
@@ -78,11 +79,11 @@ function askQuestion() {
         error: function(xhr,status,error) {
             console.log("error");
             if (xhr.status === 403) {
-                $('#getResultDiv div').empty();
+                $('#QuestionForm').empty();
                 var variable = "<div id=\"QuestionBlock3\" class=\"card border-0\">\n" +
-                    "                            <p>Question Disabled</p>\n" +
+                    "                            <p>The ability to ask questions is currently disabled</p>\n" +
                     "                        </div>";
-
+                $('#QuestionForm').append(variable);
             }
         }
 
@@ -174,6 +175,32 @@ function sendLike(i, question) {
         dataType: 'json',
         success: function (isLike) {
             show()
+        }
+    });
+}
+
+function isQuestionAllowed(topicId) {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        url: document.location.origin + "/question/status/" + topicId,
+        dataType: 'json',
+        success: function (isAllowed) {
+            if (isAllowed) {
+                $('#QuestionForm').empty();
+                variable = "<input style=\"margin-right: 10px; margin-left: 10px\" id=\"question\" class=\"form-control col\"\n" +
+                    "                                   placeholder=\"Write your question\">\n" +
+                    "                            <button style=\"background-color: rgba(255,103,55,0.94); max-width: max-content\"\n" +
+                    "                                    class=\"btn col text-white\" type=\"submit\"> Send\n" +
+                    "                            </button>";
+                $('#QuestionForm').append(variable);
+            } else {
+                $('#QuestionForm').empty();
+                variable = "<div id=\"QuestionBlock3\" class=\"card border-0\">\n" +
+                    "                            <p>The ability to ask questions is currently disabled</p>\n" +
+                    "                        </div>";
+                $('#QuestionForm').append(variable);
+            }
         }
     });
 }

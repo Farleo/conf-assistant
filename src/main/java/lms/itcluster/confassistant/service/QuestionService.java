@@ -23,4 +23,6 @@ public interface QuestionService {
     boolean like(Long questionId, Long userId);
 
     boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser);
+
+
 }

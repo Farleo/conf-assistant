@@ -154,7 +154,7 @@
                                             <div style=""
                                                  th:styleappend="${'height: ' + topic.backDown + '%'}"></div>
                                             <a th:href="${'/topic/' + topic.topicId}"
-                                               class="btn d-inline-block text-muted"
+                                               class="btn d-inline-block topic"
                                                style=" width: 100%; background-color: rgba(0,01,255,0.1); border-color: #a8a8a8"
                                                th:if="${topic.getActive()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
@@ -166,7 +166,7 @@
                                             </a>
                                             <th:block th:unless="${topic.getActive()}">
                                             <a th:href="${'/topic/' + topic.topicId}"
-                                               class="btn d-inline-block text-muted"
+                                               class="btn d-inline-block topic"
                                                style=" width: 100%;  border-color: #a8a8a8"
                                                th:if="${!topic.getBegin()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
@@ -178,14 +178,14 @@
                                                 </div>
                                             </a>
                                             <a th:href="${'/topic/' + topic.topicId}"
-                                               class="btn d-inline-block text-muted"
+                                               class="btn d-inline-block topic "
                                                style=" width: 100%;  border-color: #a8a8a8"
                                                th:if="${topic.getBegin()}"
                                                th:styleappend="${'; height: ' + topic.bodySize + '%'}">
                                                 <div class="d-flex justify-content-between">
                                                 <span th:text="${' ' + topic.name + topic.beginTime + '-' + topic.finishTime}">
                                                     </span>
-                                                    <i class="fa fa-clock-o text-muted"
+                                                    <i class="fa fa-clock-o "
                                                        aria-hidden="true"></i>
                                                 </div>
                                             </a>

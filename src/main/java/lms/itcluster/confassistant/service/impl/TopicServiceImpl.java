@@ -183,6 +183,12 @@ public class TopicServiceImpl implements TopicService {
         topicRepository.save(topic);
     }
 
+    @Override
+    public boolean isQuestionAllowed(Long topicId) {
+        Topic topic = findById(topicId);
+        return topic.isAllowedQuestion();
+    }
+
     @Scheduled(cron = "0 01 00 * * *")
     @Transactional
     public void removeDisableAllowedQuestion() {

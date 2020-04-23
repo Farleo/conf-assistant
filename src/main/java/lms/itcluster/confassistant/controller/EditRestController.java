@@ -69,6 +69,11 @@ public class EditRestController {
         return ResponseEntity.ok("User is valid");
     }
 
+    @GetMapping(value = "/question/status/{topicId}")
+    public boolean isQuestionAllowed(@PathVariable("topicId") Long topicId) {
+        return topicService.isQuestionAllowed(topicId);
+    }
+
     @GetMapping("/manage/topic/select/{questionId}/{topicId}")
     public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId, currentUser);

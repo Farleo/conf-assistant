@@ -57,7 +57,7 @@ public class QuestionServiceImpl implements QuestionService {
         Topic topic = newQuestion.getTopic();
         Long confId = topic.getStream().getConference().getConferenceId();
         if (checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            if (topic.isAllowedQuestion() || checkEditAccess.isActiveTopic(topic)) {
+            if (topic.isAllowedQuestion()) {
                 questionRepository.save(newQuestion);
                 return like(newQuestion.getQuestionId(), newQuestion.getUser().getUserId());
             }
@@ -166,6 +166,8 @@ public class QuestionServiceImpl implements QuestionService {
         emailService.sendMessage(speaker.getEmail(), "Questions from topic: " + topic.getName(), letter.toString());
         return true;
     }
+
+
 
     private boolean unLike(User user, Question question) {
         user.getLikes().remove(question);

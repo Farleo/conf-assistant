@@ -30,6 +30,8 @@ public interface TopicService {
     
     List<TopicDTO> findAllTopicByStreamId(Long streamId);
 
+    boolean isQuestionAllowed(Long topicId);
+
     void deleteTopic(Long topicId);
 
     void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException;

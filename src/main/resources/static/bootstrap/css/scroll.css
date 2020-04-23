@@ -1,5 +1,7 @@
 .scrollbar {
-    height: 40em;
+    min-height: 0em;
+    max-height: 44em;
+    height: fit-content;
     background: #fff;
     overflow-y: scroll;
 }
