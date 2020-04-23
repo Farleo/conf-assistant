@@ -44,8 +44,8 @@ public class EditRestController {
     private UserRepository userRepository;
 
     @PostMapping(value = "/save-question")
-    public boolean saveQuestion(@RequestBody QuestionDTO questionDTO) {
-        return questionService.saveQuestion(questionDTO);
+    public boolean saveQuestion(@RequestBody QuestionDTO questionDTO, @AuthenticationPrincipal CurrentUser currentUser) {
+        return questionService.saveQuestion(questionDTO, currentUser);
     }
 
     @GetMapping("/get-all-questions/{topicId}/{orderBy}")
@@ -63,7 +63,13 @@ public class EditRestController {
         return questionService.like(questionId, currentUser.getId());
     }
 
-    @GetMapping("/select/{questionId}/{topicId}")
+    @PostMapping("/edit/profile/contacts")
+    public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
+        userService.updateUserEmail(contactsDTO);
+        return ResponseEntity.ok("User is valid");
+    }
+
+    @GetMapping("/manage/topic/select/{questionId}/{topicId}")
     public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId, currentUser);
         StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
@@ -73,29 +79,9 @@ public class EditRestController {
         return questionService.selectNextQuestion(topicDTO.getQuestionListDTO(), questionId);
     }
 
-    @PostMapping("/edit/speaker/valid/contacts")
-    public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
-        userService.updateUserEmail(contactsDTO);
-        return ResponseEntity.ok("User is valid");
-    }
-
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
-
-    @GetMapping("/enable/{topicId}")
+    @GetMapping("/manage/topic/{topicId}/enable")
     public boolean enable(@PathVariable("topicId") Long topicId, @AuthenticationPrincipal CurrentUser currentUser) {
-        return topicService.enableOrDisableQuestion(topicId);
+        return topicService.enableOrDisableQuestion(topicId, currentUser);
     }
 
 }

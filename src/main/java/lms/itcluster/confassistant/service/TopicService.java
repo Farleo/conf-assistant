@@ -26,7 +26,7 @@ public interface TopicService {
 
     void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException;
 
-    boolean enableOrDisableQuestion(Long topicID);
+    boolean enableOrDisableQuestion(Long topicID, CurrentUser currentUser);
     
     List<TopicDTO> findAllTopicByStreamId(Long streamId);
 

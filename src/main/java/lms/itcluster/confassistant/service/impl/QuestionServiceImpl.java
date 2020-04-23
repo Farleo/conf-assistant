@@ -5,18 +5,17 @@ import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
-import lms.itcluster.confassistant.service.EmailService;
-import lms.itcluster.confassistant.service.QuestionService;
-import lms.itcluster.confassistant.service.TopicService;
-import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.service.*;
 import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +24,9 @@ import java.util.List;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
+
+    @Autowired
+    private ConferenceService conferenceService;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -52,10 +54,18 @@ public class QuestionServiceImpl implements QuestionService {
     private Mapper<Question, QuestionDTO> mapper;
 
     @Override
-    public boolean saveQuestion(QuestionDTO questionDTO) {
+    public boolean saveQuestion(QuestionDTO questionDTO, CurrentUser currentUser) {
         Question newQuestion = mapper.toEntity(questionDTO);
-        questionRepository.save(newQuestion);
-        return like(newQuestion.getQuestionId(), newQuestion.getUser().getUserId());
+        Topic topic = newQuestion.getTopic();
+        Long confId = topic.getStream().getConference().getConferenceId();
+        if (checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
+            if (topic.isAllowedQuestion() || checkEditAccess.isActiveTopic(topic)) {
+                questionRepository.save(newQuestion);
+                return like(newQuestion.getQuestionId(), newQuestion.getUser().getUserId());
+            }
+            throw new ForbiddenAccessException(String.format("Questions of topic id: %d are not allowed now", topic.getTopicId()));
+        }
+       throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
     }
 
     @Override
@@ -127,7 +137,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser) {
         Topic topic = topicService.findById(topicId);
-        if (!checkEditAccess.canCurrentUserEditTopic(currentUser, topic)) {
+        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
             throw new ForbiddenTargetException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
         }
         User speaker = userService.findById(topic.getSpeaker().getUserId());

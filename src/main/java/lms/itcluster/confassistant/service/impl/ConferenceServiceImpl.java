@@ -74,7 +74,8 @@ public class ConferenceServiceImpl implements ConferenceService {
         return conferenceRepository.findAll();
     }
 
-    private Conference findById(Long id) {
+    @Override
+    public Conference findById(Long id) {
         return conferenceRepository.findById(id).orElseThrow(() -> {
             log.error(String.format("Conference with id - %d not found", id));
             return new NoSuchEntityException(String.format("Conference with id - %d not found", id));
@@ -255,16 +256,7 @@ public class ConferenceServiceImpl implements ConferenceService {
         }
     }
 
-    @Override
-    public boolean isCurrentUserPresentAtConference(Long userId, Long confId) {
-        Conference conference = findById(confId);
-        for (Participants participants : conference.getParticipants()) {
-            if (participants.getParticipantsKey().getUser().getUserId().equals(userId)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     @Override
     public boolean registerCurrentUserForConference(Long confId, Long userId) {

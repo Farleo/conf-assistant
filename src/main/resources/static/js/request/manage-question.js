@@ -36,7 +36,7 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             contentType: "application/json",
-            url: document.location.origin + "/enable/" + $('#topicId').val(),
+            url: document.location.origin + "/manage/topic/" + $('#topicId').val() + "/enable",
             success: function (result) {
                 $("#enableButton").empty();
                 var variable;
@@ -125,7 +125,7 @@ function select(question) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: document.location.origin + "/select/" + question.questionId + "/" + $('#topicId').val(),
+        url: document.location.origin + "/manage/topic/select/" + question.questionId + "/" + $('#topicId').val(),
         dataType: 'json',
         success: function (result) {
             if (result) {

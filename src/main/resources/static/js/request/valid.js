@@ -19,7 +19,7 @@ function sendCredential() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: document.location.origin + "/edit/speaker/valid/contacts",
+        url: document.location.origin + "/edit/profile/contacts",
         data: JSON.stringify(formData),
         dataType: 'json',
         beforeSend: function(xhr) {

@@ -7,6 +7,7 @@ import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -82,7 +83,7 @@ public class TopicServiceImpl implements TopicService {
     public TopicDTO getTopicDTOWithQuestionManageAccess(Long id, CurrentUser currentUser) {
         Topic topic = findById(id);
         if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
-            throw new ForbiddenTargetException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), id));
+            throw new ForbiddenAccessException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), id));
         }
         return mapper.toDto(findById(id));
     }
@@ -91,7 +92,7 @@ public class TopicServiceImpl implements TopicService {
     public EditTopicDTO getEditTopicDTOById(Long id, CurrentUser currentUser) {
         Topic topic = findById(id);
         if (!checkEditAccess.canCurrentUserEditTopic(currentUser, topic)) {
-            throw new ForbiddenTargetException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), id));
+            throw new ForbiddenAccessException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), id));
         }
         return editTopicMapper.toDto(topic);
     }
@@ -124,8 +125,11 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean enableOrDisableQuestion(Long topicID) {
-        Topic topic = topicRepository.findById(topicID).get();
+    public boolean enableOrDisableQuestion(Long topicId, CurrentUser currentUser) {
+        Topic topic = findById(topicId);
+        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
+            throw new ForbiddenAccessException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), topicId));
+        }
         boolean result;
         if (topic.isAllowedQuestion()) {
             topic.setAllowedQuestion(false);

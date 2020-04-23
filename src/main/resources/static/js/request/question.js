@@ -74,6 +74,16 @@ function askQuestion() {
         dataType: 'json',
         success: function () {
             show()
+        },
+        error: function(xhr,status,error) {
+            console.log("error");
+            if (xhr.status === 403) {
+                $('#getResultDiv div').empty();
+                var variable = "<div id=\"QuestionBlock3\" class=\"card border-0\">\n" +
+                    "                            <p>Question Disabled</p>\n" +
+                    "                        </div>";
+
+            }
         }
 
     });

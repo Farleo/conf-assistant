@@ -52,7 +52,7 @@
                                         <td scope="row"><a class="btn border-secondary text-muted" th:href="${'/topic/' + topic.topicId}" th:text="${topic.name}"></a></td>
                                         <td th:text="${topic.date + ' ' + topic.beginTime + '-' + topic.finishTime}"></td>
                                         <td th:text="${topic.speakerDTO.firstName + ' ' + topic.speakerDTO.lastName}"></td>
-                                        <td><a class="btn border-success text-muted" th:href="${'/moderator/questions/' + topic.topicId}">Manage Question</a></td>
+                                        <td><a class="btn border-success text-muted" th:href="${'/manage/topic/' + topic.topicId}">Manage Question</a></td>
                                         <td><a th:classappend="${topic.getBegin()} ? 'border-info' : 'disabled border-secondary'" class="btn text-muted" th:href="${'/edit/topic/main/' + topic.topicId}">Edit</a></td>
                                         <td th:if="${topic.active}"><i class="fa fa-hourglass-half text-warning" aria-hidden="true"></i></td>
                                         <th:block th:unless="${topic.active}">

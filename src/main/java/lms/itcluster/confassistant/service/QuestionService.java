@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-    boolean saveQuestion(QuestionDTO questionDTO);
+    boolean saveQuestion(QuestionDTO questionDTO, CurrentUser currentUser);
 
     Question findByName(String name);
 

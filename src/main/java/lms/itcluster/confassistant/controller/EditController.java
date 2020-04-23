@@ -59,15 +59,6 @@ public class EditController {
         return "edit/profile/contacts";
     }
 
-    @PostMapping("/edit/profile/contacts")
-    public String saveContacts(@Valid @ModelAttribute("speaker") EditContactsDTO contactsDTO, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "edit/profile/contacts";
-        }
-
-        return "redirect:/";
-    }
-
     @GetMapping("/edit/profile/password")
     public String getPassword(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
         model.addAttribute("speaker", new EditPasswordDTO() {{

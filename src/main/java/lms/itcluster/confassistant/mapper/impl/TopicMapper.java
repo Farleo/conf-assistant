@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.mapper.impl;
 
+import lms.itcluster.confassistant.component.CheckEditAccess;
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
@@ -36,6 +37,9 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
     @Autowired
     @Qualifier("speakerMapper")
     private Mapper<User, SpeakerDTO> speakerMapper;
+
+    @Autowired
+    private CheckEditAccess checkEditAccess;
 
 
 
@@ -74,9 +78,8 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
         destination.setSpeakerDTO(speakerMapper.toDto(source.getSpeaker()));
         destination.setStream(source.getStream().getName());
         destination.setQuestionListDTO(getQuestions(source));
-        destination.setBegin(LocalDateTime.now().isBefore(LocalDateTime.of(source.getDate(), source.getBeginTime())));
-        destination.setActive(LocalDateTime.now().isBefore(LocalDateTime.of(source.getDate(), source.getFinishTime()))
-                && LocalDateTime.now().isAfter(LocalDateTime.of(source.getDate(), source.getBeginTime())));
+        destination.setBegin(checkEditAccess.isBeginTopic(source));
+        destination.setActive(checkEditAccess.isActiveTopic(source));
     }
 
     private List<QuestionDTO> getQuestions(Topic topic) {

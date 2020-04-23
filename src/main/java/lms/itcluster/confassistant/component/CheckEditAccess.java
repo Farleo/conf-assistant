@@ -9,4 +9,10 @@ public interface CheckEditAccess {
     boolean canCurrentUserEditTopic(CurrentUser currentUser, Topic topic);
 
     boolean canManageQuestion(CurrentUser currentUser, Topic topic);
+
+    boolean isCurrentUserPresentAtConference(Long userId, Long confId);
+
+    boolean isActiveTopic(Topic topic);
+
+    boolean isBeginTopic(Topic topic);
 }

@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.configuration;
 
+import lms.itcluster.confassistant.model.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -33,13 +34,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/like/**", "/save-question/**").hasAnyRole("ADMIN", "CONFOWNER", "USER")
-                .antMatchers("/register/conference/**").authenticated()
-/*                .antMatchers( "/moderator/**").hasRole("USER")
-                .antMatchers( "/moderator/**").hasAuthority("moder")*/
-/*                .antMatchers( "/edit/speaker/**").hasAuthority("speaker")*/
+                .antMatchers("/like/**", "/save-question/**", "/get-all-questions/", "/register/conference/**", "/change/email/**").authenticated()
+                .antMatchers("/moderator").hasRole(Constant.ROLE_USER)
+                .antMatchers("/moderator").hasAuthority(Constant.MODERATOR)
+                .antMatchers("/speaker").hasRole(Constant.ROLE_USER)
+                .antMatchers("/speaker").hasAuthority(Constant.MODERATOR)
+                .antMatchers( "/manage/topic/**").hasAnyRole(Constant.ROLE_USER, Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
+                .antMatchers( "/manage/topic/**").hasAnyAuthority(Constant.MODERATOR, Constant.ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/conf/owner/**").hasAnyRole("ADMIN", "CONFOWNER")
+                .antMatchers("/conf/owner/**").hasAnyRole(Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .anyRequest().permitAll();
         http.formLogin()
                 .loginPage("/login")
@@ -63,7 +66,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
-/*        http.csrf().disable();*/
         http.rememberMe()
                 .rememberMeParameter("remember-me")
                 .key("conf-assistant")
