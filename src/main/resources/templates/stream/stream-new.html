@@ -19,6 +19,7 @@
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3"  th:text="'Add new Stream'"></h4>
         <form th:action="@{'/dashboard/conferences/'+ ${confId} +'/stream/new/save/'}" th:object="${streamDTO}" method="POST" class="needs-validation" novalidate="" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input id="streamId" name="streamId" type="hidden"/>
             <input id="conference" name="conference" th:value="${confId}" type="hidden"/>
             <div class="mb-3">

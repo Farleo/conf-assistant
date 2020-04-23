@@ -26,6 +26,7 @@
 
             <form method="POST" enctype="multipart/form-data" th:object="${topic}" th:action="${'/edit/topic/main/' + topic.topicId}">
                 <input type="text" hidden="hidden" name="topicId" th:value="${topic.topicId}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="row no-gutters">
 
                     <div class="col-6" style="padding-top: 25px">

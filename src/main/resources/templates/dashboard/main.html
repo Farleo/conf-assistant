@@ -48,6 +48,7 @@
 
                 <td >
                     <form th:action="@{'/conf/owner/{id}'(id=${conf.conferenceId})}" th:method="patch">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-info"><i class="fa fa-users" aria-hidden="true"></i>&nbsp; Manage</button>
                     </form>
                 </td>
@@ -61,6 +62,7 @@
                 </td>
                 <td >
                     <form th:action="@{'/conf/owner/delete/{id}'(id=${conf.conferenceId})}" th:method="delete">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
                     </form>
                 </td>

@@ -39,6 +39,7 @@
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3"  th:text="'Add new topic'"></h4>
         <form th:action="@{'/dashboard/conferences/' + ${confId} + '/stream/' + ${streamId} + '/topics/newTopic/save'}" enctype="multipart/form-data" th:object="${simpleTopicDTO}" method="POST" class="needs-validation" novalidate="" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input id="id" name="topicId" class="form-control" type="hidden"/>
             <input id="stream" name="stream" th:value="${stream}" class="form-control" type="hidden"/>
             <div class="col-6" style="padding-top: 25px">

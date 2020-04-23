@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
     $("#QuestionForm").submit(function (event) {
         // Prevent the form from submitting via the browser.
         event.preventDefault();
@@ -52,6 +53,8 @@ function fun1() {
 }
 
 function askQuestion() {
+    var token = $('#_csrf').attr('content');
+    var header = $('#_csrf_header').attr('content');
     // PREPARE FORM DATA
     var formData = {
         question: $("#question").val(),
@@ -62,6 +65,9 @@ function askQuestion() {
     // DO POST
     $.ajax({
         type: "POST",
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         contentType: "application/json",
         url: document.location.origin + "/save-question",
         data: JSON.stringify(formData),

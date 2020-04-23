@@ -7,6 +7,8 @@ $(document).ready(function () {
 });
 
 function sendCredential() {
+    var token = $('#_csrf').attr('content');
+    var header = $('#_csrf_header').attr('content');
     // PREPARE FORM DATA
     var formData = {
         userId: $("#userId").val(),
@@ -20,6 +22,9 @@ function sendCredential() {
         url: document.location.origin + "/edit/speaker/valid/contacts",
         data: JSON.stringify(formData),
         dataType: 'json',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
         success: function (data, textStatus, xhr) {
         },
         error: function (xhr, status, error) {

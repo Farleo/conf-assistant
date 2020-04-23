@@ -19,6 +19,7 @@
     <div class="col-md-8 order-md-1">
         <h4 class="mb-3">List of streams</h4>
         <a th:href="${'/dashboard/conferences'}" th:method="POST">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button type="submit" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Go back to dashboard</button>
         </a>
         <a th:href="@{'/dashboard/conferences/'+ ${confId} +'/stream/new'}" th:method="GET">
@@ -47,11 +48,13 @@
             </td>
             <td >
                 <form th:action="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/edit/' + ${stream.getStreamId()}}" th:method="patch">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp; Edit</button>
                 </form>
             </td>
             <td >
                 <form th:action="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/delete/' + ${stream.getStreamId()}}" th:method="delete">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Delete</button>
                 </form>
             </td>

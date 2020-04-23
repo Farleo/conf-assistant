@@ -37,6 +37,7 @@
         <h4 class="mb-3">Add User</h4>
 
         <form th:object="${userDTO}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate="" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="form-row">
                 <input id="originPhoto" type="text" hidden="hidden" th:value="${userDTO.photo}"/>
                 <div class="image-preview" id="imagePreview">

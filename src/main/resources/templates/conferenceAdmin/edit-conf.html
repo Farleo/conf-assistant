@@ -39,6 +39,7 @@
     <h4 class="mb-3">Edit conference</h4>
 
     <form th:object="${conferenceDTO}" enctype="multipart/form-data" method="post" class="needs-validation" novalidate="" >
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <input id="conferenceId" name="conferenceId" th:value="*{conferenceId}" type="hidden"/>
         <input id="owner" name="owner" th:value="*{owner}" class="form-control" type="hidden"/>
 

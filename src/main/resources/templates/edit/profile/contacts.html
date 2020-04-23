@@ -4,6 +4,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
@@ -43,6 +45,7 @@
             <div th:replace="fragment/edit :: speaker"></div>
             <form id="contactForm" method="POST" enctype="multipart/form-data" action="/edit/profile/contacts">
                 <input id="userId" type="text" hidden="hidden" name="userId" th:value="${speaker.getUserId()}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                 <div id="ContactError" class="form-group">
                     <h5 style="margin-top: 15px">Email address</h5>
