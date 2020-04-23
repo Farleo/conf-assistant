@@ -23,9 +23,6 @@ import java.util.Objects;
 public class EditRestController {
 
     @Autowired
-    private StaticDataService staticDataService;
-
-    @Autowired
     private QuestionService questionService;
 
     @Autowired
@@ -35,13 +32,7 @@ public class EditRestController {
     private StreamService streamService;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @PostMapping(value = "/save-question")
     public boolean saveQuestion(@RequestBody QuestionDTO questionDTO, @AuthenticationPrincipal CurrentUser currentUser) {
@@ -65,7 +56,7 @@ public class EditRestController {
 
     @PostMapping("/edit/profile/contacts")
     public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
-        userService.updateUserEmail(contactsDTO);
+        userService.createActivationCodeForConfirmEmail(contactsDTO);
         return ResponseEntity.ok("User is valid");
     }
 
@@ -89,4 +80,16 @@ public class EditRestController {
         return topicService.enableOrDisableQuestion(topicId, currentUser);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
 }

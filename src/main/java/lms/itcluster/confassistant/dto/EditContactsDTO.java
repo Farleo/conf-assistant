@@ -1,5 +1,7 @@
 package lms.itcluster.confassistant.dto;
 
+import lms.itcluster.confassistant.annotation.UniqueEmail;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -7,9 +9,7 @@ import javax.validation.constraints.NotNull;
 public class EditContactsDTO extends AbstractDTO{
     private Long userId;
 
-    @NotBlank
-    @NotNull
-    @Email
+    @UniqueEmail()
     private String email;
 
     @Override

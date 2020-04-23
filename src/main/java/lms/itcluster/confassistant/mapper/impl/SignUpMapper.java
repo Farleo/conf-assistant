@@ -53,7 +53,7 @@ public class SignUpMapper extends AbstractMapper<User, SignUpDTO> {
 
     @Override
     protected void mapSpecificFieldsInDto(SignUpDTO source, User destination) {
-        destination.setRoles(Collections.singleton(rolesRepository.findByRole(Constant.ROLE_USER)));
+        destination.setRoles(Collections.singleton(rolesRepository.findByRole("ROLE_USER")));
         destination.setPassword(passwordEncoder.encode(Constant.USER_PASSWORD));
         destination.setActiveCode(UUID.randomUUID().toString());
         destination.setActive(false);

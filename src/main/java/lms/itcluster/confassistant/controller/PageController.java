@@ -2,19 +2,16 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.component.CheckEditAccess;
 import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
-import lms.itcluster.confassistant.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -49,8 +46,8 @@ public class PageController {
     }
 
     @GetMapping("/schedule")
-    public String getSchedule(Model model, @RequestParam("confId") Optional<Long> confId) {
-        ScheduleConferenceDTO conferenceDTOS = conferenceService.getConferenceForSchedule(confId.orElse(1L));
+    public String getSchedule(Model model, @RequestParam(value = "confId", required = false) Long confId) {
+        ScheduleConferenceDTO conferenceDTOS = conferenceService.getConferenceForSchedule(Optional.ofNullable(confId).orElse(1L));
         model.addAttribute("conference", conferenceDTOS);
         model.addAttribute("conferences", conferenceService.getAllConferencesDTO());
         return "schedule";
@@ -62,7 +59,6 @@ public class PageController {
         model.addAttribute("conference", conferenceDTO);
         if (currentUser != null) {
             model.addAttribute("isRegisteredOnConf", checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), id));
-            model.addAttribute("canEdit", SecurityUtil.canEditConference(currentUser, conferenceDTO));
         }
         return "conference";
     }
@@ -85,21 +81,14 @@ public class PageController {
 
     @GetMapping("/change/email/{code}")
     public String changeEmail(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser, Model model) {
-        UserDTO userDTO = userService.findByCode(code, currentUser.getId());
-        if (userDTO != null) {
-            String newEmail = staticDataService.getUpdatedEmail(userDTO.getUserId());
-            if (userService.findByEmail(newEmail) != null) {
-                staticDataService.removeUpdatedEmail(userDTO.getUserId());
-                model.addAttribute("message", "User with email: " + userDTO.getEmail() + " already exist");
-                return "message";
-            }
-            userDTO.setEmail(newEmail);
-            userService.updateEmail(userDTO);
-            staticDataService.removeUpdatedEmail(userDTO.getUserId());
+        try {
+            UserDTO userDTO = userService.findByActivationCodeAndSaveIfValid(code, currentUser.getId());
             model.addAttribute("message", "You email address " + userDTO.getEmail() + " was successfully updated");
             return "message";
-        } else {
-            return "not-found";
+        } catch (DataIntegrityViolationException e) {
+            log.error("User with this email address is already exist", e);
+            model.addAttribute("message", "User with this email address is already exist, please check your email and try again");
+            return "message";
         }
     }
 

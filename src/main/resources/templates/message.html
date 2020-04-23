@@ -18,8 +18,8 @@
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div class="container-fluid">
     <div class="row justify-content-center border-0" style="margin-top: 25px">
-        <div class="card col-7 border-0">
-            <p th:text="${message}"></p>
+        <div class="card col-7 border-0 d-flex justify-content-center">
+            <h3 th:text="${message}"></h3>
         </div>
     </div>
 </div>

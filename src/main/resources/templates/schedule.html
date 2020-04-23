@@ -73,7 +73,7 @@
                                 th:text="${conference.getVenue() + ', since ' + #dates.format(conference.getBeginDate(), 'dd-MM') + ' to ' + #dates.format(conference.getFinishDate(), 'dd-MM') + ' ' + #dates.format(conference.getFinishDate(), 'yyyy')}"></h6>
                         </a>
                         <div class="dropdown" th:if="${conferences.size() > 0}">
-                            <a class="btn btn-secondary dropdown-toggle btn-sm" href="#" role="button" id="dropdownMenuLink"
+                            <a class="btn dropdown-toggle btn-hover" href="#" role="button" id="dropdownMenuLink"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Conferences
                             </a>

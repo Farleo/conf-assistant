@@ -58,16 +58,19 @@ public class LoginController {
             bindingResult.rejectValue("email", "user.already.exist", "User with this email address already exist");
             return "login/sign-up-guest";
         }
-        return "confirm-email";
+        model.addAttribute("message", "On your email address was sent link. Please check your email to active your profile.");
+        return "message";
     }
 
     @GetMapping("/active/{code}")
-    public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser) {
-        UserDTO userDTO = userService.findByActivationCode(code, currentUser.getId());
+    public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        UserDTO userDTO = userService.completeRegistration(code, currentUser.getId());
         if (userDTO != null) {
-            return "redirect:/edit/profile/main";
+            model.addAttribute("message", "Your email was successfully confirmed");
+            return "message";
         } else {
-            return "not-found";
+            model.addAttribute("message", "Not found");
+            return "message";
         }
     }
 

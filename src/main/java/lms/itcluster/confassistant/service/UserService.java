@@ -13,8 +13,6 @@ public interface UserService {
 
     UserDTO getUserDtoById(Long id);
 
-    User findByEmail(String email);
-
     void createNewUserAsGuest(SignUpDTO signUpDTO);
     
     void deleteUser(long id);
@@ -23,23 +21,17 @@ public interface UserService {
 
     void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException;
 
-    void completeGuestRegistration (EditProfileDTO editProfileDTO);
-
-    EditProfileDTO getGuestProfileDTOById(Long id);
-
     void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException;
 
     SpeakerDTO getSpeakerById(Long id);
 
     void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException;
 
-    UserDTO findByActivationCode(String code, Long currentUserId);
+    boolean createActivationCodeForConfirmEmail(EditContactsDTO editContactsDTO);
 
-    boolean updateUserEmail(EditContactsDTO editContactsDTO);
+    UserDTO completeRegistration (String code, Long userId);
 
-    void updateEmail(UserDTO userDTO);
-
-    UserDTO findByCode(String code, Long currentUserId);
+    UserDTO findByActivationCodeAndSaveIfValid(String code, Long currentUserId);
 
     boolean updatePassword(EditPasswordDTO editPasswordDTO);
 

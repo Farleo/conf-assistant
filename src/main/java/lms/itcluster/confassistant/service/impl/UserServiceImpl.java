@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.service.impl;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -12,6 +13,7 @@ import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -40,6 +42,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -94,8 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return mapper.toDto(findById(id));
     }
 
-    @Override
-    public User findByEmail(String email) {
+    private User findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()
                 -> new NoSuchEntityException(String.format("User with email - %s not found.", email)));
     }
@@ -164,12 +166,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void completeGuestRegistration(EditProfileDTO editProfileDTO) {
-        User user = editProfileMapper.toEntity(editProfileDTO);
-        userRepository.save(user);
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
         if (user != null && !user.getDeleted()) {
@@ -177,11 +173,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             throw new UsernameNotFoundException("Profile not found by email " + username);
         }
-    }
-
-    @Override
-    public EditProfileDTO getGuestProfileDTOById(Long id) {
-        return editProfileMapper.toDto(findById(id));
     }
 
     @Override
@@ -200,10 +191,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setActive(true);
         userRepository.save(user);
-        emailService.sendMessage(user.getEmail(),"Administrator has created account for you on Conference Assistant",
-                                                    "You have been successfully registered on Conference Assistant. \n" +
-                                                            "Login: " + user.getEmail() + "\n" +
-                                                            "Password: " + pass);
+        emailService.sendMessage(user.getEmail(), "Administrator has created account for you on Conference Assistant",
+                "You have been successfully registered on Conference Assistant. \n" +
+                        "Login: " + user.getEmail() + "\n" +
+                        "Password: " + pass);
     }
 
     @Override
@@ -236,27 +227,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDTO findByActivationCode(String code, Long currentUserId) {
-        User user = userRepository.findByActiveCode(code);
-        if (user == null) {
-            return null;
-        }
-        if (!user.getUserId().equals(currentUserId)) {
-            return null;
-        }
-        user.setActive(true);
-        user.setActiveCode(null);
-        userRepository.save(user);
-        authenticateUserIfTransactionSuccess(user);
-        return mapper.toDto(user);
-    }
-
-    @Override
-    public boolean updateUserEmail(EditContactsDTO editContactsDTO) {
+    public boolean createActivationCodeForConfirmEmail(EditContactsDTO editContactsDTO) {
         User user = findById(editContactsDTO.getId());
         String activationCode = UUID.randomUUID().toString();
         user.setActiveCode(activationCode);
-        String link = "Please follow the link - http://localhost:8080/change/" + user.getActiveCode();
+        String link = "Please follow the link - http://localhost:8080/change/email/" + user.getActiveCode();
         emailService.sendMessage(editContactsDTO.getEmail(), "Change email address on Conference Assistant", link);
         userRepository.save(user);
         staticDataService.addUpdatedEmail(user.getUserId(), editContactsDTO.getEmail());
@@ -264,26 +239,49 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateEmail(UserDTO userDTO) {
-        User user = findById(userDTO.getUserId());
-        user.setEmail(userDTO.getEmail());
-        user.setActiveCode(null);
-        userRepository.save(user);
-    }
-
-    @Override
-    public UserDTO findByCode(String code, Long currentUserId) {
+    public UserDTO completeRegistration(String code, Long userID) {
         User user = userRepository.findByActiveCode(code);
         if (user == null) {
-            return null;
+            throw new NoSuchEntityException(String.format("User with id: %d no found by activation code %s", userID, code));
         }
-        if (!user.getUserId().equals(currentUserId)) {
-            return null;
+        if (!user.getUserId().equals(userID)) {
+            throw new ForbiddenAccessException(String.format("Activation code %s don't belong to this User id: %d", code, userID));
         }
+        user.setActiveCode(null);
+        userRepository.save(user);
         return mapper.toDto(user);
     }
 
     @Override
+    @Transactional
+    public UserDTO findByActivationCodeAndSaveIfValid(String code, Long currentUserId) {
+        User user = userRepository.findByActiveCode(code);
+        if (user == null) {
+            throw new NoSuchEntityException(String.format("User with id: %d no found by activation code %s", currentUserId, code));
+        }
+        if (!user.getUserId().equals(currentUserId)) {
+            throw new ForbiddenAccessException(String.format("Activation code %s don't belong to this User id: %d", code, currentUserId));
+        }
+
+        String newEmail = staticDataService.getUpdatedEmail(currentUserId);
+        user.setEmail(newEmail);
+        user.setActiveCode(null);
+        userRepository.save(user);
+        removeTempEmailIfTransactionSuccess(currentUserId);
+        return mapper.toDto(user);
+    }
+
+    private void removeTempEmailIfTransactionSuccess(final Long userId) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                staticDataService.removeUpdatedEmail(userId);
+            }
+        });
+    }
+
+    @Override
+    @Transactional
     public boolean updatePassword(EditPasswordDTO editPasswordDTO) {
         User user = findById(editPasswordDTO.getId());
         user.setPassword(passwordEncoder.encode(editPasswordDTO.getPassword()));

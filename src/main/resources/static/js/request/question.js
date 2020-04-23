@@ -107,8 +107,8 @@ function show() {
                     var variable =
                         "<div class='list-group-item border-0' style='padding-bottom: 0em'>" +
                         "<div class='row'>" +
-                        "<button id='" + i + "' type='button' class='btn btn-link'>" +
-                        "<i class='fa fa-heart' style='color: #9c9c9c;'>" + ' ' + question.rating + "</i>" +
+                        "<button id='" + i + "' type='button' class='btn btn-link heart' > " +
+                        "<i class='fa fa-heart' >" + ' ' + question.rating + "</i>" +
                         "</button>" +
                         "<div class='card-title rounded-pill' style='background-color: #ebebeb; padding-left: 1.1em; padding-right: 1.1em; padding-bottom: 0.3em; padding-top: 0.3em'>" + question.question +
                         "<div class='text-muted card-subtitle' style='font-size: 0.7em; margin-top: 1px'>" + question.created +

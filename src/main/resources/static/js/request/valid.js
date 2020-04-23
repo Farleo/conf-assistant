@@ -33,6 +33,7 @@ function sendCredential() {
                 console.log(document.location.origin);
             } else {
                 var json = JSON.parse(xhr.responseText);
+                console.log(json.email);
                 $('#ContactError div').empty();
                 var notValid =
                     "<div class=\"alert alert-danger\">" + json.email + "</div>";
