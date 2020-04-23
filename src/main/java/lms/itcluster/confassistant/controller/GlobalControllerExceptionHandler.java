@@ -3,7 +3,6 @@ package lms.itcluster.confassistant.controller;
 import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lombok.extern.slf4j.Slf4j;
-import netscape.security.ForbiddenTargetException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;

@@ -12,10 +12,8 @@ import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.*;
-import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -138,7 +136,7 @@ public class QuestionServiceImpl implements QuestionService {
     public boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser) {
         Topic topic = topicService.findById(topicId);
         if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
-            throw new ForbiddenTargetException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
+            throw new ForbiddenAccessException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
         }
         User speaker = userService.findById(topic.getSpeaker().getUserId());
         List<Question> questions = topic.getQuestionList();
