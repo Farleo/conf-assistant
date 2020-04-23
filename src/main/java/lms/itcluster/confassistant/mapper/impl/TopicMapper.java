@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.mapper.impl;
 
-import lms.itcluster.confassistant.component.CheckEditAccess;
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.dto.SpeakerDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
@@ -21,11 +21,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
 
 @Component
 public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
@@ -39,7 +34,7 @@ public class TopicMapper extends AbstractMapper<Topic, TopicDTO> {
     private Mapper<User, SpeakerDTO> speakerMapper;
 
     @Autowired
-    private CheckEditAccess checkEditAccess;
+    private CheckDataAccess checkEditAccess;
 
 
 

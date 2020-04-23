@@ -6,32 +6,6 @@ $(document).ready(function() {
     });
 });
 
-function logout(){
-    var token = $('#_csrf').attr('content');
-    var header = $('#_csrf_header').attr('content');
-    // PREPARE FORM DATA
-    var formData = new FormData();
-
-    // DO POST
-    $.ajax({
-        type : "POST",
-        method : "POST",
-        cache : false,
-        contentType : false,
-        processData: false,
-        url : document.location.origin + "/login-handler",
-        data : formData,
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        success: function(data, textStatus, xhr) {
-            console.log("success");
-        },
-        error: function(xhr,status,error) {
-            console.log("error");
-        }
-    });
-}
 
 function sendCredential(){
     var token = $('#_csrf').attr('content');
@@ -41,9 +15,9 @@ function sendCredential(){
     formData.append('email', $("#email").val());
     formData.append('password', $("#password").val());
     var chbox;
-    chbox = document.getElementById('remember-me');
+    chbox = document.getElementById('rememberMe');
     if (chbox.checked) {
-        formData.append('remember-me', $("#remember-me").val());
+        formData.append('remember-me', $("#rememberMe").val());
     }
 
 

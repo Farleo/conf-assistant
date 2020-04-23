@@ -10,6 +10,15 @@ public class SignUpDTO extends AbstractDTO {
     @NotBlank
     @Email
     private String email;
+    private boolean rememberMe;
+
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 
     public String getEmail() {
         return email;

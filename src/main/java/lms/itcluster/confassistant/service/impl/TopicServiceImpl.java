@@ -1,12 +1,10 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.component.CheckEditAccess;
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
-import lms.itcluster.confassistant.entity.Participants;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -27,7 +25,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +43,7 @@ public class TopicServiceImpl implements TopicService {
     private ImageStorageService imageStorageService;
 
     @Autowired
-    private CheckEditAccess checkEditAccess;
+    private CheckDataAccess checkEditAccess;
 
     @Autowired
     @Qualifier("topicMapper")

@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.service.impl;
 
-import lms.itcluster.confassistant.component.CheckEditAccess;
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
@@ -42,7 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
     private TopicService topicService;
 
     @Autowired
-    private CheckEditAccess checkEditAccess;
+    private CheckDataAccess checkEditAccess;
 
     @Autowired
     private UserService userService;

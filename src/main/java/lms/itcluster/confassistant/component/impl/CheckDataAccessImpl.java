@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.component.impl;
 
-import lms.itcluster.confassistant.component.CheckEditAccess;
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.entity.*;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class CheckEditAccessImpl implements CheckEditAccess {
+public class CheckDataAccessImpl implements CheckDataAccess {
 
     @Autowired
     private ConferenceService conferenceService;

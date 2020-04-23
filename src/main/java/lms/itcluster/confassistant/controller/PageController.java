@@ -1,6 +1,6 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.component.CheckEditAccess;
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.*;
@@ -37,7 +37,7 @@ public class PageController {
     private QuestionService questionService;
 
     @Autowired
-    private CheckEditAccess checkEditAccess;
+    private CheckDataAccess checkEditAccess;
 
     @RequestMapping(value = "/")
     public String getList(Model model) {

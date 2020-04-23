@@ -107,16 +107,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void createNewUserAsGuest(SignUpDTO signUpDTO) {
         User user = signUpMapper.toEntity(signUpDTO);
         user = userRepository.save(user);
-        authenticateUserIfTransactionSuccess(user);
+        authenticateUserIfTransactionSuccess(user, signUpDTO.isRememberMe());
         String link = "Please follow the link - http://localhost:8080/active/" + user.getActiveCode();
         emailService.sendMessage(user.getEmail(), "Active Profile on Conference Assistant", link);
     }
 
-    private void authenticateUserIfTransactionSuccess(final User user) {
+    private void authenticateUserIfTransactionSuccess(final User user, boolean rememberMe) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                SecurityUtil.authentificateWithRememberMe(user);
+                if (rememberMe) {
+                    SecurityUtil.authentificateWithRememberMe(user);
+                } else {
+                    SecurityUtil.authenticate(user);
+                }
             }
         });
     }
