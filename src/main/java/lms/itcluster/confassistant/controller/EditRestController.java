@@ -40,22 +40,17 @@ public class EditRestController {
     }
 
     @GetMapping("/get-all-questions/{topicId}/{orderBy}")
-    public List<QuestionDTO> getAllQuestions(@PathVariable("topicId") Long topicId, @PathVariable("orderBy") String orderBy) {
-        if (orderBy.equals(Constant.ORDER_BY_RATING)) {
-            return questionService.getSortedQuestionDTOListByRating(topicId);
-        }
-        else {
-            return questionService.getSortedQuestionDTOListByDate(topicId);
-        }
+    public List<QuestionDTO> getAllQuestions(@PathVariable("topicId") Long topicId, @PathVariable("orderBy") String orderBy, @AuthenticationPrincipal CurrentUser currentUser) {
+        return questionService.getSortedQuestionDTOListOrderBy(topicId, orderBy, currentUser);
     }
 
     @GetMapping("/like/{questionId}")
     public boolean likeQuestion(@PathVariable("questionId") Long questionId, @AuthenticationPrincipal CurrentUser currentUser) {
-        return questionService.like(questionId, currentUser.getId());
+        return questionService.like(questionId, currentUser);
     }
 
     @PostMapping("/edit/profile/contacts")
-    public ResponseEntity<String> validContacts (@Valid @RequestBody EditContactsDTO contactsDTO) {
+    public ResponseEntity<String> validContacts(@Valid @RequestBody EditContactsDTO contactsDTO) {
         userService.createActivationCodeForConfirmEmail(contactsDTO);
         return ResponseEntity.ok("User is valid");
     }
@@ -66,7 +61,7 @@ public class EditRestController {
     }
 
     @GetMapping("/manage/topic/select/{questionId}/{topicId}")
-    public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId,@AuthenticationPrincipal CurrentUser currentUser) {
+    public boolean selectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("topicId") Long topicId, @AuthenticationPrincipal CurrentUser currentUser) {
         TopicDTO topicDTO = topicService.getTopicDTOById(topicId, currentUser);
         StreamDTO streamDTO = streamService.getStreamDTOByName(topicDTO.getStream());
         if (!Objects.equals(streamDTO.getModerator(), currentUser.getId())) {

@@ -175,6 +175,9 @@ function sendLike(i, question) {
         dataType: 'json',
         success: function (isLike) {
             show()
+        },
+        error: function(xhr,status,error) {
+            console.log("error");
         }
     });
 }

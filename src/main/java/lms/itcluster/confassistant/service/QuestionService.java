@@ -14,13 +14,11 @@ public interface QuestionService {
 
     Question findById(long id);
 
-    List<QuestionDTO> getSortedQuestionDTOListByRating(Long id);
-
-    List<QuestionDTO> getSortedQuestionDTOListByDate(Long id);
+    List<QuestionDTO> getSortedQuestionDTOListOrderBy(Long topicId, String orderBy, CurrentUser currentUser);
 
     boolean selectNextQuestion(List<QuestionDTO> questionDTOList, Long questionId);
 
-    boolean like(Long questionId, Long userId);
+    boolean like(Long questionId, CurrentUser currentUser);
 
     boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser);
 

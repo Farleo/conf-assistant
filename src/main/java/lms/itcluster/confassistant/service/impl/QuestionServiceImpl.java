@@ -7,6 +7,7 @@ import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.mapper.Mapper;
+import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.repository.QuestionRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
@@ -15,6 +16,7 @@ import lms.itcluster.confassistant.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,7 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
     private TopicService topicService;
 
     @Autowired
-    private CheckDataAccess checkEditAccess;
+    private CheckDataAccess checkDataAccess;
 
     @Autowired
     private UserService userService;
@@ -56,14 +58,14 @@ public class QuestionServiceImpl implements QuestionService {
         Question newQuestion = mapper.toEntity(questionDTO);
         Topic topic = newQuestion.getTopic();
         Long confId = topic.getStream().getConference().getConferenceId();
-        if (checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            if (topic.isAllowedQuestion()) {
-                questionRepository.save(newQuestion);
-                return like(newQuestion.getQuestionId(), newQuestion.getUser().getUserId());
-            }
+        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
+            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
+        }
+        if (!topic.isAllowedQuestion()) {
             throw new ForbiddenAccessException(String.format("Questions of topic id: %d are not allowed now", topic.getTopicId()));
         }
-       throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
+        questionRepository.save(newQuestion);
+        return like(newQuestion.getQuestionId(), currentUser);
     }
 
     @Override
@@ -77,26 +79,33 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDTO> getSortedQuestionDTOListByRating(Long id) {
-        List<QuestionDTO> dtoList = getQuestionDTOList(id);
-        dtoList.sort((o1, o2) -> o2.getRating() - o1.getRating());
-        return dtoList;
+    public List<QuestionDTO> getSortedQuestionDTOListOrderBy(Long topicId, String orderBy, CurrentUser currentUser) {
+        Topic topic = topicService.findById(topicId);
+        Long confId = topic.getStream().getConference().getConferenceId();
+        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
+            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
+        }
+        List<QuestionDTO> dtoList = getQuestionDTOList(topicId);
+        switch (orderBy) {
+            case (Constant.ORDER_BY_DATE):
+                dtoList.sort((o1, o2) -> o2.getCreated().compareTo(o1.getCreated()));
+                return dtoList;
+            case (Constant.ORDER_BY_RATING):
+                dtoList.sort((o1, o2) -> o2.getRating() - o1.getRating());
+                return dtoList;
+            default:
+                return dtoList;
+        }
     }
 
     @Override
-    public List<QuestionDTO> getSortedQuestionDTOListByDate(Long id) {
-        List<QuestionDTO> dtoList = getQuestionDTOList(id);
-        dtoList.sort((o1, o2) -> o2.getCreated().compareTo(o1.getCreated()));
-        return dtoList;
-    }
-
-    @Override
+    @Transactional
     public boolean selectNextQuestion(List<QuestionDTO> questionDTOList, Long questionId) {
         deselectAndDeletePreviousQuestion(questionDTOList);
         return selectQuestion(questionId);
     }
 
-    private boolean deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList) {
+    private void deselectAndDeletePreviousQuestion(List<QuestionDTO> questionDTOList) {
         for (QuestionDTO questionDTO : questionDTOList) {
             if (questionDTO.isSelected()) {
                 Question question = questionRepository.findById(questionDTO.getQuestionId()).get();
@@ -105,7 +114,6 @@ public class QuestionServiceImpl implements QuestionService {
                 questionRepository.save(question);
             }
         }
-        return true;
     }
 
     private boolean selectQuestion(Long questionId) {
@@ -116,16 +124,25 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private List<QuestionDTO> getQuestionDTOList(Long id) {
-        Topic topic = topicRepository.findById(id).get();
+        Topic topic = topicService.findById(id);
         List<QuestionDTO> dtoList = new ArrayList<>();
         topic.getQuestionList().forEach(question -> dtoList.add(mapper.toDto(question)));
         return dtoList;
     }
 
     @Override
-    public boolean like(Long questionId, Long userId) {
-        Question question = questionRepository.findById(questionId).get();
-        User user = userRepository.findById(userId).get();
+    @Transactional
+    public boolean like(Long questionId, CurrentUser currentUser) {
+        Question question = findById(questionId);
+        Topic topic = topicService.findById(question.getTopic().getTopicId());
+        Long confId = topic.getStream().getConference().getConferenceId();
+        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
+            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
+        }
+        if (!topic.isAllowedQuestion()) {
+            throw new ForbiddenAccessException(String.format("Questions of topic id: %d are not allowed now", topic.getTopicId()));
+        }
+        User user = userService.findById(currentUser.getId());
         if (question.getLikesSet().contains(user)) {
             return unLike(user, question);
         }
@@ -135,7 +152,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser) {
         Topic topic = topicService.findById(topicId);
-        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
+        if (!checkDataAccess.canManageQuestion(currentUser, topic)) {
             throw new ForbiddenAccessException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
         }
         User speaker = userService.findById(topic.getSpeaker().getUserId());
@@ -164,9 +181,9 @@ public class QuestionServiceImpl implements QuestionService {
             i++;
         }
         emailService.sendMessage(speaker.getEmail(), "Questions from topic: " + topic.getName(), letter.toString());
+        topic.setAllowedQuestion(false);
         return true;
     }
-
 
 
     private boolean unLike(User user, Question question) {
