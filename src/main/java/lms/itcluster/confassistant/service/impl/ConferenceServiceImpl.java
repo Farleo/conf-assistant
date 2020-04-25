@@ -88,6 +88,15 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    public ConferenceDTO getConferenceDTObyAlias(String alias) {
+        Conference conference = conferenceRepository.findByAlias(alias);
+        if (conference!=null) {
+            return simpleMapper.toDto(conference);
+        }
+        return null;
+    }
+    
+    @Override
     public ListConferenceDTO getListConferencesDTO() {
         return new ListConferenceDTO(getAllConferencesDTO());
     }

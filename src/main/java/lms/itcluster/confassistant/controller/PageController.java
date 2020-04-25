@@ -11,8 +11,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+
+import static lms.itcluster.confassistant.util.RequestUtil.getPreviousPageByRequest;
 
 @Slf4j
 @Controller
@@ -136,5 +140,16 @@ public class PageController {
         model.addAttribute("topic", topicService.getTopicDTOById(topicId, currentUser));
         return "moderator/question";
     }
+    
 
+    @RequestMapping(value = "/search")
+    public String Search(@RequestParam("alias") String alias, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        ConferenceDTO conferenceDTO = conferenceService.getConferenceDTObyAlias(alias);
+        if (conferenceDTO != null) {
+            return "redirect:/conf/" + conferenceDTO.getId();
+        }
+        redirectAttributes.addFlashAttribute("confNotFound", true);
+        return getPreviousPageByRequest(request).orElse("/");
+    }
+    
 }
