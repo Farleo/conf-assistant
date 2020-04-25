@@ -16,7 +16,7 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
-    <div class="col-md-8 order-md-1">
+    <div class="col-md-8 order-md-1 mx-auto mt-3">
         <h4 class="mb-3">List of streams</h4>
         <a th:href="${'/dashboard/conferences'}" th:method="POST">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -34,6 +34,7 @@
             <td><b>Edit</b></td>
             <td><b>Delete</b></td>
             <tr th:each="stream : ${listStreams}">
+
             <td>
                 <a th:href="@{'/dashboard/conferences/' + ${stream.getConference()} + '/stream/' + ${stream.getStreamId()} + '/topics'}" th:text="${stream.name}"/>
             </td>
@@ -59,15 +60,14 @@
                 </form>
             </td>
             </tr>
-        </td>
-    </table>
+        </table>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/static/bootstrap/js/popper.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-
+    </div>
 </div>
 </body>
 </html>

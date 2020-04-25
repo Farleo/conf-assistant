@@ -33,7 +33,7 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
-    <div class="col-md-8 order-md-1">
+    <div class="col-md-8 order-md-1 mx-auto mt-3">
         <h4 class="mb-3">Edit User </h4>
         <form th:action="@{'/admin/users/edit/' + ${userDTO.getUserId()}}" enctype="multipart/form-data" th:object="${userDTO}" method="post" class="needs-validation" novalidate="" >
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -88,31 +88,6 @@
     </div>
 
 </div>
-<script>
-    var inpFile = document.getElementById("inpFile");
-    var previewContainer = document.getElementById("imagePreview");
-    var previewImage = previewContainer.querySelector(".image-preview__image");
-    var originCoverPhoto = document.getElementById("originPhoto");
-
-    inpFile.addEventListener("change", function () {
-        var originPhoto = originCoverPhoto.getAttribute("value");
-
-        var file = this.files[0];
-
-        if (file) {
-            var reader = new FileReader();
-            previewImage.style.display = "block";
-            reader.addEventListener("load", function () {
-                console.log(this.result);
-                previewImage.setAttribute("src", this.result);
-            });
-
-            reader.readAsDataURL(file);
-        } else {
-            previewImage.style.display = null;
-            previewImage.setAttribute("src", originPhoto);
-        }
-    });
-</script>
+<script src="/js/edit/edit.js"></script>
 </body>
 </html>

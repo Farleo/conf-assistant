@@ -34,7 +34,7 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
-<div class="col-md-8 order-md-1">
+<div class="col-md-8 order-md-1 mx-auto mt-3">
 
     <h4 class="mb-3">Edit conference</h4>
 
@@ -101,37 +101,12 @@
         <a th:href="@{/dashboard/conferences/}" type="submit" value="Back" class="btn btn-light btn-lg btn-block"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back</a>
 </div>
 </div>
-<script>
-    var inpFile = document.getElementById("inpFile");
-    var previewContainer = document.getElementById("imagePreview");
-    var previewImage = previewContainer.querySelector(".image-preview__image");
-    var originCoverPhoto = document.getElementById("originPhoto");
-
-    inpFile.addEventListener("change", function () {
-        var originPhoto = originCoverPhoto.getAttribute("value");
-
-        var file = this.files[0];
-
-        if (file) {
-            var reader = new FileReader();
-            previewImage.style.display = "block";
-            reader.addEventListener("load", function () {
-                console.log(this.result);
-                previewImage.setAttribute("src", this.result);
-            });
-
-            reader.readAsDataURL(file);
-        } else {
-            previewImage.style.display = null;
-            previewImage.setAttribute("src", originPhoto);
-        }
-    });
-</script>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="/bootstrap/js/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/edit/edit.js"></script>
 </body>
 </html>

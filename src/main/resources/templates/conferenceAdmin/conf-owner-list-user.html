@@ -16,7 +16,7 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
-    <div class="col-md-8 order-md-1">
+    <div class="col-md-8 order-md-1 mx-auto mt-3">
         <h4 class="mb-3"><span th:text="'List of participants in the ' + ${confName} + ' conference'"/></h4>
         <a th:href="${'/dashboard/conferences'}" th:method="POST">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

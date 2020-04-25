@@ -16,7 +16,7 @@
 <body>
 <header th:replace="${#authorization.expression('!isAuthenticated()')} ? ~{fragment/header :: sign-in-header} : ~{fragment/header :: cabinet-header}"></header>
 <div style="text-align: center;">
-    <div class="col-md-8 order-md-1">
+    <div class="col-md-8 order-md-1 mx-auto mt-3">
         <h4 class="mb-3"  th:text="'Add new Stream'"></h4>
         <form th:action="@{'/dashboard/conferences/'+ ${confId} +'/stream/new/save/'}" th:object="${streamDTO}" method="POST" class="needs-validation" novalidate="" >
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

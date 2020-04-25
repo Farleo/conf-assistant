@@ -37,6 +37,9 @@ public class Conference {
     @Column(name = "cover_photo")
     private String coverPhoto;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
     @OneToMany(mappedBy = "participantsKey.conference", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Participants> participants;
 
@@ -140,6 +143,14 @@ public Conference() {
     
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+    
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override

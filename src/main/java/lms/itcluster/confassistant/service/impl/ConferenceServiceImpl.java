@@ -76,7 +76,7 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public Conference findById(Long id) {
-        return conferenceRepository.findById(id).orElseThrow(() -> {
+        return conferenceRepository.findById(id).filter(conference -> !conference.getDeleted()).orElseThrow(() -> {
             log.error(String.format("Conference with id - %d not found", id));
             return new NoSuchEntityException(String.format("Conference with id - %d not found", id));
         });
@@ -90,7 +90,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public ConferenceDTO getConferenceDTObyAlias(String alias) {
         Conference conference = conferenceRepository.findByAlias(alias);
-        if (conference!=null) {
+        if (conference!=null&&!conference.getDeleted()) {
             return simpleMapper.toDto(conference);
         }
         return null;
@@ -179,7 +179,11 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public void deleteConference(Long confId) {
         Optional<Conference> conferenceOptional = conferenceRepository.findById(confId);
-        conferenceRepository.delete(conferenceOptional.get());
+        if(conferenceOptional.isPresent()){
+            Conference conference = conferenceOptional.get();
+            conference.setDeleted(true);
+            conferenceRepository.save(conference);
+        }
     }
 
     private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
@@ -194,7 +198,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public List<ConferenceDTO> getAllConferencesDTO() {
         List<ConferenceDTO> list = new ArrayList<>();
-        for (Conference conference : conferenceRepository.findAll()) {
+        for (Conference conference : conferenceRepository.findAll().stream().filter(f -> !f.getDeleted()).collect(Collectors.toList())) {
             list.add(mapper.toDto(conference));
         }
         return list;

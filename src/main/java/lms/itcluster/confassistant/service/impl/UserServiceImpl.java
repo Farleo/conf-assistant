@@ -14,7 +14,6 @@ import lms.itcluster.confassistant.service.StaticDataService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(()
+        return userRepository.findById(id).filter(user -> !user.getDeleted()).orElseThrow(()
                 -> new NoSuchEntityException(String.format("User with id - %d not found.", id)));
     }
 
