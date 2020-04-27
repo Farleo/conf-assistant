@@ -21,6 +21,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -152,28 +153,24 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Transactional
     @Override
-    public void addNewConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
+    public void addNewConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = conference.getCoverPhoto();
-        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        conference.setCoverPhoto(newCoverPhoto.orElse(null));
 
         conferenceRepository.save(conference);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Transactional
     @Override
-    public void updateConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
+    public void updateConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = conference.getCoverPhoto();
-        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        conference.setCoverPhoto(newCoverPhoto.orElse(conference.getCoverPhoto()));
 
         conferenceRepository.save(conference);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Override
@@ -184,15 +181,6 @@ public class ConferenceServiceImpl implements ConferenceService {
             conference.setDeleted(true);
             conferenceRepository.save(conference);
         }
-    }
-
-    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit() {
-                imageStorageService.removeOldImage(oldCoverPhoto);
-            }
-        });
     }
 
     @Override

@@ -8,6 +8,7 @@ import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.ParticipantTypeService;
 import lms.itcluster.confassistant.validator.ConferenceValidator;
+import lms.itcluster.confassistant.validator.UploadPhotoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,9 @@ public class ConferenceAdminController {
 	
 	@Autowired
 	private ConferenceValidator conferenceValidator;
+
+	@Autowired
+	private UploadPhotoValidator uploadPhotoValidator;
 
 	@RequestMapping(value = "conf/owner/{confId}")
 	public String confOwnerManageUser (@AuthenticationPrincipal CurrentUser currentUser,
@@ -110,10 +114,11 @@ public class ConferenceAdminController {
 		model.addAttribute("conferenceDTO", conferenceDTO);
 		conferenceDTO.setOwner(currentUser.getId());
 		conferenceValidator.validate(conferenceDTO,bindingResult);
+		uploadPhotoValidator.validate(photo, bindingResult);
 		if(bindingResult.hasErrors()){
 			return "conferenceAdmin/add-conf";
 		}
-		conferenceService.addNewConference(conferenceDTO, photo);
+		conferenceService.addNewConference(conferenceDTO, photo.getBytes(), photo.getOriginalFilename());
 		return "redirect:/dashboard/conferences";
 	}
 
@@ -134,10 +139,11 @@ public class ConferenceAdminController {
 	                                  @RequestParam("inpFile") MultipartFile photo, Model model) throws IOException  {
 		model.addAttribute("conferenceDTO", conferenceDTO);
 		conferenceValidator.validate(conferenceDTO,bindingResult);
+		uploadPhotoValidator.validate(photo, bindingResult);
 		if(bindingResult.hasErrors()){
 			return "conferenceAdmin/edit-conf";
 		}
-		conferenceService.updateConference(conferenceDTO, photo);
+		conferenceService.updateConference(conferenceDTO, photo.getBytes(), photo.getOriginalFilename());
 		return "redirect:/dashboard/conferences";
 	}
 	

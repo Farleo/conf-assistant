@@ -8,6 +8,7 @@ import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface ConferenceService {
@@ -28,9 +29,9 @@ public interface ConferenceService {
 
     ListConferenceDTO getConferencesDTOByOwnerId(Long id);
 
-    void addNewConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException;
+    void addNewConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException;
 
-    void updateConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException;
+    void updateConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException;
 
     void deleteConference(Long confId);
 

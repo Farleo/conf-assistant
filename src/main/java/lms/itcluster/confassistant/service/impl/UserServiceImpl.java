@@ -34,6 +34,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.List;
@@ -152,7 +153,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException {
+    public void updateUser(UserDTO userDTO, byte[] photo, String originalPhotoName) throws IOException {
         Optional<User> optionalUser = Optional.of(userRepository.findByEmail(userDTO.getEmail()));
         if (optionalUser.isPresent()) {
             User dbUser = optionalUser.get();
@@ -164,12 +165,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
             User realUser = mapper.toEntity(userDTO);
 
-            Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-            String oldCoverPhoto = realUser.getPhoto();
-            realUser.setPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+            Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+            realUser.setPhoto(newCoverPhoto.orElse(realUser.getPhoto()));
 
             userRepository.save(realUser);
-            newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
         }
     }
 
@@ -185,7 +184,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException {
+    public void addNewUserByAdmin(UserDTO userDTO, byte[] photo, String originalPhotoName) throws IOException {
         User existingUserFromDb = userRepository.findByEmail(userDTO.getEmail());
         if (existingUserFromDb != null) {
             throw new UserAlreadyExistException("User with this email is already exist: " + userDTO.getEmail());
@@ -194,7 +193,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = mapper.toEntity(userDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
         user.setPhoto(newCoverPhoto.orElse(null));
 
         user.setActive(true);
@@ -212,25 +211,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException {
+    public void updateSpeaker(EditProfileDTO editProfileDTO, byte[] inputStream, String originalFileName) throws IOException {
         User speaker = editProfileMapper.toEntity(editProfileDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = speaker.getPhoto();
-        speaker.setPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(inputStream, originalFileName);
+        speaker.setPhoto(newCoverPhoto.orElse(speaker.getPhoto()));
 
         userRepository.save(speaker);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
-    }
-
-
-    private void removeCoverPhotoIfTransactionSuccess(final String photo) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit() {
-                imageStorageService.removeOldImage(photo);
-            }
-        });
     }
 
     @Override

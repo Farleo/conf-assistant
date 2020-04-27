@@ -6,6 +6,7 @@ import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface UserService {
@@ -20,13 +21,13 @@ public interface UserService {
     
     List<UserDTO> getAllUsers();
 
-    void updateUser(UserDTO userDTO, MultipartFile photo) throws IOException;
+    void updateUser(UserDTO userDTO, byte[] photo, String originalPhotoName) throws IOException;
 
-    void addNewUserByAdmin(UserDTO userDTO, MultipartFile photo) throws IOException;
+    void addNewUserByAdmin(UserDTO userDTO, byte[] photo, String originalPhotoName) throws IOException;
 
     SpeakerDTO getSpeakerById(Long id);
 
-    void updateSpeaker(EditProfileDTO editProfileDTO, MultipartFile photo) throws IOException;
+    void updateSpeaker(EditProfileDTO editProfileDTO, byte[] photo, String originalPhotoName) throws IOException;
 
     boolean createActivationCodeForConfirmEmail(EditContactsDTO editContactsDTO);
 

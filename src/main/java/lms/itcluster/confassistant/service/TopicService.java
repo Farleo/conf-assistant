@@ -7,7 +7,9 @@ import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public interface TopicService {
@@ -24,7 +26,7 @@ public interface TopicService {
     
     SimpleTopicDTO getSimpleTopicDTOById(Long id);
 
-    void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException;
+    void updateMainTopicData(EditTopicDTO editTopicDTO, byte[] photo, String originalPhotoName) throws IOException;
 
     boolean enableOrDisableQuestion(Long topicID, CurrentUser currentUser);
     
@@ -34,7 +36,7 @@ public interface TopicService {
 
     void deleteTopic(Long topicId);
 
-    void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException;
+    void updateTopic(SimpleTopicDTO simpleTopicDTO, byte[] photo, String originalPhotoName) throws IOException;
 
-    void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException;
+    void createTopic(SimpleTopicDTO simpleTopicDTO, byte[] photo, String originalPhotoName) throws IOException;
 }
