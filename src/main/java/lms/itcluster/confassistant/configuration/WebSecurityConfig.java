@@ -40,7 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/manage/topic/**").hasAnyRole(Constant.ROLE_USER, Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers( "/manage/topic/**").hasAnyAuthority(Constant.MODERATOR, Constant.ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/conf/owner/**").hasAnyRole(Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .anyRequest().permitAll();
         http.formLogin()
                 .loginPage("/login")

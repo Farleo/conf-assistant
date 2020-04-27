@@ -6,6 +6,10 @@ import lms.itcluster.confassistant.model.CurrentUser;
 
 public interface CheckDataAccess {
     boolean canManageConference (CurrentUser currentUser, Long confId);
+    
+    boolean canDeleteConference (CurrentUser currentUser, Long confId);
+    
+    boolean canCreateConference (CurrentUser currentUser);
 
     void canCurrentUserEditTopic(CurrentUser currentUser, Topic topic);
 

@@ -51,6 +51,34 @@ public class CheckDataAccessImpl implements CheckDataAccess {
         return hasAccess;
     }
 
+
+    @Override
+    public boolean canDeleteConference (CurrentUser currentUser, Long confId){
+        boolean hasAccess = false;
+        if(SecurityUtil.userHasAdminRole(currentUser)){
+            hasAccess = true;
+        }
+        else if(SecurityUtil.userHasConfOwnerRole(currentUser)){
+            Optional<Conference> conferenceOptional = conferenceRepository.findById(confId);
+            if(conferenceOptional.isPresent()){
+                Conference conference = conferenceOptional.get();
+                if(conference.getOwner().getUserId()==currentUser.getId()){
+                    hasAccess = true;
+                }
+            }
+        }
+        return hasAccess;
+    }
+
+    @Override
+    public boolean canCreateConference (CurrentUser currentUser){
+        boolean hasAccess = false;
+        if(SecurityUtil.userHasAdminRole(currentUser)||SecurityUtil.userHasConfOwnerRole(currentUser)){
+            hasAccess = true;
+        }
+        return hasAccess;
+    }
+    
     @Override
     public void canCurrentUserEditTopic(CurrentUser currentUser, Topic topic) {
         if (!userHasRightToEditTopic(currentUser, topic)) {

@@ -17,7 +17,7 @@ public interface ConferenceRepository extends JpaRepository<Conference, Long> {
 	List<String> getAllCoverPhotoFromConference();
 	
 	@Transactional
-	@Query("select c from Conference c where c.owner.userId=:ownerId")
+	@Query("select c from Conference c where c.owner.userId=:ownerId and c.isDeleted=false ")
 	List<Conference> findAllByOwnerId (@Param("ownerId") Long ownerId);
 
 	Conference findByName (String name);
