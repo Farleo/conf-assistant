@@ -50,6 +50,7 @@ CREATE TABLE `conference` (
    `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
    `venue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
    `owner_id` bigint(20) NOT NULL,
+   `is_deleted` bit(1) DEFAULT NULL,
    PRIMARY KEY (`conference_id`),
    UNIQUE KEY `UK_afqxob6ksrs2084w6if59wrfn` (`alias`),
    UNIQUE KEY `UK_ch9kpcpm8yvkxfmx3u8mrjhus` (`name`),
@@ -124,4 +125,8 @@ CREATE TABLE `conference` (
    CONSTRAINT `FKi2wo4dyk4rok7v4kak8sgkwx0` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
    CONSTRAINT `FKnbhujedlj8a26j6mj51fkelve` FOREIGN KEY (`question_id`) REFERENCES `question` (`question_id`)
  );
+ create table persistent_logins (username varchar(64) not null,
+                                series varchar(64) primary key,
+                                token varchar(64) not null,
+                                last_used timestamp not null);
  

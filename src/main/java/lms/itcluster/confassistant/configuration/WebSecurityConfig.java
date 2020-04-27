@@ -15,8 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor;
-import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
 import javax.sql.DataSource;
 
@@ -42,7 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/manage/topic/**").hasAnyRole(Constant.ROLE_USER, Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers( "/manage/topic/**").hasAnyAuthority(Constant.MODERATOR, Constant.ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/conf/owner/**").hasAnyRole(Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .anyRequest().permitAll();
         http.formLogin()
                 .loginPage("/login")

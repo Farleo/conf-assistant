@@ -98,8 +98,12 @@ public class ConferenceAdminController {
 	@RequestMapping(value = "/conf/owner/newConf")
 	public String confOwnerCreateNewConf (@AuthenticationPrincipal CurrentUser currentUser,
 	                                      Model model) {
+		if(checkDataAccess.canCreateConference(currentUser))
+		{
 			model.addAttribute(new ConferenceDTO());
 			return "conferenceAdmin/add-conf";
+		}
+		return "redirect:/";
 	}
 
 	@PostMapping(value = "/conf/owner/newConf")
@@ -122,8 +126,11 @@ public class ConferenceAdminController {
 	                                 @AuthenticationPrincipal CurrentUser currentUser,
 	                                 ConferenceDTO conferenceDTO,
 	                                 Model model) {
-		model.addAttribute("conferenceDTO", conferenceService.getConferenceDTOById(id));
-		return "conferenceAdmin/edit-conf";
+		if(checkDataAccess.canManageConference(currentUser, id)){
+			model.addAttribute("conferenceDTO", conferenceService.getConferenceDTOById(id));
+			return "conferenceAdmin/edit-conf";
+		}
+		return "redirect:/";
 	}
 
 	@PostMapping(value = "/conf/owner/edit/{id}")
@@ -144,7 +151,10 @@ public class ConferenceAdminController {
 	@RequestMapping(value = "conf/owner/delete/{id}")
 	public String deleteConference (@AuthenticationPrincipal CurrentUser currentUser,
 	                                @PathVariable Long id){
-		conferenceService.deleteConference(id);
+		if(checkDataAccess.canDeleteConference(currentUser,id)) {
+			conferenceService.deleteConference(id);
+			return "redirect:/dashboard/conferences";
+		}
 		return "redirect:/dashboard/conferences";
 	}
 }
