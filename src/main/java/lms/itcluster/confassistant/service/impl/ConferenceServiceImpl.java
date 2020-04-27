@@ -39,7 +39,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     private UserService userService;
 
     @Autowired
-    private TopicRepository topicRepository;
+    private TopicService topicService;
 
     @Autowired
     private UserRepository userRepository;
@@ -287,10 +287,7 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public ConferenceDTO getConferenceDTOByTopicId(Long topicId) {
-        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> {
-            log.error(String.format("Conference with id - %d not found", topicId));
-            return new NoSuchEntityException(String.format("Topic with id - %d not found", topicId));
-        });
+        Topic topic = topicService.findById(topicId);
         return getConferenceDTOById(topic.getStream().getConference().getConferenceId());
     }
 

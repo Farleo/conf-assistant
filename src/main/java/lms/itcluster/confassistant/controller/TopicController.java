@@ -1,9 +1,9 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ParticipantService;
-import lms.itcluster.confassistant.service.SecurityService;
 import lms.itcluster.confassistant.service.StreamService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.validator.TopicValidator;
@@ -26,7 +26,7 @@ public class TopicController {
 	private TopicService topicService;
 	
 	@Autowired
-	private SecurityService securityService;
+	private CheckDataAccess checkDataAccess;
 	
 	@Autowired
 	private ParticipantService participantService;
@@ -42,7 +42,7 @@ public class TopicController {
                                 @PathVariable Long confId,
                                 @PathVariable Long streamId,
                                 Model model){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			model.addAttribute("listTopics", topicService.findAllTopicByStreamId(streamId));
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(streamId,"speaker"));
 			return "topic/list-topic";
@@ -65,7 +65,7 @@ public class TopicController {
 	                          @PathVariable Long streamId,
 	                          @PathVariable Long topicId,
 	                          Model model)  {
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			model.addAttribute("simpleTopicDTO", topicService.getSimpleTopicDTOById(topicId));
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
 			model.addAttribute("currentUser", currentUser.getId());

@@ -32,16 +32,10 @@ public class PageController {
     private ConferenceService conferenceService;
 
     @Autowired
-    private ParticipantService participantService;
-
-    @Autowired
-    private StaticDataService staticDataService;
-
-    @Autowired
     private QuestionService questionService;
 
     @Autowired
-    private CheckDataAccess checkEditAccess;
+    private CheckDataAccess checkDataAccess;
 
     @RequestMapping(value = "/")
     public String getList(Model model) {
@@ -57,13 +51,11 @@ public class PageController {
         return "schedule";
     }
 
-    @GetMapping("/conf/{id}")
-    public String getConference(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
-        ConferenceDTO conferenceDTO = conferenceService.getConferenceDTOById(id);
+    @GetMapping("/conf/{confId}")
+    public String getConference(@PathVariable("confId") Long confId, Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+        ConferenceDTO conferenceDTO = conferenceService.getConferenceDTOById(confId);
         model.addAttribute("conference", conferenceDTO);
-        if (currentUser != null) {
-            model.addAttribute("isRegisteredOnConf", checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), id));
-        }
+        model.addAttribute("isRegisteredOnConf", checkDataAccess.userPresentAtConference(currentUser, confId));
         return "conference";
     }
 
@@ -75,18 +67,14 @@ public class PageController {
         model.addAttribute("speaker", topicDTO.getSpeakerDTO());
         model.addAttribute("confId", confId);
         model.addAttribute("user", currentUser);
-        if (currentUser == null || !checkEditAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            model.addAttribute("isRegisteredOnConf", false);
-            return "topic";
-        }
-        model.addAttribute("isRegisteredOnConf", true);
+        model.addAttribute("isRegisteredOnConf", checkDataAccess.userPresentAtConference(currentUser, confId));
         return "topic";
     }
 
     @GetMapping("/change/email/{code}")
     public String changeEmail(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser, Model model) {
         try {
-            UserDTO userDTO = userService.findByActivationCodeAndSaveIfValid(code, currentUser.getId());
+            UserDTO userDTO = userService.findByActivationCodeAndSaveIfValid(code, currentUser);
             model.addAttribute("message", "You email address " + userDTO.getEmail() + " was successfully updated");
             return "message";
         } catch (DataIntegrityViolationException e) {

@@ -1,12 +1,12 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.ConferenceDTO;
 import lms.itcluster.confassistant.dto.ParticipantDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ConferenceService;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.ParticipantTypeService;
-import lms.itcluster.confassistant.service.SecurityService;
 import lms.itcluster.confassistant.validator.ConferenceValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,7 +35,7 @@ public class ConferenceAdminController {
 	private ParticipantTypeService participantTypeService;
 	
 	@Autowired
-	private SecurityService securityService;
+	private CheckDataAccess checkDataAccess;
 	
 	@Autowired
 	private ConferenceValidator conferenceValidator;
@@ -44,7 +44,7 @@ public class ConferenceAdminController {
 	public String confOwnerManageUser (@AuthenticationPrincipal CurrentUser currentUser,
 	                                   @PathVariable Long confId, Model model) {
 		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
-		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
+		if(checkDataAccess.canManageConference(currentUser,conference.getConferenceId())) {
 			model.addAttribute("confName", conference.getName());
 			model.addAttribute("usersOfCurrentConf", participantService.findAllParticipant(confId));
 			Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r -> r.getName()).collect(Collectors.toSet());
@@ -60,7 +60,7 @@ public class ConferenceAdminController {
 	                         @PathVariable Long userId,
 	                         Model model) {
 		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
-		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
+		if(checkDataAccess.canManageConference(currentUser,conference.getConferenceId())) {
 			model.addAttribute("confName", conference.getName());
 			model.addAttribute("user", participantService.findParticipantById(userId, confId));
 			Set<String> availableRoles = participantTypeService.getAllParticipantType().stream().map(r -> r.getName()).collect(Collectors.toSet());
@@ -74,7 +74,7 @@ public class ConferenceAdminController {
 	public String saveChangeRole(@AuthenticationPrincipal CurrentUser currentUser,
 	                             ParticipantDTO participantDTO) {
 		ConferenceDTO conference = conferenceService.getConferenceDTOById(participantDTO.getConferenceId());
-		if(securityService.canManageConference(currentUser,conference.getConferenceId())) {
+		if(checkDataAccess.canManageConference(currentUser,conference.getConferenceId())) {
 			participantService.updateParticipantByConfOwner(participantDTO);
 			Long confId = participantDTO.getConferenceId();
 			return String.format("redirect:/conf/owner/%s", confId);
@@ -88,7 +88,7 @@ public class ConferenceAdminController {
 	                                 @PathVariable Long confId,
 	                                 @PathVariable Long userId) {
 		ConferenceDTO conference = conferenceService.getConferenceDTOById(confId);
-		if (securityService.canManageConference(currentUser, conference.getConferenceId())) {
+		if (checkDataAccess.canManageConference(currentUser, conference.getConferenceId())) {
 			participantService.blockParticipant(userId, confId);
 			return "redirect:/conf/owner/{confId}";
 		}

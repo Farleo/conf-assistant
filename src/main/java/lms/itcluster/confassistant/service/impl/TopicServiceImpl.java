@@ -5,7 +5,6 @@ import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.dto.SimpleTopicDTO;
 import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -78,18 +77,14 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicDTO getTopicDTOWithQuestionManageAccess(Long id, CurrentUser currentUser) {
         Topic topic = findById(id);
-        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), id));
-        }
+        checkEditAccess.canCurrentUserManageTopic(currentUser, topic);
         return mapper.toDto(findById(id));
     }
 
     @Override
     public EditTopicDTO getEditTopicDTOById(Long id, CurrentUser currentUser) {
         Topic topic = findById(id);
-        if (!checkEditAccess.canCurrentUserEditTopic(currentUser, topic)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), id));
-        }
+        checkEditAccess.canCurrentUserEditTopic(currentUser, topic);
         return editTopicMapper.toDto(topic);
     }
 
@@ -123,9 +118,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public boolean enableOrDisableQuestion(Long topicId, CurrentUser currentUser) {
         Topic topic = findById(topicId);
-        if (!checkEditAccess.canManageQuestion(currentUser, topic)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d, don't have edit access to topic with id: %d", currentUser.getId(), topicId));
-        }
+        checkEditAccess.canCurrentUserManageTopic(currentUser, topic);
         boolean result;
         if (topic.isAllowedQuestion()) {
             topic.setAllowedQuestion(false);
@@ -182,8 +175,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public boolean isQuestionAllowed(Long topicId) {
-        Topic topic = findById(topicId);
-        return topic.isAllowedQuestion();
+        return findById(topicId).isAllowedQuestion();
     }
 
     @Scheduled(cron = "0 01 00 * * *")

@@ -1,9 +1,9 @@
 package lms.itcluster.confassistant.controller;
 
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ParticipantService;
-import lms.itcluster.confassistant.service.SecurityService;
 import lms.itcluster.confassistant.service.StreamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +23,7 @@ public class StreamController {
 	private ParticipantService participantService;
 	
 	@Autowired
-	private SecurityService securityService;
+	private CheckDataAccess checkDataAccess;
 	
 	@Autowired
 	private StreamService streamService;
@@ -32,7 +32,7 @@ public class StreamController {
 	public String getConferenceStreams (@AuthenticationPrincipal CurrentUser currentUser,
 	                                    @PathVariable Long confId,
 	                                    Model model){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			model.addAttribute("listStreams", streamService.findAllByConfId(confId));
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
 			return "stream/list-stream";
@@ -44,7 +44,7 @@ public class StreamController {
 	public String deleteStream (@AuthenticationPrincipal CurrentUser currentUser,
 	                            @PathVariable Long confId,
 	                            @PathVariable Long streamId){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			streamService.deleteStream(streamId);
 			return "redirect:/dashboard/conferences/{confId}/stream/";
 		}
@@ -56,7 +56,7 @@ public class StreamController {
 	                          @PathVariable Long confId,
 	                          @PathVariable Long streamId,
 	                          Model model){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			StreamDTO streamDTO = streamService.getStreamDTOById(streamId);
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
 			model.addAttribute("stream", streamDTO);
@@ -72,7 +72,7 @@ public class StreamController {
 	                              @PathVariable Long confId,
 	                              StreamDTO streamDTO,
 	                              @PathVariable Long streamId){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			StreamDTO originStreamDTO = streamService.getStreamDTOById(streamId);
 			streamDTO.setTopicList(originStreamDTO.getTopicList());
 			streamService.updateStream(streamDTO);
@@ -85,7 +85,7 @@ public class StreamController {
 	public String newStream (@AuthenticationPrincipal CurrentUser currentUser,
 	                         @PathVariable Long confId,
 	                         Model model){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			model.addAttribute("availableModer", participantService.findAllParticipantByType(confId,"moder"));
 			model.addAttribute(new StreamDTO());
 			model.addAttribute("confId", confId);
@@ -99,7 +99,7 @@ public class StreamController {
 	public String saveNewStream (@AuthenticationPrincipal CurrentUser currentUser,
 	                             @PathVariable Long confId,
 	                             @ModelAttribute @Valid StreamDTO streamDTO){
-		if(securityService.canManageConference(currentUser,confId)){
+		if(checkDataAccess.canManageConference(currentUser,confId)){
 			streamService.addNewStream(streamDTO);
 			return "redirect:/dashboard/conferences/{confId}/stream/";
 		}

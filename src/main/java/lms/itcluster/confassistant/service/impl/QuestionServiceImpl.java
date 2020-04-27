@@ -6,6 +6,7 @@ import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.ForbiddenAccessException;
+import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.Constant;
 import lms.itcluster.confassistant.model.CurrentUser;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -58,33 +60,31 @@ public class QuestionServiceImpl implements QuestionService {
         Question newQuestion = mapper.toEntity(questionDTO);
         Topic topic = newQuestion.getTopic();
         Long confId = topic.getStream().getConference().getConferenceId();
-        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
-        }
-        if (!topic.isAllowedQuestion()) {
-            throw new ForbiddenAccessException(String.format("Questions of topic id: %d are not allowed now", topic.getTopicId()));
-        }
+
+        checkDataAccess.isCurrentUserRegisteredAtConference(currentUser, confId);
+        checkDataAccess.isAllowedQuestionAtTopic(topic);
+
         questionRepository.save(newQuestion);
         return like(newQuestion.getQuestionId(), currentUser);
     }
 
     @Override
     public Question findByName(String name) {
-        return questionRepository.findByQuestion(name);
+        return Optional.ofNullable(questionRepository.findByQuestion(name)).orElseThrow(() -> new NoSuchEntityException("Question with name - %s not found." + name));
     }
 
     @Override
     public Question findById(long id) {
-        return questionRepository.findById(id).get();
+        return questionRepository.findById(id).orElseThrow(() -> new NoSuchEntityException("Question with id - %d not found." + id));
     }
 
     @Override
     public List<QuestionDTO> getSortedQuestionDTOListOrderBy(Long topicId, String orderBy, CurrentUser currentUser) {
         Topic topic = topicService.findById(topicId);
         Long confId = topic.getStream().getConference().getConferenceId();
-        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
-        }
+
+        checkDataAccess.isCurrentUserRegisteredAtConference(currentUser, confId);
+
         List<QuestionDTO> dtoList = getQuestionDTOList(topicId);
         switch (orderBy) {
             case (Constant.ORDER_BY_DATE):
@@ -136,12 +136,10 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = findById(questionId);
         Topic topic = topicService.findById(question.getTopic().getTopicId());
         Long confId = topic.getStream().getConference().getConferenceId();
-        if (!checkDataAccess.isCurrentUserPresentAtConference(currentUser.getId(), confId)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d not registered for the conference with id: %d", currentUser.getId(), confId));
-        }
-        if (!topic.isAllowedQuestion()) {
-            throw new ForbiddenAccessException(String.format("Questions of topic id: %d are not allowed now", topic.getTopicId()));
-        }
+
+        checkDataAccess.isCurrentUserRegisteredAtConference(currentUser, confId);
+        checkDataAccess.isAllowedQuestionAtTopic(topic);
+
         User user = userService.findById(currentUser.getId());
         if (question.getLikesSet().contains(user)) {
             return unLike(user, question);
@@ -152,9 +150,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public boolean sendQuestionToSpeaker(Long topicId, CurrentUser currentUser) {
         Topic topic = topicService.findById(topicId);
-        if (!checkDataAccess.canManageQuestion(currentUser, topic)) {
-            throw new ForbiddenAccessException(String.format("Current user with id: %d, can't manage the topic with id: %d", currentUser.getId(), topicId));
-        }
+
+        checkDataAccess.canCurrentUserManageTopic(currentUser, topic);
+
         User speaker = userService.findById(topic.getSpeaker().getUserId());
         List<Question> questions = topic.getQuestionList();
         questions.sort(Comparator.comparingInt(Question::getRating));

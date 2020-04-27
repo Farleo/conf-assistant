@@ -64,7 +64,7 @@ public class LoginController {
 
     @GetMapping("/active/{code}")
     public String activeProfile(@PathVariable("code") String code, @AuthenticationPrincipal CurrentUser currentUser, Model model) {
-        UserDTO userDTO = userService.completeRegistration(code, currentUser.getId());
+        UserDTO userDTO = userService.completeRegistration(code, currentUser);
         if (userDTO != null) {
             model.addAttribute("message", "Your email was successfully confirmed");
             return "message";

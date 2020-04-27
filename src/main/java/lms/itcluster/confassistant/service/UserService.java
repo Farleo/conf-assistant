@@ -2,6 +2,7 @@ package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
+import lms.itcluster.confassistant.model.CurrentUser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,9 +30,9 @@ public interface UserService {
 
     boolean createActivationCodeForConfirmEmail(EditContactsDTO editContactsDTO);
 
-    UserDTO completeRegistration (String code, Long userId);
+    UserDTO completeRegistration (String code, CurrentUser currentUser);
 
-    UserDTO findByActivationCodeAndSaveIfValid(String code, Long currentUserId);
+    UserDTO findByActivationCodeAndSaveIfValid(String code, CurrentUser currentUser);
 
     boolean updatePassword(EditPasswordDTO editPasswordDTO);
 

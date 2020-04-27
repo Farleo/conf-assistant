@@ -1,5 +1,6 @@
 package lms.itcluster.confassistant.service.impl;
 
+import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.exception.ForbiddenAccessException;
@@ -69,8 +70,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private Mapper<User, EditProfileDTO> editProfileMapper;
 
     @Autowired
-    @Qualifier("editContactMapper")
-    private Mapper<User, EditContactsDTO> editContactsMapper;
+    private CheckDataAccess checkDataAccess;
 
     @Autowired
     private EmailService emailService;
@@ -99,6 +99,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private User findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(()
                 -> new NoSuchEntityException(String.format("User with email - %s not found.", email)));
+    }
+
+    private User findByActivationCode(String code) {
+        return Optional.ofNullable(userRepository.findByActiveCode(code)).orElseThrow(()
+                -> new NoSuchEntityException(String.format("User don't found by activation code %s", code)));
     }
 
     @Override
@@ -242,14 +247,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO completeRegistration(String code, Long userID) {
-        User user = userRepository.findByActiveCode(code);
-        if (user == null) {
-            throw new NoSuchEntityException(String.format("User with id: %d no found by activation code %s", userID, code));
-        }
-        if (!user.getUserId().equals(userID)) {
-            throw new ForbiddenAccessException(String.format("Activation code %s don't belong to this User id: %d", code, userID));
-        }
+    public UserDTO completeRegistration(String code, CurrentUser currentUser) {
+        User user = findByActivationCode(code);
+        checkDataAccess.isUserWithActivationCodeIsCurrentUser(user, currentUser);
+
         user.setActiveCode(null);
         userRepository.save(user);
         return mapper.toDto(user);
@@ -257,20 +258,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDTO findByActivationCodeAndSaveIfValid(String code, Long currentUserId) {
-        User user = userRepository.findByActiveCode(code);
-        if (user == null) {
-            throw new NoSuchEntityException(String.format("User with id: %d no found by activation code %s", currentUserId, code));
-        }
-        if (!user.getUserId().equals(currentUserId)) {
-            throw new ForbiddenAccessException(String.format("Activation code %s don't belong to this User id: %d", code, currentUserId));
-        }
+    public UserDTO findByActivationCodeAndSaveIfValid(String code, CurrentUser currentUser) {
+        User user = findByActivationCode(code);
+        checkDataAccess.isUserWithActivationCodeIsCurrentUser(user, currentUser);
 
-        String newEmail = staticDataService.getUpdatedEmail(currentUserId);
+        String newEmail = staticDataService.getUpdatedEmail(currentUser.getId());
         user.setEmail(newEmail);
         user.setActiveCode(null);
         userRepository.save(user);
-        removeTempEmailIfTransactionSuccess(currentUserId);
+        removeTempEmailIfTransactionSuccess(currentUser.getId());
         return mapper.toDto(user);
     }
 
