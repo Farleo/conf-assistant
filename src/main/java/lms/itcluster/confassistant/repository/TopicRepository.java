@@ -13,6 +13,10 @@ import java.util.List;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
+    @Transactional
+    @Query(value = "select cover_photo from topic", nativeQuery = true)
+    List<String> getAllCoverPhotoFromTopic();
+
     Topic findByName(String name);
 
     List<Topic> findAllBySpeaker(User speaker);

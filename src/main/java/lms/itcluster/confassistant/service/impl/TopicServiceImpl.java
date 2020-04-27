@@ -167,7 +167,7 @@ public class TopicServiceImpl implements TopicService {
         return findById(topicId).isAllowedQuestion();
     }
 
-    @Scheduled(cron = "0 01 00 * * *")
+    @Scheduled(cron = "0 59 23 * * *")
     @Transactional
     public void removeDisableAllowedQuestion() {
         List<Topic> topics = topicRepository.findAllByIsAllowedQuestion(true);

@@ -47,14 +47,13 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     }
 
     @Override
-    public void removeOldImage(String imageLink) {
-        Path path = Paths.get(uploadPath + imageLink);
+    public void removeOldImage(Path path) {
         try {
             if (Files.exists(path)) {
                 Files.delete(path);
             }
         } catch (IOException e) {
-            log.error(String.format("Can't delete old photo: %s", imageLink), e);
+            log.error(String.format("Can't delete old photo: %s", path.toString()), e);
         }
     }
 }

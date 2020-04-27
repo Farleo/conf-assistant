@@ -12,6 +12,11 @@ import java.util.List;
 
 @Repository
 public interface ConferenceRepository extends JpaRepository<Conference, Long> {
+
+	@Transactional
+	@Query(value = "select cover_photo from conference", nativeQuery = true)
+	List<String> getAllCoverPhotoFromConference();
+	
 	@Transactional
 	@Query("select c from Conference c where c.owner.userId=:ownerId")
 	List<Conference> findAllByOwnerId (@Param("ownerId") Long ownerId);

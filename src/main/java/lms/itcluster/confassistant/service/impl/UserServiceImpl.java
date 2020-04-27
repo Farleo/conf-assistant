@@ -280,7 +280,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return editProfileMapper.toDto(findById(userId));
     }
 
-    @Scheduled(cron = "0 01 00 * * *")
+    @Scheduled(cron = "0 59 23 * * *")
     @Transactional
     public void removeNotActiveProfiles() {
         LocalDate date = LocalDate.now().minusDays(removeNotCompletedProfilesInterval);
