@@ -7,6 +7,7 @@ import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.StreamService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.validator.TopicValidator;
+import lms.itcluster.confassistant.validator.UploadPhotoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,9 @@ public class TopicController {
 	
 	@Autowired
 	private TopicValidator topicValidator;
+
+	@Autowired
+	private UploadPhotoValidator uploadPhotoValidator;
 
 	@RequestMapping(value = "dashboard/conferences/{confId}/stream/{streamId}/topics")
 	public String getTopicList (@AuthenticationPrincipal CurrentUser currentUser,
@@ -86,10 +90,11 @@ public class TopicController {
 		model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
 		model.addAttribute("currentUser", currentUser.getId());
 		topicValidator.validate(simpleTopicDTO,bindingResult);
+		uploadPhotoValidator.validate(photo, bindingResult);
 		if(bindingResult.hasErrors()){
 			return "topic/topic-edit";
 		}
-		topicService.updateTopic(simpleTopicDTO,photo);
+		topicService.updateTopic(simpleTopicDTO,photo.getBytes(), photo.getOriginalFilename());
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}
 	
@@ -114,13 +119,14 @@ public class TopicController {
                                    @RequestParam("inpFile") MultipartFile photo,
                                    @AuthenticationPrincipal CurrentUser currentUser) throws IOException {
 		topicValidator.validate(simpleTopicDTO,bindingResult);
+		uploadPhotoValidator.validate(photo, bindingResult);
 		if(bindingResult.hasErrors()){
 			model.addAttribute("availableSpeaker", participantService.findAllParticipantByType(confId,"speaker"));
 			model.addAttribute("currentUser", currentUser.getId());
 			model.addAttribute("stream", streamService.getStreamDTOById(streamId).getName());
 			return "topic/topic-add";
 		}
-		topicService.createTopic(simpleTopicDTO,photo);
+		topicService.createTopic(simpleTopicDTO,photo.getBytes(), photo.getOriginalFilename());
 		return "redirect:/dashboard/conferences/{confId}/stream/{streamId}/topics";
 	}
 }

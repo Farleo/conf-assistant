@@ -14,13 +14,18 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -34,6 +39,9 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TopicRepository topicRepository;
 
     @Autowired
     private UserService userService;
@@ -152,28 +160,24 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Transactional
     @Override
-    public void addNewConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
+    public void addNewConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = conference.getCoverPhoto();
-        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        conference.setCoverPhoto(newCoverPhoto.orElse(null));
 
         conferenceRepository.save(conference);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Transactional
     @Override
-    public void updateConference(ConferenceDTO conferenceDTO, MultipartFile photo) throws IOException {
+    public void updateConference(ConferenceDTO conferenceDTO, byte[] photo, String originalPhotoName) throws IOException {
         Conference conference = mapper.toEntity(conferenceDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = conference.getCoverPhoto();
-        conference.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        conference.setCoverPhoto(newCoverPhoto.orElse(conference.getCoverPhoto()));
 
         conferenceRepository.save(conference);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Override
@@ -184,15 +188,6 @@ public class ConferenceServiceImpl implements ConferenceService {
             conference.setDeleted(true);
             conferenceRepository.save(conference);
         }
-    }
-
-    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit() {
-                imageStorageService.removeOldImage(oldCoverPhoto);
-            }
-        });
     }
 
     @Override
@@ -289,6 +284,24 @@ public class ConferenceServiceImpl implements ConferenceService {
     public ConferenceDTO getConferenceDTOByTopicId(Long topicId) {
         Topic topic = topicService.findById(topicId);
         return getConferenceDTOById(topic.getStream().getConference().getConferenceId());
+    }
+
+    @Scheduled(cron = "0 59 23 * * *")
+    @Transactional
+    public void removeUnusedPhotos() throws IOException {
+        List<String> photos = userRepository.getAllPhotoFromUser();
+        photos.addAll(conferenceRepository.getAllCoverPhotoFromConference());
+        photos.addAll(topicRepository.getAllCoverPhotoFromTopic());
+        Files.walkFileTree(Paths.get(System.getProperty("user.dir") + File.separator + "media" + File.separator), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                String filePath = file.toString().substring(file.toString().indexOf(File.separator + "media" + File.separator));
+                if (!photos.contains(filePath)) {
+                    imageStorageService.removeOldImage(file);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
 }

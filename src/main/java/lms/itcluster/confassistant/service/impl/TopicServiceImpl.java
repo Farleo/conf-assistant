@@ -23,7 +23,9 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,24 +97,13 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void updateMainTopicData(EditTopicDTO editTopicDTO, MultipartFile photo) throws IOException {
+    public void updateMainTopicData(EditTopicDTO editTopicDTO, byte[] photo, String originalFileName) throws IOException {
         Topic updatedData = editTopicMapper.toEntity(editTopicDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = updatedData.getCoverPhoto();
-        updatedData.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalFileName);
+        updatedData.setCoverPhoto(newCoverPhoto.orElse(updatedData.getCoverPhoto()));
 
         topicRepository.save(updatedData);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
-    }
-
-    private void removeCoverPhotoIfTransactionSuccess(final String oldCoverPhoto) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit() {
-                imageStorageService.removeOldImage(oldCoverPhoto);
-            }
-        });
     }
 
     @Override
@@ -149,26 +140,24 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void updateTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
+    public void updateTopic(SimpleTopicDTO simpleTopicDTO, byte[] photo, String originalPhotoName) throws IOException {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
 
-        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo);
-        String oldCoverPhoto = topic.getCoverPhoto();
-        topic.setCoverPhoto(newCoverPhoto.orElse(oldCoverPhoto));
+        Optional<String> newCoverPhoto = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        topic.setCoverPhoto(newCoverPhoto.orElse(topic.getCoverPhoto()));
 
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
-        newCoverPhoto.ifPresent(s -> removeCoverPhotoIfTransactionSuccess(oldCoverPhoto));
     }
 
     @Override
     @Transactional
-    public void createTopic(SimpleTopicDTO simpleTopicDTO, MultipartFile photo) throws IOException {
+    public void createTopic(SimpleTopicDTO simpleTopicDTO, byte[] photo, String originalPhotoName) throws IOException {
         Topic topic = simpleTopicMapper.toEntity(simpleTopicDTO);
-        if (!photo.isEmpty()) {
-            Optional<String> newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo);
-            topic.setCoverPhoto(newCoverPhotoPath.orElse(null));
-        }
+
+        Optional<String> newCoverPhotoPath = imageStorageService.saveAndReturnImageLink(photo, originalPhotoName);
+        topic.setCoverPhoto(newCoverPhotoPath.orElse(null));
+
         topic.setSpeaker(userRepository.findById(simpleTopicDTO.getSpeakerId()).get());
         topicRepository.save(topic);
     }
@@ -178,7 +167,7 @@ public class TopicServiceImpl implements TopicService {
         return findById(topicId).isAllowedQuestion();
     }
 
-    @Scheduled(cron = "0 01 00 * * *")
+    @Scheduled(cron = "0 59 23 * * *")
     @Transactional
     public void removeDisableAllowedQuestion() {
         List<Topic> topics = topicRepository.findAllByIsAllowedQuestion(true);

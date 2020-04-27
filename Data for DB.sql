@@ -68,9 +68,9 @@ Of course, every JPA entity needs a primary key. Because our primary key is a co
 Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
         1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
 
-('Problem and solutions in busines psychology', '2020-02-11', '19:30:00', '21:45:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
+       ('Problem and solutions in busines psychology', '2020-02-11', '19:30:00', '21:45:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
 Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
-    1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
+        1, 3, 5, '/picture/img/topic/2283_PowerPoint_Design_Service_Slides_Slide_1_Presentation_Title.jpg'),
 
        ('Java in 2020', '2020-02-12', '9:00:00', '11:15:00', 'The implementation of a simple many-to-many relationship was rather straightforward. The only problem is that we cannot add a property to a relationship that way, because we connected the entities directly. Therefore, we had no way to add a property to the relationship itself.
 Of course, every JPA entity needs a primary key. Because our primary key is a composite key, we have to create a new class, which will hold the different parts of the key:',
@@ -318,4 +318,6 @@ VALUES (1, 1, 4),
                                 series varchar(64) primary key,
                                 token varchar(64) not null,
                                 last_used timestamp not null);*/
+
+select user.photo from user;
 

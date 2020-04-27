@@ -1,14 +1,12 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.EditContactsDTO;
-import lms.itcluster.confassistant.dto.EditPasswordDTO;
-import lms.itcluster.confassistant.dto.EditProfileDTO;
-import lms.itcluster.confassistant.dto.EditTopicDTO;
+import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.exception.CantCompleteClientRequestException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
+import lms.itcluster.confassistant.validator.UploadPhotoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
 
 @Controller
 public class EditController {
@@ -31,7 +31,7 @@ public class EditController {
     private TopicService topicService;
 
     @Autowired
-    private ParticipantService participantService;
+    private UploadPhotoValidator uploadPhotoValidator;
 
     @GetMapping("/edit/profile/main")
     public String getSpeaker(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
@@ -40,15 +40,15 @@ public class EditController {
     }
 
     @PostMapping("/edit/profile/main")
-    public String saveSpeaker(@Valid @ModelAttribute("speaker") EditProfileDTO speaker, BindingResult bindingResult, @RequestParam(value = "inpFile", required = false) MultipartFile photo) throws IOException {
+    public String saveSpeaker(@Valid @ModelAttribute("speaker") EditProfileDTO speaker, BindingResult bindingResult, @RequestParam(value = "inpFile", required = false) MultipartFile multipartFile) throws IOException {
+        uploadPhotoValidator.validate(multipartFile, bindingResult);
         if (bindingResult.hasErrors()) {
             return "edit/profile/main";
         }
-        try {
-            userService.updateSpeaker(speaker, photo);
-        } catch (CantCompleteClientRequestException e) {
-            bindingResult.rejectValue("photo", "wrong.photo.format", "Use file with jpg, jpeg or png");
-            return "edit/profile/main";
+        if (multipartFile != null) {
+            userService.updateSpeaker(speaker, multipartFile.getBytes(), multipartFile.getOriginalFilename());
+        } else {
+            userService.updateSpeaker(speaker, null, null);
         }
         return "redirect:/";
     }
@@ -90,15 +90,11 @@ public class EditController {
 
     @PostMapping("/edit/topic/main/{topicId}")
     public String saveMain(@PathVariable("topicId") Long topicId, @ModelAttribute("topic") @Valid EditTopicDTO topic, BindingResult bindingResult, @RequestParam("inpFile") MultipartFile photo) throws IOException {
+        uploadPhotoValidator.validate(photo, bindingResult);
         if (bindingResult.hasErrors()) {
             return "edit/topic/main";
         }
-        try {
-            topicService.updateMainTopicData(topic, photo);
-        } catch (CantCompleteClientRequestException | MaxUploadSizeExceededException e) {
-            bindingResult.rejectValue("coverPhoto", "wrong.photo.format", "Use file with jpg, jpeg or png");
-            return "edit/topic/main";
-        }
+        topicService.updateMainTopicData(topic, photo.getBytes(), photo.getOriginalFilename());
         return "redirect:/topic/" + topicId;
     }
 }

@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/moderator").hasRole(Constant.ROLE_USER)
                 .antMatchers("/moderator").hasAuthority(Constant.MODERATOR)
                 .antMatchers("/speaker").hasRole(Constant.ROLE_USER)
-                .antMatchers("/speaker").hasAuthority(Constant.MODERATOR)
+                .antMatchers("/speaker").hasAuthority(Constant.SPEAKER)
                 .antMatchers( "/manage/topic/**").hasAnyRole(Constant.ROLE_USER, Constant.ROLE_ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers( "/manage/topic/**").hasAnyAuthority(Constant.MODERATOR, Constant.ADMIN, Constant.ROLE_CONFOWNER)
                 .antMatchers("/admin/**").hasRole("ADMIN")
