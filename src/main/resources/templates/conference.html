@@ -64,11 +64,10 @@
                 <div class="card border-0">
                     <div class="d-flex justify-content-between">
                         <h4 class="text-muted">Alias</h4>
+                        <h4 th:text="${'#' + conference.getAlias()}"></h4>
+                        <div></div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <span th:text="${conference.getAlias()}"></span>
             </div>
         </div>
     </div>

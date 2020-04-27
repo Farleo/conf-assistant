@@ -7,13 +7,14 @@
             <nav class="navbar navbar-light col-7 ">
                 <a href="/" class="navbar-brand"><img style="max-height: 30px" src="/picture/img/logo/logo.jpg"
                                                       alt="logo"></a>
-                <form method="get" action="/search" class="form-inline">
+
+                <div class="form-inline">
+                    <form method="get" action="/search" class="form-inline">
                         <div th:if="${confNotFound}" style="color:rgba(255,103,55,0.94)">Conference not found</div>
-                        <input  class="mr-sm-2 my-sm-0" type="text" id ="text" name="alias" placeholder="Find conference by alias">
-                        <button class="btn btn-sm my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px" type="submit">Search </button>
-                </form>
-                <form class="form-inline">
-                    <a th:href="${'/schedule'}" class="btn btn-sm my-2 my-sm-0 text-white btn-secondary">
+                        <input  class="mr-sm-2 my-sm-0" type="text" id ="text" name="alias" placeholder=" Find conference by alias ">
+                        <button class="btn btn-sm my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Search </button>
+                    </form>
+                    <a th:href="${'/schedule'}" class="btn btn-sm my-2 my-sm-0 text-white btn-secondary" style="margin-left: 5px">
                         <i class="fa fa-list" aria-hidden="true"></i>
                         <span class="text-white" type="submit">Schedule</span>
                     </a>
@@ -21,7 +22,7 @@
                        style="background-color: rgba(255,103,55,0.94); margin-left: 5px"
                        type="submit">Sign in
                     </a>
-                </form>
+                </div>
             </nav>
         </div>
     </div>
@@ -33,12 +34,13 @@
             <nav class="navbar navbar-light col-7 ">
                 <a href="/" class="navbar-brand"><img style="max-height: 30px" src="/picture/img/logo/logo.jpg"
                                                       alt="logo"></a>
-                <form method="get" action="/search" class="form-inline">
-                    <div th:if="${confNotFound}" style="color:rgba(255,103,55,0.94)">Conference not found</div>
-                    <input  class="mr-sm-2 my-sm-0" type="text" id ="txt" name="alias" placeholder="Find conference by alias">
-                    <button class="btn btn-sm my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px" type="submit">Search </button>
-                </form>
+
                 <div class="form-inline">
+                    <form method="get" action="/search" class="form-inline">
+                        <div th:if="${confNotFound}" style="color:rgba(255,103,55,0.94)">Conference not found</div>
+                        <input  class="mr-sm-2 my-sm-0" type="text" id ="txt" name="alias" placeholder="Find conference by alias">
+                        <button class="btn btn-sm my-2 my-sm-0 text-white" style="background-color: rgba(255,103,55,0.94); margin-left: 5px" type="submit"><i class="fa fa-search" aria-hidden="true"></i> Search </button>
+                    </form>
                     <a th:href="${'/schedule'}" class="btn btn-sm my-2 my-sm-0 text-white btn-secondary"
                        style="margin-left: 5px">
                         <i class="fa fa-list" aria-hidden="true"></i>
