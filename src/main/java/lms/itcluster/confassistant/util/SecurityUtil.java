@@ -1,9 +1,7 @@
 package lms.itcluster.confassistant.util;
 
 import lms.itcluster.confassistant.dto.ConferenceDTO;
-import lms.itcluster.confassistant.dto.TopicDTO;
 import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.impl.RememberMeService;

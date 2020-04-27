@@ -4,33 +4,24 @@ import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.mapper.AbstractMapper;
 import lms.itcluster.confassistant.repository.TopicRepository;
-import lms.itcluster.confassistant.repository.UserRepository;
-import lms.itcluster.confassistant.service.StreamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class EditTopicMapper extends AbstractMapper<Topic, EditTopicDTO> {
 
     private final ModelMapper modelMapper;
 
-    private TopicRepository topicRepository;
-    
-
     @Autowired
     public EditTopicMapper(ModelMapper modelMapper, TopicRepository topicRepository) {
         super(EditTopicDTO.class, Topic.class, topicRepository);
         this.modelMapper = modelMapper;
-        this.topicRepository = topicRepository;
     }
 
     @PostConstruct

@@ -3,14 +3,12 @@ package lms.itcluster.confassistant.validator;
 import lms.itcluster.confassistant.annotation.CorrectDateAndTime;
 import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.entity.Topic;
-import lms.itcluster.confassistant.repository.StreamRepository;
 import lms.itcluster.confassistant.repository.TopicRepository;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

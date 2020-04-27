@@ -12,20 +12,14 @@ import lms.itcluster.confassistant.repository.TopicRepository;
 import lms.itcluster.confassistant.repository.UserRepository;
 import lms.itcluster.confassistant.service.ImageStorageService;
 import lms.itcluster.confassistant.service.TopicService;
-import lms.itcluster.confassistant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,9 +30,6 @@ public class TopicServiceImpl implements TopicService {
 
     @Autowired
     private TopicRepository topicRepository;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ImageStorageService imageStorageService;

@@ -5,10 +5,8 @@ import lms.itcluster.confassistant.dto.ListConferenceDTO;
 import lms.itcluster.confassistant.dto.ScheduleConferenceDTO;
 import lms.itcluster.confassistant.entity.Conference;
 import lms.itcluster.confassistant.model.CurrentUser;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public interface ConferenceService {

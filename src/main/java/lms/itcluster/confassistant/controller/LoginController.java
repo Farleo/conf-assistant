@@ -2,26 +2,21 @@ package lms.itcluster.confassistant.controller;
 
 import lms.itcluster.confassistant.dto.SignUpDTO;
 import lms.itcluster.confassistant.dto.UserDTO;
-import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.model.CurrentUser;
 import lms.itcluster.confassistant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Controller

@@ -3,7 +3,6 @@ package lms.itcluster.confassistant.service.impl;
 import lms.itcluster.confassistant.component.CheckDataAccess;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.exception.UserAlreadyExistException;
 import lms.itcluster.confassistant.mapper.Mapper;
@@ -31,10 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.List;

@@ -1,9 +1,9 @@
 package lms.itcluster.confassistant.controller;
 
-import lms.itcluster.confassistant.dto.*;
-import lms.itcluster.confassistant.exception.CantCompleteClientRequestException;
+import lms.itcluster.confassistant.dto.EditPasswordDTO;
+import lms.itcluster.confassistant.dto.EditProfileDTO;
+import lms.itcluster.confassistant.dto.EditTopicDTO;
 import lms.itcluster.confassistant.model.CurrentUser;
-import lms.itcluster.confassistant.service.ParticipantService;
 import lms.itcluster.confassistant.service.TopicService;
 import lms.itcluster.confassistant.service.UserService;
 import lms.itcluster.confassistant.validator.UploadPhotoValidator;
@@ -13,13 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Optional;
 
 @Controller
 public class EditController {

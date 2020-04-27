@@ -1,7 +1,6 @@
 package lms.itcluster.confassistant.repository;
 
 import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

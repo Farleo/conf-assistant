@@ -5,7 +5,6 @@ import lms.itcluster.confassistant.annotation.CorrectDateAndTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 
 @CorrectDateAndTime(topicId = "topicId", beginDateTime = "beginDateTime", finishTime = "finishTime")
 public class EditTopicDTO extends AbstractDTO {

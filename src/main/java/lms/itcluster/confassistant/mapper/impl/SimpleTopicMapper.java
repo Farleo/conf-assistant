@@ -18,13 +18,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class SimpleTopicMapper extends AbstractMapper<Topic, SimpleTopicDTO> {
-	
-	@Autowired
-	@Qualifier("speakerMapper")
-	private Mapper<User, SpeakerDTO> speakerMapper;
-	
-	
-	
+
 	private final ModelMapper modelMapper;
 	private final UserRepository userRepository;
 	private final StreamRepository streamRepository;

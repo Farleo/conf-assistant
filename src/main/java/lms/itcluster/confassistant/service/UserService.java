@@ -3,10 +3,8 @@ package lms.itcluster.confassistant.service;
 import lms.itcluster.confassistant.dto.*;
 import lms.itcluster.confassistant.entity.User;
 import lms.itcluster.confassistant.model.CurrentUser;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public interface UserService {

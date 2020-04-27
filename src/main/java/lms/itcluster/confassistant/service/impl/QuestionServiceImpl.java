@@ -5,7 +5,6 @@ import lms.itcluster.confassistant.dto.QuestionDTO;
 import lms.itcluster.confassistant.entity.Question;
 import lms.itcluster.confassistant.entity.Topic;
 import lms.itcluster.confassistant.entity.User;
-import lms.itcluster.confassistant.exception.ForbiddenAccessException;
 import lms.itcluster.confassistant.exception.NoSuchEntityException;
 import lms.itcluster.confassistant.mapper.Mapper;
 import lms.itcluster.confassistant.model.Constant;

@@ -2,11 +2,7 @@ package lms.itcluster.confassistant.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

@@ -2,7 +2,6 @@ package lms.itcluster.confassistant.service;
 
 import lms.itcluster.confassistant.dto.StreamDTO;
 import lms.itcluster.confassistant.entity.Conference;
-import lms.itcluster.confassistant.entity.Stream;
 import lms.itcluster.confassistant.model.CurrentUser;
 
 import java.util.List;
